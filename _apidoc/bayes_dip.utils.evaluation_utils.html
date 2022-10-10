@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.utils.evaluation_utils module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.utils.experiment_utils module" href="bayes_dip.utils.experiment_utils.html" />
+    <link rel="prev" title="bayes_dip.utils package" href="bayes_dip.utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.utils.html#module-bayes_dip.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.utils.html">bayes_dip.utils package</a> &raquo;</li>
+      <li>bayes_dip.utils.evaluation_utils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.utils.evaluation_utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.utils.evaluation_utils">
+<span id="bayes-dip-utils-evaluation-utils-module"></span><h1>bayes_dip.utils.evaluation_utils module<a class="headerlink" href="#module-bayes_dip.utils.evaluation_utils" title="Permalink to this heading"></a></h1>
+<p>Utilities for evaluation.</p>
+<p>A general note on hydra run paths: the methods in this module expect paths to single hydra output
+folders (containing the <code class="docutils literal notranslate"><span class="pre">.hydra/</span></code> subfolder), which may either be a normal hydra output path or a
+path to a sub-folder of a hydra multirun path (such sub-folders are called “multirun path” in this
+module’s documentation).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.get_abs_diff">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">get_abs_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#get_abs_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.get_abs_diff" title="Permalink to this definition"></a></dt>
+<dd><p>Return the absolute difference between reconstruction and ground truth for sample <code class="docutils literal notranslate"><span class="pre">sample_idx</span></code>
+from <code class="docutils literal notranslate"><span class="pre">run_path</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>run_path</strong><span class="classifier">str</span></dt><dd><p>Path of the hydra run.</p>
+</dd>
+<dt><strong>sample_idx</strong><span class="classifier">int</span></dt><dd><p>Sample index.</p>
+</dd>
+<dt><strong>experiment_paths</strong><span class="classifier">dict, optional</span></dt><dd><p>See <a class="reference internal" href="#bayes_dip.utils.evaluation_utils.translate_path" title="bayes_dip.utils.evaluation_utils.translate_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate_path()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>abs_diff</strong><span class="classifier">Tensor</span></dt><dd><p>Absolute difference. Shape: <code class="docutils literal notranslate"><span class="pre">(im_size,</span> <span class="pre">im_size)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.get_density_data">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">get_density_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#get_density_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.get_density_data" title="Permalink to this definition"></a></dt>
+<dd><p>Return the density data for sample <code class="docutils literal notranslate"><span class="pre">sample_idx</span></code> from <code class="docutils literal notranslate"><span class="pre">run_path</span></code>.</p>
+<p>Supports both <code class="docutils literal notranslate"><span class="pre">experiments/exact_density.py</span></code> and <code class="docutils literal notranslate"><span class="pre">experiments/sample_based_density.py</span></code> runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>Density data from “exact_predictive_posterior_{sample_idx}.pt” or
+“sample_based_predictive_posterior_{sample_idx}.pt”.</p>
+</dd>
+<dt><strong>is_exact</strong><span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the run is a <code class="docutils literal notranslate"><span class="pre">experiments/exact_density.py</span></code> run; if <code class="docutils literal notranslate"><span class="pre">False</span></code> it is a
+<code class="docutils literal notranslate"><span class="pre">experiments/sample_based_density.py</span></code> run. If the run is of neither kind, a
+<code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code> is raised.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.get_patch_idx_to_mask_inds_dict">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">get_patch_idx_to_mask_inds_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patch_idx_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">im_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#get_patch_idx_to_mask_inds_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.get_patch_idx_to_mask_inds_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Return a dictionary with the selected patch indices as keys and the mask index arrays defining
+the patches as values.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.get_sample_based_cov_diag">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">get_sample_based_cov_diag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_idx_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">im_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#get_sample_based_cov_diag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.get_sample_based_cov_diag" title="Permalink to this definition"></a></dt>
+<dd><p>Return the diagonal of the posterior covariance for the specified <code class="docutils literal notranslate"><span class="pre">patch_idx_list</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>Density data, like the first return value of <a class="reference internal" href="#bayes_dip.utils.evaluation_utils.get_density_data" title="bayes_dip.utils.evaluation_utils.get_density_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_density_data()</span></code></a>.</p>
+</dd>
+<dt><strong>patch_idx_list</strong><span class="classifier">list of int, str or None</span></dt><dd><p>Patch indices for which to populate the returned tensor. The pixels of patches that are not
+selected will be <code class="docutils literal notranslate"><span class="pre">torch.nan</span></code> in the returned tensor.
+Must be a subset of the <code class="docutils literal notranslate"><span class="pre">patch_idx_list</span></code> from the original run.</p>
+</dd>
+<dt><strong>patch_size</strong><span class="classifier">int</span></dt><dd><p>Side length of the patches (patches are usually square). Must be the same as for the
+original run.</p>
+</dd>
+<dt><strong>im_shape</strong><span class="classifier">2-tuple of int</span></dt><dd><p>Image shape.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>cov_diag</strong><span class="classifier">Tensor</span></dt><dd><p>Diagonal of the posterior covariance. Shape: <code class="docutils literal notranslate"><span class="pre">im_shape</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.get_stddev">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">get_stddev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_idx_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtract_image_noise_correction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#get_stddev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.get_stddev" title="Permalink to this definition"></a></dt>
+<dd><p>Return the standard deviation (i.e. the square root of the diagonal of the posterior covariance)
+for sample <code class="docutils literal notranslate"><span class="pre">sample_idx</span></code> from <code class="docutils literal notranslate"><span class="pre">run_path</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>run_path</strong><span class="classifier">str</span></dt><dd><p>Path of the hydra run.</p>
+</dd>
+<dt><strong>sample_idx</strong><span class="classifier">int</span></dt><dd><p>Sample index.</p>
+</dd>
+<dt><strong>patch_idx_list</strong><span class="classifier">list of int or str, optional</span></dt><dd><p>Patch indices to restrict to. Only supported with sample based density runs.
+Must be a subset of <code class="docutils literal notranslate"><span class="pre">cfg.inference.patch_idx_list</span></code> of the original run.
+If a string,
+<code class="docutils literal notranslate"><span class="pre">bayes_dip.utils.experiment_utils.get_predefined_patch_idx_list(patch_idx_list)</span></code> is used.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), all patch indices are used.</p>
+</dd>
+<dt><strong>subtract_image_noise_correction</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to subtract the image noise correction term from the covariance diagonal before
+taking the square root.
+The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>experiment_paths</strong><span class="classifier">dict, optional</span></dt><dd><p>See <a class="reference internal" href="#bayes_dip.utils.evaluation_utils.translate_path" title="bayes_dip.utils.evaluation_utils.translate_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate_path()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>stddev</strong><span class="classifier">Tensor</span></dt><dd><p>Standard deviation. Shape: <code class="docutils literal notranslate"><span class="pre">(im_size,</span> <span class="pre">im_size)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.is_single_level_date_time_path">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">is_single_level_date_time_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#is_single_level_date_time_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.is_single_level_date_time_path" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether a hydra output or multirun path has date and time encoded in a single folder name
+as specified in our custom configs <code class="docutils literal notranslate"><span class="pre">hydra.run.dir=outputs/${now:%Y-%m-%dT%H:%M:%S.%fZ}</span></code> and
+<code class="docutils literal notranslate"><span class="pre">hydra.sweep.dir=multirun/${now:%Y-%m-%dT%H:%M:%S.%fZ}</span></code> (as opposed to the default config that
+uses a date folder and a time folder inside).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.recompute_reconstruction">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">recompute_reconstruction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#recompute_reconstruction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.recompute_reconstruction" title="Permalink to this definition"></a></dt>
+<dd><p>Recompute the reconstruction from saved network model parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>run_path</strong><span class="classifier">str</span></dt><dd><p>Path of the hydra run.</p>
+</dd>
+<dt><strong>sample_idx</strong><span class="classifier">int</span></dt><dd><p>Sample index.</p>
+</dd>
+<dt><strong>experiment_paths</strong><span class="classifier">dict, optional</span></dt><dd><p>See <a class="reference internal" href="#bayes_dip.utils.evaluation_utils.translate_path" title="bayes_dip.utils.evaluation_utils.translate_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate_path()</span></code></a>.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device, optional</span></dt><dd><p>Device.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>reconstruction</strong><span class="classifier">Tensor</span></dt><dd><p>DIP reconstruction. Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">*im_shape)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.restrict_sample_based_density_data_to_new_patch_idx_list">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">restrict_sample_based_density_data_to_new_patch_idx_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_idx_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orig_patch_idx_list</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">im_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#restrict_sample_based_density_data_to_new_patch_idx_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.restrict_sample_based_density_data_to_new_patch_idx_list" title="Permalink to this definition"></a></dt>
+<dd><p>Return a version of sample based density data that is restricted to a subset of patch indices.</p>
+<p>The log probability is also recomputed with the new patch selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">dict</span></dt><dd><p>The original density data, like the first return value of <a class="reference internal" href="#bayes_dip.utils.evaluation_utils.get_density_data" title="bayes_dip.utils.evaluation_utils.get_density_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_density_data()</span></code></a>.</p>
+</dd>
+<dt><strong>patch_idx_list</strong><span class="classifier">list of int, str or None</span></dt><dd><p>Patch indices to restrict to.
+Must be a subset of <code class="docutils literal notranslate"><span class="pre">orig_patch_idx_list</span></code>.
+If a string,
+<code class="docutils literal notranslate"><span class="pre">bayes_dip.utils.experiment_utils.get_predefined_patch_idx_list(patch_idx_list)</span></code> is used.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all patch indices are used.</p>
+</dd>
+<dt><strong>orig_patch_idx_list</strong><span class="classifier">list of int, str or None</span></dt><dd><p>Value of <code class="docutils literal notranslate"><span class="pre">cfg.inference.patch_idx_list</span></code> from the original run.</p>
+</dd>
+<dt><strong>patch_size</strong><span class="classifier">int</span></dt><dd><p>Side length of the patches (patches are usually square). Must be the same as for the
+original run.</p>
+</dd>
+<dt><strong>im_shape</strong><span class="classifier">2-tuple of int</span></dt><dd><p>Image shape.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>data_restricted</strong><span class="classifier">dict</span></dt><dd><p>Restricted density data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.translate_multirun_path">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">translate_multirun_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">multirun_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'../experiments/multirun'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#translate_multirun_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.translate_multirun_path" title="Permalink to this definition"></a></dt>
+<dd><p>Translate a hydra multirun path (e.g. “arbitrary/path/to/multirun/???/?”) to a new multirun root
+path (i.e. “{multirun_path}/???/?”).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.translate_output_path">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">translate_output_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'../experiments/outputs'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#translate_output_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.translate_output_path" title="Permalink to this definition"></a></dt>
+<dd><p>Translate a hydra output path (e.g. “arbitrary/path/to/outputs/???”) to a new outputs root path
+(i.e. “{outputs_path}/???”).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.evaluation_utils.translate_path">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.evaluation_utils.</span></span><span class="sig-name descname"><span class="pre">translate_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/utils/evaluation_utils.html#translate_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.evaluation_utils.translate_path" title="Permalink to this definition"></a></dt>
+<dd><p>Translate a hydra output or multirun path (e.g. “arbitrary/path/to/outputs/???” or
+“arbitrary/path/to/multirun/???/?”) to a new outputs or multirun root path (i.e.
+“{experiment_paths[‘outputs_path’]}/???” or “{experiment_paths[‘multirun_path’]}/???/?”).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Path of the hydra run.</p>
+</dd>
+<dt><strong>experiment_paths</strong><span class="classifier">dict, optional</span></dt><dd><p>New outputs and/or multirun root path. The respective keys are <code class="docutils literal notranslate"><span class="pre">'outputs_path'</span></code> and
+<code class="docutils literal notranslate"><span class="pre">'multirun_path'</span></code>, with defaults <code class="docutils literal notranslate"><span class="pre">DEFAULT_OUTPUTS_PATH</span></code> and <code class="docutils literal notranslate"><span class="pre">DEFAULT_MULTIRUN_PATH</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Translated path.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.utils.html" class="btn btn-neutral float-left" title="bayes_dip.utils package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.utils.experiment_utils.html" class="btn btn-neutral float-right" title="bayes_dip.utils.experiment_utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

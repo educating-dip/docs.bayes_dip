@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.observation\_cov module
+========================================================
+
+.. automodule:: bayes_dip.probabilistic_models.observation_cov
+   :members:
+   :undoc-members:
+   :show-inheritance:

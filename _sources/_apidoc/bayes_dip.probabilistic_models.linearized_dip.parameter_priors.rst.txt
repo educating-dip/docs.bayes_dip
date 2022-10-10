@@ -1,0 +1,18 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.parameter\_priors package
+==========================================================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.parameter_priors
+   :members:
+   :undoc-members:
+   :show-inheritance:

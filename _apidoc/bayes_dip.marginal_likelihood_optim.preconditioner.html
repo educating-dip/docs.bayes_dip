@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.marginal_likelihood_optim.preconditioner module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.marginal_likelihood_optim.preconditioner_utils module" href="bayes_dip.marginal_likelihood_optim.preconditioner_utils.html" />
+    <link rel="prev" title="bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad module" href="bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html#module-bayes_dip.marginal_likelihood_optim">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a> &raquo;</li>
+      <li>bayes_dip.marginal_likelihood_optim.preconditioner module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.marginal_likelihood_optim.preconditioner">
+<span id="bayes-dip-marginal-likelihood-optim-preconditioner-module"></span><h1>bayes_dip.marginal_likelihood_optim.preconditioner module<a class="headerlink" href="#module-bayes_dip.marginal_likelihood_optim.preconditioner" title="Permalink to this heading"></a></h1>
+<p>Provides preconditioners for applying CG to the linear system of the observation covariance.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.marginal_likelihood_optim.preconditioner.</span></span><span class="sig-name descname"><span class="pre">BasePreconditioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">update_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#BasePreconditioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Base preconditioner class.</p>
+<p>The preconditioner commonly is an approximation of the system matrix, and its inverse is
+applied to the residuals to solve an equivalent system with improved condition with conjugate
+gradients.</p>
+<p>The closure returned by <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.get_closure" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.get_closure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_closure()</span></code></a> multiplies with the inverse (like needed for
+preconditioning), i.e. it performs a <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.matmul" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.matmul"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matmul()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">use_inverse=True</span></code>.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.get_closure" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.get_closure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_closure</span></code></a>()</p></td>
+<td><p>Return a preconditioning closure that multiplies with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.matmul" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(v, use_inverse)</p></td>
+<td><p>Multiply with self or its inverse.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.sample" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(num_samples)</p></td>
+<td><p>Sample from a Gaussian with the covariance given by <code class="docutils literal notranslate"><span class="pre">self</span></code> (e.g., matrix-vector products of the Cholesky factor of <code class="docutils literal notranslate"><span class="pre">self</span></code> with normal distributed samples) and mean zero.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(**kwargs)</p></td>
+<td><p>Update <code class="docutils literal notranslate"><span class="pre">self</span></code>, e.g.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">update_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#BasePreconditioner.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Call <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>**update_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments passed to <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.get_closure">
+<span class="sig-name descname"><span class="pre">get_closure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#BasePreconditioner.get_closure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.get_closure" title="Permalink to this definition"></a></dt>
+<dd><p>Return a preconditioning closure that multiplies with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>closure</strong><span class="classifier">callable</span></dt><dd><p>Closure multiplying with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>. The closure receives and returns
+tensors of shape <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.matmul">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#BasePreconditioner.matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.matmul" title="Permalink to this definition"></a></dt>
+<dd><p>Multiply with self or its inverse.</p>
+<p>Evaluates <code class="docutils literal notranslate"><span class="pre">mat</span> <span class="pre">&#64;</span> <span class="pre">v</span></code> where <code class="docutils literal notranslate"><span class="pre">mat</span></code> is a matrix representation of <code class="docutils literal notranslate"><span class="pre">self</span></code> or its inverse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Vectors. Shape: <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+<dt><strong>use_inverse</strong><span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the inverse.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Products. Shape: same as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.sample">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#BasePreconditioner.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Sample from a Gaussian with the covariance given by <code class="docutils literal notranslate"><span class="pre">self</span></code> (e.g., matrix-vector products
+of the Cholesky factor of <code class="docutils literal notranslate"><span class="pre">self</span></code> with normal distributed samples) and mean zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_samples</strong><span class="classifier">int</span></dt><dd><p>Number of samples.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(num_samples,</span> <span class="pre">size)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#BasePreconditioner.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update <code class="docutils literal notranslate"><span class="pre">self</span></code>, e.g. adapting the approximation to an updated matrix.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.marginal_likelihood_optim.preconditioner.</span></span><span class="sig-name descname"><span class="pre">IncompleteCholeskyPreconditioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incomplete_cholesky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_noise_variance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#IncompleteCholeskyPreconditioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePreconditioner</span></code></a></p>
+<p>Preconditioner using the incomplete cholesky factorization for a matrix approximated as
+<code class="docutils literal notranslate"><span class="pre">ichol</span> <span class="pre">&#64;</span> <span class="pre">ichol.T</span> <span class="pre">+</span> <span class="pre">noise</span> <span class="pre">*</span> <span class="pre">torch.eye(ichol.shape[0])</span></code>, like implemented in
+<a class="reference external" href="https://github.com/cornellius-gp/linear_operator/blob/987df55260afea79eb0590c7e546b221cfec3fe5/linear_operator/operators/added_diag_linear_operator.py#L84">https://github.com/cornellius-gp/linear_operator/blob/987df55260afea79eb0590c7e546b221cfec3fe5/linear_operator/operators/added_diag_linear_operator.py#L84</a></p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.get_closure" title="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.get_closure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_closure</span></code></a>()</p></td>
+<td><p>Return a preconditioning closure that multiplies with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.matmul" title="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(v, use_inverse)</p></td>
+<td><p>Multiply with self or its inverse.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.sample" title="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(num_samples)</p></td>
+<td><p>Not implemented.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(**kwargs)</p></td>
+<td><p>Update the incomplete Cholesky factor and the logarithm of the noise variance.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incomplete_cholesky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_noise_variance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#IncompleteCholeskyPreconditioner.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>incomplete_cholesky</strong><span class="classifier">Tensor</span></dt><dd><p>Incomplete Cholesky factor. Shape: <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">low_rank_rank_dim)</span></code>.</p>
+</dd>
+<dt><strong>log_noise_variance</strong><span class="classifier">Tensor</span></dt><dd><p>Logarithm of the noise variance (cf. <code class="xref py py-attr docutils literal notranslate"><span class="pre">ObservationCov.log_noise_variance</span></code>).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.get_closure">
+<span class="sig-name descname"><span class="pre">get_closure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#IncompleteCholeskyPreconditioner.get_closure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.get_closure" title="Permalink to this definition"></a></dt>
+<dd><p>Return a preconditioning closure that multiplies with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>closure</strong><span class="classifier">callable</span></dt><dd><p>Closure multiplying with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>. The closure receives and returns
+tensors of shape <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.matmul">
+<span class="sig-name descname"><span class="pre">matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#IncompleteCholeskyPreconditioner.matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.matmul" title="Permalink to this definition"></a></dt>
+<dd><p>Multiply with self or its inverse.</p>
+<p>Evaluates <code class="docutils literal notranslate"><span class="pre">mat</span> <span class="pre">&#64;</span> <span class="pre">v</span></code> where <code class="docutils literal notranslate"><span class="pre">mat</span></code> is a matrix representation of <code class="docutils literal notranslate"><span class="pre">self</span></code> or its inverse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Vectors. Shape: <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+<dt><strong>use_inverse</strong><span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the inverse.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Products. Shape: same as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#IncompleteCholeskyPreconditioner.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Not implemented.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#IncompleteCholeskyPreconditioner.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the incomplete Cholesky factor and the logarithm of the noise variance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>incomplete_cholesky</strong><span class="classifier">Tensor</span></dt><dd><p>Incomplete Cholesky factor. Shape: <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">low_rank_rank_dim)</span></code>.
+Must be passed as a keyword argument.</p>
+</dd>
+<dt><strong>log_noise_variance</strong><span class="classifier">Tensor</span></dt><dd><p>Logarithm of the noise variance (cf. <code class="xref py py-attr docutils literal notranslate"><span class="pre">ObservationCov.log_noise_variance</span></code>).
+Must be passed as a keyword argument.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.marginal_likelihood_optim.preconditioner.</span></span><span class="sig-name descname"><span class="pre">JacobiPreconditioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#JacobiPreconditioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePreconditioner</span></code></a></p>
+<p>Jacobi (diagonal) preconditioner.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.get_closure" title="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.get_closure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_closure</span></code></a>()</p></td>
+<td><p>Return a preconditioning closure that multiplies with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.matmul" title="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(v, use_inverse)</p></td>
+<td><p>Multiply with self or its inverse.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.sample" title="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(num_samples)</p></td>
+<td><p>Sample from a Gaussian with the covariance given by <code class="docutils literal notranslate"><span class="pre">self</span></code> (e.g., matrix-vector products of the Cholesky factor of <code class="docutils literal notranslate"><span class="pre">self</span></code> with normal distributed samples) and mean zero.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(**kwargs)</p></td>
+<td><p>Update the Jacobi (diagonal) vector.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#JacobiPreconditioner.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>vector</strong><span class="classifier">Tensor</span></dt><dd><p>Jacobi (diagonal) vector. Shape: <code class="docutils literal notranslate"><span class="pre">(size,)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.get_closure">
+<span class="sig-name descname"><span class="pre">get_closure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#JacobiPreconditioner.get_closure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.get_closure" title="Permalink to this definition"></a></dt>
+<dd><p>Return a preconditioning closure that multiplies with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>closure</strong><span class="classifier">callable</span></dt><dd><p>Closure multiplying with the inverse of <code class="docutils literal notranslate"><span class="pre">self</span></code>. The closure receives and returns
+tensors of shape <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.matmul">
+<span class="sig-name descname"><span class="pre">matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#JacobiPreconditioner.matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.matmul" title="Permalink to this definition"></a></dt>
+<dd><p>Multiply with self or its inverse.</p>
+<p>Evaluates <code class="docutils literal notranslate"><span class="pre">mat</span> <span class="pre">&#64;</span> <span class="pre">v</span></code> where <code class="docutils literal notranslate"><span class="pre">mat</span></code> is a matrix representation of <code class="docutils literal notranslate"><span class="pre">self</span></code> or its inverse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Vectors. Shape: <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+<dt><strong>use_inverse</strong><span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the inverse.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Products. Shape: same as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#JacobiPreconditioner.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Sample from a Gaussian with the covariance given by <code class="docutils literal notranslate"><span class="pre">self</span></code> (e.g., matrix-vector products
+of the Cholesky factor of <code class="docutils literal notranslate"><span class="pre">self</span></code> with normal distributed samples) and mean zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_samples</strong><span class="classifier">int</span></dt><dd><p>Number of samples.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(num_samples,</span> <span class="pre">size)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#JacobiPreconditioner.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the Jacobi (diagonal) vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>vector</strong><span class="classifier">Tensor</span></dt><dd><p>New diagonal vector. Shape: <code class="docutils literal notranslate"><span class="pre">(size,)</span></code>.
+Must be passed as a keyword argument.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.marginal_likelihood_optim.preconditioner.</span></span><span class="sig-name descname"><span class="pre">LowRankObservationCovPreconditioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low_rank_observation_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov"><span class="pre">LowRankObservationCov</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_update_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#LowRankObservationCovPreconditioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePreconditioner</span></code></a></p>
+<p>Preconditioner employing a <code class="xref py py-class docutils literal notranslate"><span class="pre">LowRankObservationCov</span></code> instance to approximate an observation
+covariance.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.matmul" title="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(v[, use_inverse])</p></td>
+<td><p>Multiply with self or its inverse.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.sample" title="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(num_samples)</p></td>
+<td><p>Sample from a Gaussian with the covariance given by <code class="docutils literal notranslate"><span class="pre">self</span></code> (e.g., matrix-vector products of the Cholesky factor of <code class="docutils literal notranslate"><span class="pre">self</span></code> with normal distributed samples) and mean zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>(**kwargs)</p></td>
+<td><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">LowRankObservationCov.update()</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low_rank_observation_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov"><span class="pre">LowRankObservationCov</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_update_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#LowRankObservationCovPreconditioner.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>low_rank_observation_cov</strong><span class="classifier">class:<cite>bayes_dip.probabilistic_models.LowRankObservationCov</cite></span></dt><dd><p>Low-rank approximation of an observation covariance. It is expected to be updated
+already, i.e. this constructor does <em>not</em> call <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>.</p>
+</dd>
+<dt><strong>default_update_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Default keyword arguments passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">LowRankObservationCov.update()</span></code> when calling
+<a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> (may be enhanced and/or overridden by keyword arguments passed to
+<a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update" title="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.matmul">
+<span class="sig-name descname"><span class="pre">matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#LowRankObservationCovPreconditioner.matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.matmul" title="Permalink to this definition"></a></dt>
+<dd><p>Multiply with self or its inverse.</p>
+<p>Evaluates <code class="docutils literal notranslate"><span class="pre">mat</span> <span class="pre">&#64;</span> <span class="pre">v</span></code> where <code class="docutils literal notranslate"><span class="pre">mat</span></code> is a matrix representation of <code class="docutils literal notranslate"><span class="pre">self</span></code> or its inverse.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Vectors. Shape: <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+<dt><strong>use_inverse</strong><span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the inverse.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Products. Shape: same as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#LowRankObservationCovPreconditioner.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Sample from a Gaussian with the covariance given by <code class="docutils literal notranslate"><span class="pre">self</span></code> (e.g., matrix-vector products
+of the Cholesky factor of <code class="docutils literal notranslate"><span class="pre">self</span></code> with normal distributed samples) and mean zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_samples</strong><span class="classifier">int</span></dt><dd><p>Number of samples.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(num_samples,</span> <span class="pre">size)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#LowRankObservationCovPreconditioner.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update" title="Permalink to this definition"></a></dt>
+<dd><p>Call <code class="xref py py-meth docutils literal notranslate"><span class="pre">LowRankObservationCov.update()</span></code>.</p>
+<p>The keyword arguments <code class="xref py py-attr docutils literal notranslate"><span class="pre">default_update_kwargs</span></code> are passed, optionally updated with the
+passed keyword arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments, enhancing and/or overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">default_update_kwargs</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner.get_preconditioner">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.marginal_likelihood_optim.preconditioner.</span></span><span class="sig-name descname"><span class="pre">get_preconditioner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.probabilistic_models.base_observation_cov.html#bayes_dip.probabilistic_models.base_observation_cov.BaseObservationCov" title="bayes_dip.probabilistic_models.base_observation_cov.BaseObservationCov"><span class="pre">BaseObservationCov</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner"><span class="pre">BasePreconditioner</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner.html#get_preconditioner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner.get_preconditioner" title="Permalink to this definition"></a></dt>
+<dd><p>Return a preconditioner for observation covariance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments.
+<code class="docutils literal notranslate"><span class="pre">kwargs['name']</span></code> is required, options are:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">kwargs['name']</span> <span class="pre">==</span> <span class="pre">'low_rank_eig'</span></code></dt><dd><p>Return a <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">LowRankObservationCovPreconditioner</span></code></a> instance.
+Further (required) keyword arguments are <code class="docutils literal notranslate"><span class="pre">'batch_size'</span></code>, <code class="docutils literal notranslate"><span class="pre">'low_rank_rank_dim'</span></code> and
+<code class="docutils literal notranslate"><span class="pre">'oversampling_param'</span></code> (see <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">LowRankObservationCovPreconditioner</span></code></a>).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">kwargs['name']</span> <span class="pre">==</span> <span class="pre">'incomplete_chol'</span></code></dt><dd><p>Return an <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">IncompleteCholeskyPreconditioner</span></code></a> instance.
+Further (required) keyword arguments are <code class="docutils literal notranslate"><span class="pre">'batch_size'</span></code>, <code class="docutils literal notranslate"><span class="pre">'low_rank_rank_dim'</span></code> and
+<code class="docutils literal notranslate"><span class="pre">'approx_diag_num_samples'</span></code> (see <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">IncompleteCholeskyPreconditioner</span></code></a>).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>preconditioner</strong><span class="classifier"><a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePreconditioner</span></code></a></span></dt><dd><p>Preconditioner instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad.html" class="btn btn-neutral float-left" title="bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.marginal_likelihood_optim.preconditioner_utils.html" class="btn btn-neutral float-right" title="bayes_dip.marginal_likelihood_optim.preconditioner_utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

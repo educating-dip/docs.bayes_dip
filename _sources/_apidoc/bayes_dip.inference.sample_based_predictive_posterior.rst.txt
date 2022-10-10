@@ -1,0 +1,7 @@
+bayes\_dip.inference.sample\_based\_predictive\_posterior module
+================================================================
+
+.. automodule:: bayes_dip.inference.sample_based_predictive_posterior
+   :members:
+   :undoc-members:
+   :show-inheritance:

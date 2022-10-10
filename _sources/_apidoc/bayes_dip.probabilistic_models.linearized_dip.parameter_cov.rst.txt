@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.parameter\_cov module
+======================================================================
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.parameter_cov
+   :members:
+   :undoc-members:
+   :show-inheritance:

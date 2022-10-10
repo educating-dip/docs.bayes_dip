@@ -1,0 +1,7 @@
+bayes\_dip.data.trafo.parallel\_beam\_2d\_ray\_trafo module
+===========================================================
+
+.. automodule:: bayes_dip.data.trafo.parallel_beam_2d_ray_trafo
+   :members:
+   :undoc-members:
+   :show-inheritance:

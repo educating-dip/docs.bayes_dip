@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.data.trafo.parallel_beam_2d_ray_trafo &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.data.trafo.parallel_beam_2d_ray_trafo</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.data.trafo.parallel_beam_2d_ray_trafo</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides :class:`ParallelBeam2DRayTrafo`, as well as getters</span>
+<span class="sd">for its matrix representation and a :class:`MatmulRayTrafo` implementation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">odl.contrib.torch</span> <span class="kn">import</span> <span class="n">OperatorModule</span>
+<span class="kn">import</span> <span class="nn">odl</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.data.trafo.base_ray_trafo</span> <span class="kn">import</span> <span class="n">BaseRayTrafo</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.data.trafo.matmul_ray_trafo</span> <span class="kn">import</span> <span class="n">MatmulRayTrafo</span>
+
+
+<div class="viewcode-block" id="get_odl_ray_trafo_parallel_beam_2d"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.html#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_odl_ray_trafo_parallel_beam_2d">[docs]</a><span class="k">def</span> <span class="nf">get_odl_ray_trafo_parallel_beam_2d</span><span class="p">(</span>
+        <span class="n">im_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">num_angles</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">first_angle_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">impl</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;astra_cuda&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">RayTransform</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return an ODL 2D parallel beam ray transform.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    im_shape : 2-tuple of int</span>
+<span class="sd">        Image shape, ``(im_0, im_1)``.</span>
+<span class="sd">    num_angles : int</span>
+<span class="sd">        Number of angles (to distribute from ``0`` to ``pi``).</span>
+<span class="sd">    first_angle_zero : bool, optional</span>
+<span class="sd">        Whether to shift all angles such that the first angle becomes ``0.``.</span>
+<span class="sd">        If ``False``, the default angles from ODL are used, where the first angle</span>
+<span class="sd">        is at half an angle step.</span>
+<span class="sd">        The default is ``True``.</span>
+<span class="sd">    impl : str, optional</span>
+<span class="sd">        Backend for :class:`odl.tomo.RayTransform`.</span>
+<span class="sd">        The default is ``&#39;astra_cuda&#39;``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">space</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">uniform_discr</span><span class="p">(</span>
+            <span class="p">[</span><span class="o">-</span><span class="n">im_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">im_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">im_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">im_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="n">im_shape</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+
+    <span class="n">default_odl_geometry</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">parallel_beam_geometry</span><span class="p">(</span>
+            <span class="n">space</span><span class="p">,</span> <span class="n">num_angles</span><span class="o">=</span><span class="n">num_angles</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">first_angle_zero</span><span class="p">:</span>
+        <span class="n">default_first_angle</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">default_odl_geometry</span><span class="o">.</span><span class="n">motion_grid</span><span class="o">.</span><span class="n">coord_vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">angle_partition</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">uniform_partition_fromgrid</span><span class="p">(</span>
+                <span class="n">odl</span><span class="o">.</span><span class="n">discr</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">RectGrid</span><span class="p">(</span>
+                        <span class="n">default_odl_geometry</span><span class="o">.</span><span class="n">motion_grid</span><span class="o">.</span><span class="n">coord_vectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="o">-</span> <span class="n">default_first_angle</span><span class="p">))</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">Parallel2dGeometry</span><span class="p">(</span>
+                <span class="n">apart</span><span class="o">=</span><span class="n">angle_partition</span><span class="p">,</span>
+                <span class="n">dpart</span><span class="o">=</span><span class="n">default_odl_geometry</span><span class="o">.</span><span class="n">det_partition</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">default_odl_geometry</span>
+
+    <span class="n">odl_ray_trafo</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">RayTransform</span><span class="p">(</span>
+                <span class="n">space</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">impl</span><span class="o">=</span><span class="n">impl</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">odl_ray_trafo</span></div>
+
+
+<div class="viewcode-block" id="ParallelBeam2DRayTrafo"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.html#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo">[docs]</a><span class="k">class</span> <span class="nc">ParallelBeam2DRayTrafo</span><span class="p">(</span><span class="n">BaseRayTrafo</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ray transform implemented via ODL.</span>
+
+<span class="sd">    Adjoint computations use the back-projection (might be slightly inaccurate).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ParallelBeam2DRayTrafo.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.html#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">im_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+            <span class="n">num_angles</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">first_angle_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">angular_sub_sampling</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">impl</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;astra_cuda&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        im_shape : 2-tuple of int</span>
+<span class="sd">            Image shape, ``(im_0, im_1)``.</span>
+<span class="sd">        num_angles : int</span>
+<span class="sd">            Number of angles (to distribute from ``0`` to ``pi``).</span>
+<span class="sd">        first_angle_zero : bool, optional</span>
+<span class="sd">            Whether to shift all angles such that the first angle becomes ``0.``.</span>
+<span class="sd">            If ``False``, the default angles from ODL are used, where the first angle</span>
+<span class="sd">            is at half an angle step.</span>
+<span class="sd">            The default is ``True``.</span>
+<span class="sd">        angular_sub_sampling : int, optional</span>
+<span class="sd">            Sub-sampling factor for the angles.</span>
+<span class="sd">            The default is ``1`` (no sub-sampling).</span>
+<span class="sd">        impl : str, optional</span>
+<span class="sd">            Backend for :class:`odl.tomo.RayTransform`.</span>
+<span class="sd">            The default is ``&#39;astra_cuda&#39;``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">odl_ray_trafo_full</span> <span class="o">=</span> <span class="n">get_odl_ray_trafo_parallel_beam_2d</span><span class="p">(</span>
+                <span class="n">im_shape</span><span class="p">,</span> <span class="n">num_angles</span><span class="p">,</span> <span class="n">first_angle_zero</span><span class="o">=</span><span class="n">first_angle_zero</span><span class="p">,</span>
+                <span class="n">impl</span><span class="o">=</span><span class="n">impl</span><span class="p">)</span>
+        <span class="n">odl_ray_trafo</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">RayTransform</span><span class="p">(</span>
+                <span class="n">odl_ray_trafo_full</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
+                <span class="n">odl_ray_trafo_full</span><span class="o">.</span><span class="n">geometry</span><span class="p">[::</span><span class="n">angular_sub_sampling</span><span class="p">],</span> <span class="n">impl</span><span class="o">=</span><span class="n">impl</span><span class="p">)</span>
+        <span class="n">odl_fbp</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">fbp_op</span><span class="p">(</span><span class="n">odl_ray_trafo</span><span class="p">)</span>
+
+        <span class="n">obs_shape</span> <span class="o">=</span> <span class="n">odl_ray_trafo</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">im_shape</span><span class="o">=</span><span class="n">im_shape</span><span class="p">,</span> <span class="n">obs_shape</span><span class="o">=</span><span class="n">obs_shape</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">odl_ray_trafo</span> <span class="o">=</span> <span class="n">odl_ray_trafo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span> <span class="o">=</span> <span class="n">odl_ray_trafo</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">angles</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ray_trafo_module</span> <span class="o">=</span> <span class="n">OperatorModule</span><span class="p">(</span><span class="n">odl_ray_trafo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ray_trafo_module_adj</span> <span class="o">=</span> <span class="n">OperatorModule</span><span class="p">(</span><span class="n">odl_ray_trafo</span><span class="o">.</span><span class="n">adjoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fbp_module</span> <span class="o">=</span> <span class="n">OperatorModule</span><span class="p">(</span><span class="n">odl_fbp</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;:class:`np.ndarray` : The angles (in radian).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span>
+
+<div class="viewcode-block" id="ParallelBeam2DRayTrafo.trafo"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.html#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo">[docs]</a>    <span class="k">def</span> <span class="nf">trafo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ray_trafo_module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ParallelBeam2DRayTrafo.trafo_adjoint"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.html#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint">[docs]</a>    <span class="k">def</span> <span class="nf">trafo_adjoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ray_trafo_module_adj</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span></div>
+
+    <span class="n">trafo_flat</span> <span class="o">=</span> <span class="n">BaseRayTrafo</span><span class="o">.</span><span class="n">_trafo_flat_via_trafo</span>
+    <span class="n">trafo_adjoint_flat</span> <span class="o">=</span> <span class="n">BaseRayTrafo</span><span class="o">.</span><span class="n">_trafo_adjoint_flat_via_trafo_adjoint</span>
+
+<div class="viewcode-block" id="ParallelBeam2DRayTrafo.fbp"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.html#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.fbp">[docs]</a>    <span class="k">def</span> <span class="nf">fbp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fbp_module</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="get_odl_ray_trafo_parallel_beam_2d_matrix"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.html#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_odl_ray_trafo_parallel_beam_2d_matrix">[docs]</a><span class="k">def</span> <span class="nf">get_odl_ray_trafo_parallel_beam_2d_matrix</span><span class="p">(</span>
+        <span class="n">im_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">num_angles</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">first_angle_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">angular_sub_sampling</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">impl</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;astra_cuda&#39;</span><span class="p">,</span>
+        <span class="n">flatten</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the matrix representation of an ODL 2D parallel beam ray transform.</span>
+
+<span class="sd">    See documentation of :class:`ParallelBeam2DRayTrafo` for</span>
+<span class="sd">    documentation of the parameters not documented here.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    flatten : bool, optional</span>
+<span class="sd">        If ``True``, the observation dimensions and image dimensions are flattened,</span>
+<span class="sd">        the resulting shape is ``(np.prod(obs_shape), np.prod(im_shape))``);</span>
+<span class="sd">        if ``False``, the shape is ``obs_shape + im_shape``.</span>
+<span class="sd">        The default is ``True``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">odl_ray_trafo_full</span> <span class="o">=</span> <span class="n">get_odl_ray_trafo_parallel_beam_2d</span><span class="p">(</span>
+                <span class="n">im_shape</span><span class="p">,</span> <span class="n">num_angles</span><span class="p">,</span> <span class="n">first_angle_zero</span><span class="o">=</span><span class="n">first_angle_zero</span><span class="p">,</span>
+                <span class="n">impl</span><span class="o">=</span><span class="n">impl</span><span class="p">)</span>
+    <span class="n">odl_ray_trafo</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">RayTransform</span><span class="p">(</span>
+            <span class="n">odl_ray_trafo_full</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
+            <span class="n">odl_ray_trafo_full</span><span class="o">.</span><span class="n">geometry</span><span class="p">[::</span><span class="n">angular_sub_sampling</span><span class="p">],</span> <span class="n">impl</span><span class="o">=</span><span class="n">impl</span><span class="p">)</span>
+    <span class="n">obs_shape</span> <span class="o">=</span> <span class="n">odl_ray_trafo</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">obs_shape</span> <span class="o">+</span> <span class="n">im_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">im_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i0</span><span class="p">,</span> <span class="n">i1</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">im_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">range</span><span class="p">(</span><span class="n">im_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+            <span class="n">total</span><span class="o">=</span><span class="n">im_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">im_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;generating ray transform matrix&#39;</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="n">i1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">matrix</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i0</span><span class="p">,</span> <span class="n">i1</span><span class="p">]</span> <span class="o">=</span> <span class="n">odl_ray_trafo_full</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">i0</span><span class="p">,</span> <span class="n">i1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+
+    <span class="c1"># matrix = odl.operator.oputils.matrix_representation(</span>
+    <span class="c1">#         odl_ray_trafo_full)</span>
+
+    <span class="k">if</span> <span class="n">angular_sub_sampling</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[::</span><span class="n">angular_sub_sampling</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">flatten</span><span class="p">:</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">im_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">im_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">matrix</span></div>
+
+
+<div class="viewcode-block" id="get_parallel_beam_2d_matmul_ray_trafo"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.html#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_parallel_beam_2d_matmul_ray_trafo">[docs]</a><span class="k">def</span> <span class="nf">get_parallel_beam_2d_matmul_ray_trafo</span><span class="p">(</span>
+        <span class="n">im_shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">num_angles</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">first_angle_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">angular_sub_sampling</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">impl</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;astra_cuda&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatmulRayTrafo</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a :class:`bayes_dip.data.MatmulRayTrafo` with the matrix</span>
+<span class="sd">    representation of an ODL 2D parallel beam ray transform.</span>
+
+<span class="sd">    See documentation of :class:`ParallelBeam2DRayTrafo` for</span>
+<span class="sd">    documentation of the parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">odl_ray_trafo_full</span> <span class="o">=</span> <span class="n">get_odl_ray_trafo_parallel_beam_2d</span><span class="p">(</span>
+            <span class="n">im_shape</span><span class="p">,</span> <span class="n">num_angles</span><span class="p">,</span> <span class="n">first_angle_zero</span><span class="o">=</span><span class="n">first_angle_zero</span><span class="p">,</span>
+            <span class="n">impl</span><span class="o">=</span><span class="n">impl</span><span class="p">)</span>
+    <span class="n">odl_ray_trafo</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">RayTransform</span><span class="p">(</span>
+            <span class="n">odl_ray_trafo_full</span><span class="o">.</span><span class="n">domain</span><span class="p">,</span>
+            <span class="n">odl_ray_trafo_full</span><span class="o">.</span><span class="n">geometry</span><span class="p">[::</span><span class="n">angular_sub_sampling</span><span class="p">],</span> <span class="n">impl</span><span class="o">=</span><span class="n">impl</span><span class="p">)</span>
+    <span class="n">odl_fbp</span> <span class="o">=</span> <span class="n">odl</span><span class="o">.</span><span class="n">tomo</span><span class="o">.</span><span class="n">fbp_op</span><span class="p">(</span><span class="n">odl_ray_trafo</span><span class="p">)</span>
+
+    <span class="n">obs_shape</span> <span class="o">=</span> <span class="n">odl_ray_trafo</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">odl_ray_trafo</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">angles</span>
+
+    <span class="n">fbp_module</span> <span class="o">=</span> <span class="n">OperatorModule</span><span class="p">(</span><span class="n">odl_fbp</span><span class="p">)</span>
+
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">get_odl_ray_trafo_parallel_beam_2d_matrix</span><span class="p">(</span>
+            <span class="n">im_shape</span><span class="p">,</span> <span class="n">num_angles</span><span class="p">,</span> <span class="n">first_angle_zero</span><span class="o">=</span><span class="n">first_angle_zero</span><span class="p">,</span>
+            <span class="n">angular_sub_sampling</span><span class="o">=</span><span class="n">angular_sub_sampling</span><span class="p">,</span> <span class="n">impl</span><span class="o">=</span><span class="n">impl</span><span class="p">,</span> <span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">ray_trafo</span> <span class="o">=</span> <span class="n">MatmulRayTrafo</span><span class="p">(</span><span class="n">im_shape</span><span class="p">,</span> <span class="n">obs_shape</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">fbp_fun</span><span class="o">=</span><span class="n">fbp_module</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="n">angles</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ray_trafo</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

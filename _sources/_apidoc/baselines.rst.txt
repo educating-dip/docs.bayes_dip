@@ -1,0 +1,19 @@
+baselines package
+=================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   baselines.evaluation_utils
+   baselines.mcdo_dip_utils
+
+Module contents
+---------------
+
+.. automodule:: baselines
+   :members:
+   :undoc-members:
+   :show-inheritance:

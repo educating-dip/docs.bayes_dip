@@ -1,0 +1,7 @@
+bayes\_dip.data.trafo.base\_ray\_trafo module
+=============================================
+
+.. automodule:: bayes_dip.data.trafo.base_ray_trafo
+   :members:
+   :undoc-members:
+   :show-inheritance:

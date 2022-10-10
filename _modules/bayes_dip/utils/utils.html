@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.utils.utils &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.utils.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.utils.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">General utilities.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># postponed evaluation, to make ArrayLike look good in docs</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Any</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">Any</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">skimage.metrics</span> <span class="kn">import</span> <span class="n">structural_similarity</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">.linear_cg_gpytorch</span> <span class="kn">import</span> <span class="n">linear_cg</span>
+<span class="kn">from</span> <span class="nn">.linear_cg_gpytorch_log_cg_re</span> <span class="kn">import</span> <span class="n">linear_log_cg_re</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">hydra.utils</span>
+    <span class="n">HYDRA_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HYDRA_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<div class="viewcode-block" id="get_original_cwd"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.get_original_cwd">[docs]</a><span class="k">def</span> <span class="nf">get_original_cwd</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the original current working directory. This is a wrapper for</span>
+<span class="sd">    :func:`hydra.utils.get_original_cwd()` that also works if not using hydra.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cwd</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">HYDRA_AVAILABLE</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cwd</span> <span class="o">=</span> <span class="n">hydra</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">get_original_cwd</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># raised if hydra is not initialized</span>
+            <span class="k">pass</span>
+    <span class="k">if</span> <span class="n">cwd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">cwd</span></div>
+
+<div class="viewcode-block" id="list_norm_layer_params"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.list_norm_layer_params">[docs]</a><span class="k">def</span> <span class="nf">list_norm_layer_params</span><span class="p">(</span><span class="n">nn_model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a list of names of all parameters from ``GroupNorm``, ``BatchNorm2d`` and</span>
+<span class="sd">    ``InstanceNorm2d`` layers in a model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">norm_layer_params</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">module</span><span class="p">)</span> <span class="ow">in</span> <span class="n">nn_model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span>
+                <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm2d</span><span class="p">,</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">InstanceNorm2d</span><span class="p">)):</span>
+            <span class="n">norm_layer_params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">param_name</span><span class="si">}</span><span class="s1">&#39;</span>
+                    <span class="k">for</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">norm_layer_params</span></div>
+
+<div class="viewcode-block" id="get_params_from_nn_module"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.get_params_from_nn_module">[docs]</a><span class="k">def</span> <span class="nf">get_params_from_nn_module</span><span class="p">(</span>
+        <span class="n">nn_model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">exclude_norm_layers</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">exclude_bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return names of parameters in a model, optionally excluding norm layers&#39; and/or bias parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">exclude_params</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">exclude_norm_layers</span><span class="p">:</span>
+        <span class="n">exclude_params</span> <span class="o">=</span> <span class="n">list_norm_layer_params</span><span class="p">(</span><span class="n">nn_model</span><span class="p">)</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="ow">in</span> <span class="n">nn_model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude_params</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">exclude_bias</span> <span class="ow">and</span> <span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.bias&#39;</span><span class="p">)):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">params</span></div>
+
+<div class="viewcode-block" id="get_modules_by_names"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.get_modules_by_names">[docs]</a><span class="k">def</span> <span class="nf">get_modules_by_names</span><span class="p">(</span>
+        <span class="n">nn_model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">layer_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a list of modules by a list of names in a model.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">reduce</span><span class="p">(</span><span class="nb">getattr</span><span class="p">,</span> <span class="n">layer_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">),</span> <span class="n">nn_model</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layer_names</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">layers</span></div>
+
+<div class="viewcode-block" id="PSNR"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.PSNR">[docs]</a><span class="k">def</span> <span class="nf">PSNR</span><span class="p">(</span>
+        <span class="n">reconstruction</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">ground_truth</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">data_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the peak signal-to-noise ratio (PSNR) of a reconstruction given the ground truth.</span>
+
+<span class="sd">    If ``data_range is None``, it is computed as ``max(ground_truth) - min(ground_truth)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">)</span>
+    <span class="n">mse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">reconstruction</span><span class="p">)</span> <span class="o">-</span> <span class="n">gt</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mse</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">20</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">data_range</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">mse</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SSIM"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.SSIM">[docs]</a><span class="k">def</span> <span class="nf">SSIM</span><span class="p">(</span>
+        <span class="n">reconstruction</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">ground_truth</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span>
+        <span class="n">data_range</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">number</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the structural similarity (SSIM) [1]_ of a reconstruction given the ground truth.</span>
+
+<span class="sd">    If ``data_range is None``, it is computed as ``max(ground_truth) - min(ground_truth)``.</span>
+
+<span class="sd">    .. [1] Z. Wang, A.C. Bovik, H.R. Sheikh, E.P. Simoncelli, 2004, &quot;Image quality assessment: from</span>
+<span class="sd">           error visibility to structural similarity&quot;. IEEE Transactions on Image Processing.</span>
+<span class="sd">           https://doi.org/10.1109/TIP.2003.819861</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">gt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">structural_similarity</span><span class="p">(</span><span class="n">reconstruction</span><span class="p">,</span> <span class="n">gt</span><span class="p">,</span> <span class="n">data_range</span><span class="o">=</span><span class="n">data_range</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="normalize"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.normalize">[docs]</a><span class="k">def</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Normalize the input as ``(x - x.min()) / (x.max() - x.min())``, optionally inplace.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">-=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">/=</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="cg"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.cg">[docs]</a><span class="k">def</span> <span class="nf">cg</span><span class="p">(</span>
+        <span class="n">closure</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">precon_closure</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_niter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">use_log_re_variant</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_numerical_warning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solve a linear system approximately with the conjugate gradients method (CG).</span>
+
+<span class="sd">    This function wraps :func:`bayes_dip.utils.linear_cg_gpytorch.linear_cg`, which itself is a</span>
+<span class="sd">    clone of :func:`gpytorch.utils.linear_cg.linear_cg` also returning the residual.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    closure : callable</span>
+<span class="sd">        Matmul closure, see first argument to :func:`linear_cg`.</span>
+<span class="sd">    v : Tensor</span>
+<span class="sd">        Right hand side, see second argument to :func:`linear_cg`.</span>
+<span class="sd">    precon_closure : callable, optional</span>
+<span class="sd">        Left-preconditioning closure, see ``preconditioner`` argument to :func:`linear_cg`.</span>
+<span class="sd">        The default is ``None``.</span>
+<span class="sd">    max_niter : int, optional</span>
+<span class="sd">        Maximum number of iterations, see ``max_iter`` argument to :func:`linear_cg`.</span>
+<span class="sd">        The default is ``10``.</span>
+<span class="sd">    rtol : float, optional</span>
+<span class="sd">        Tolerance at which to stop early (before ``max_niter``), see ``tolerance`` argument to</span>
+<span class="sd">        :func:`linear_cg`. The default is ``1e-6``.</span>
+<span class="sd">    use_log_re_variant : bool, optional</span>
+<span class="sd">        Whether to use the low precision arithmetic variant by Maddox et al.,</span>
+<span class="sd">        :meth:`linear_log_cg_re`. The default is ``False``.</span>
+<span class="sd">    ignore_numerical_warning : bool, optional</span>
+<span class="sd">        Not implemented yet. Should control whether numerical warnings are ignored.</span>
+<span class="sd">        The default is ``False``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    solve : Tensor</span>
+<span class="sd">        Approximate solution.</span>
+<span class="sd">    residual_norm : Tensor</span>
+<span class="sd">        Residual norm of the solution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">ignore_numerical_warning</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="n">cg_func</span> <span class="o">=</span> <span class="n">linear_cg</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">use_log_re_variant</span> <span class="k">else</span> <span class="n">linear_log_cg_re</span>
+    <span class="n">max_niter</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">max_niter</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="c1"># pylint: disable=unbalanced-tuple-unpacking</span>
+    <span class="n">solve</span><span class="p">,</span> <span class="n">residual_norm</span> <span class="o">=</span> <span class="n">cg_func</span><span class="p">(</span><span class="n">closure</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span>
+                <span class="n">eps</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">stop_updating_after</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_niter</span><span class="p">,</span>
+                <span class="n">max_tridiag_iter</span><span class="o">=</span><span class="n">max_niter</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">preconditioner</span><span class="o">=</span><span class="n">precon_closure</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">solve</span><span class="p">,</span> <span class="n">residual_norm</span></div>
+
+<div class="viewcode-block" id="bisect_left"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.bisect_left">[docs]</a><span class="k">def</span> <span class="nf">bisect_left</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">lo</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the index where to insert item x in list a, assuming a is sorted.</span>
+<span class="sd">    The return value i is such that all e in a[:i] have e &lt; x, and all e in</span>
+<span class="sd">    a[i:] have e &gt;= x.  So if x already appears in the list, a.insert(i, x) will</span>
+<span class="sd">    insert just before the leftmost x already there.</span>
+<span class="sd">    Optional args lo (default 0) and hi (default len(a)) bound the</span>
+<span class="sd">    slice of a to be searched.</span>
+
+<span class="sd">    Adapted from python 3.10&#39;s bisect module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">lo</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;lo must be non-negative&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">hi</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="c1"># Note, the comparison uses &quot;&lt;&quot; to match the</span>
+    <span class="c1"># __lt__() logic in list.sort() and in heapq.</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">lo</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="p">:</span>
+            <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="n">hi</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">:</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">mid</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">while</span> <span class="n">lo</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="p">:</span>
+            <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="n">hi</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">key</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">mid</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">:</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">mid</span>
+    <span class="k">return</span> <span class="n">lo</span></div>
+
+
+<div class="viewcode-block" id="assert_positive_diag"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.assert_positive_diag">[docs]</a><span class="k">def</span> <span class="nf">assert_positive_diag</span><span class="p">(</span><span class="n">mat</span> <span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Assert that the diagonal of a matrix tensor has strictly positive values only.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mat : Tensor</span>
+<span class="sd">        Square 2D tensor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">mat</span><span class="o">.</span><span class="n">diag</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="make_choleskable"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.make_choleskable">[docs]</a><span class="k">def</span> <span class="nf">make_choleskable</span><span class="p">(</span>
+        <span class="n">mat</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="n">max_nsteps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make a matrix tensor Cholesky decomposable by adding small values to the diagonal if needed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mat : Tensor</span>
+<span class="sd">        Square 2D tensor. Modified in-place.</span>
+<span class="sd">    step : float, optional</span>
+<span class="sd">        Step to add to the diagonal in each try.</span>
+<span class="sd">        The default is ``1e-6``.</span>
+<span class="sd">    max_nsteps : int, optional</span>
+<span class="sd">        Maximum number of steps. This limits the value to be added to ``max_nsteps * step``.</span>
+<span class="sd">        The default is ``1000``.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If ``True``, print the value that was added to the diagonal if anything was added.</span>
+<span class="sd">        The default is ``True``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    chol : Tensor</span>
+<span class="sd">        The Cholesky factor of the successfully decomposed matrix, i.e.</span>
+<span class="sd">        ``chol = torch.linalg.cholesky(mat)`` after ``mat`` being in-place modified by this</span>
+<span class="sd">        function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">succeed</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">succeed</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">chol</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+            <span class="n">succeed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="n">max_nsteps</span>
+            <span class="n">mat</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">diag_indices</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">+=</span> <span class="n">step</span>
+            <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="n">cnt</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;amount added to make choleskable: </span><span class="si">{</span><span class="n">cnt</span><span class="o">*</span><span class="n">step</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">chol</span></div>
+
+
+<div class="viewcode-block" id="eval_mode"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.eval_mode">[docs]</a><span class="k">class</span> <span class="nc">eval_mode</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Context manager calling ``nn_model.eval()`` when entering and resetting on exit.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="eval_mode.__init__"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.eval_mode.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nn_model</span> <span class="o">=</span> <span class="n">nn_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># will be set in __enter__</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nn_model</span><span class="o">.</span><span class="n">training</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nn_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">exc</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nn_model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CustomAutogradFunction"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.CustomAutogradFunction">[docs]</a><span class="k">class</span> <span class="nc">CustomAutogradFunction</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">Function</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom autograd function defined by callables ``forward_fun`` and ``backward_fun``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=abstract-method</span>
+
+<div class="viewcode-block" id="CustomAutogradFunction.forward"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.CustomAutogradFunction.forward">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span>
+            <span class="n">ctx</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+            <span class="n">forward_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+            <span class="n">backward_fun</span><span class="p">:</span> <span class="n">Callable</span>
+            <span class="c1"># pylint: disable=arguments-differ</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">ctx</span><span class="o">.</span><span class="n">backward_fun</span> <span class="o">=</span> <span class="n">backward_fun</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">forward_fun</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">y</span></div>
+
+<div class="viewcode-block" id="CustomAutogradFunction.backward"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.CustomAutogradFunction.backward">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">backward</span><span class="p">(</span>
+            <span class="n">ctx</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+            <span class="n">y</span><span class="p">:</span> <span class="n">Any</span>
+            <span class="c1"># pylint: disable=arguments-differ</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">.</span><span class="n">backward_fun</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div></div>
+
+
+<div class="viewcode-block" id="CustomAutogradModule"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.CustomAutogradModule">[docs]</a><span class="k">class</span> <span class="nc">CustomAutogradModule</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Custom autograd module defined by callables ``forward_fun`` and ``backward_fun``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="CustomAutogradModule.__init__"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.CustomAutogradModule.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forward_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">backward_fun</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        forward_fun : callable</span>
+<span class="sd">            Forward function.</span>
+<span class="sd">        backward_fun : callable</span>
+<span class="sd">            Backward function (computing the vector-Jacobian product).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">forward_fun</span> <span class="o">=</span> <span class="n">forward_fun</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backward_fun</span> <span class="o">=</span> <span class="n">backward_fun</span></div>
+
+<div class="viewcode-block" id="CustomAutogradModule.forward"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.utils.html#bayes_dip.utils.utils.CustomAutogradModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Apply ``forward_fun``, saving ``backward_fun`` for the backward pass.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CustomAutogradFunction</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_fun</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">backward_fun</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

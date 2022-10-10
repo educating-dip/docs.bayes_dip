@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.utils.experiment_utils &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.utils.experiment_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.utils.experiment_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities for experiments.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">TensorDataset</span>
+<span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">DictConfig</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.data</span> <span class="kn">import</span> <span class="n">get_ray_trafo</span><span class="p">,</span> <span class="n">SimulatedDataset</span><span class="p">,</span> <span class="n">BaseRayTrafo</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.data</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">get_mnist_testset</span><span class="p">,</span> <span class="n">get_kmnist_testset</span><span class="p">,</span> <span class="n">get_mnist_trainset</span><span class="p">,</span> <span class="n">get_kmnist_trainset</span><span class="p">,</span>
+        <span class="n">RectanglesDataset</span><span class="p">,</span>
+        <span class="n">get_walnut_2d_observation</span><span class="p">,</span> <span class="n">get_walnut_2d_ground_truth</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.data.datasets.walnut</span> <span class="kn">import</span> <span class="n">get_walnut_2d_inner_patch_indices</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">get_original_cwd</span>
+
+<div class="viewcode-block" id="get_standard_ray_trafo"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.experiment_utils.html#bayes_dip.utils.experiment_utils.get_standard_ray_trafo">[docs]</a><span class="k">def</span> <span class="nf">get_standard_ray_trafo</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseRayTrafo</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return the ray transform by hydra config.&quot;&quot;&quot;</span>
+    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;angular_sub_sampling&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">angular_sub_sampling</span>
+    <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;mnist&#39;</span><span class="p">,</span> <span class="s1">&#39;kmnist&#39;</span><span class="p">,</span> <span class="s1">&#39;rectangles&#39;</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;im_shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">im_size</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">im_size</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;num_angles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">num_angles</span>
+    <span class="k">elif</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;walnut&#39;</span><span class="p">,</span> <span class="s1">&#39;walnut_120_angles&#39;</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;data_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_original_cwd</span><span class="p">(),</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">data_path</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;matrix_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_original_cwd</span><span class="p">(),</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">data_path</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;walnut_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">walnut_id</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;orbit_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">orbit_id</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;proj_col_sub_sampling&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">proj_col_sub_sampling</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
+    <span class="k">return</span> <span class="n">get_ray_trafo</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_standard_dataset"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.experiment_utils.html#bayes_dip.utils.experiment_utils.get_standard_dataset">[docs]</a><span class="k">def</span> <span class="nf">get_standard_dataset</span><span class="p">(</span>
+        <span class="n">cfg</span><span class="p">:</span> <span class="n">DictConfig</span><span class="p">,</span> <span class="n">ray_trafo</span><span class="p">:</span> <span class="n">BaseRayTrafo</span><span class="p">,</span> <span class="n">fold</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span>
+        <span class="n">use_fixed_seeds_starting_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a dataset of tuples ``noisy_observation, x, filtbackproj``, where</span>
+<span class="sd">        * ``noisy_observation`` has shape ``(1,) + obs_shape``</span>
+<span class="sd">        * ``x`` is the ground truth (label) and has shape ``(1,) + im_shape``</span>
+<span class="sd">        * ``filtbackproj = FBP(noisy_observation)`` has shape ``(1,) + im_shape``</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    fold : str, optional</span>
+<span class="sd">        Dataset fold, either ``&#39;test&#39;`` or ``&#39;validation&#39;``.</span>
+<span class="sd">        Only the (K)MNIST datasets support ``&#39;validation&#39;``, using the respective training set.</span>
+<span class="sd">        The default is ``&#39;test&#39;``.</span>
+<span class="sd">    use_fixed_seeds_starting_from : int, optional</span>
+<span class="sd">        Fixed seed for noise generation, only used in simulated datasets.</span>
+<span class="sd">        If ``fold == &#39;validation&#39;``, ``1000000`` is added to the seed (if not ``None``).</span>
+<span class="sd">    device : str or torch.device, optional</span>
+<span class="sd">        If specified, data will be moved to the device. ``ray_trafo``</span>
+<span class="sd">        (including ``ray_trafo.fbp``) must support tensors on the device.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dataset : torch.utils.data.Dataset</span>
+<span class="sd">        Dataset.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">fold</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;validation&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fold</span> <span class="o">==</span> <span class="s1">&#39;validation&#39;</span> <span class="ow">and</span> <span class="n">use_fixed_seeds_starting_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">use_fixed_seeds_starting_from</span> <span class="o">=</span> <span class="n">use_fixed_seeds_starting_from</span> <span class="o">+</span> <span class="mi">1000000</span>
+
+    <span class="k">if</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;mnist&#39;</span><span class="p">:</span>
+
+        <span class="n">image_dataset</span> <span class="o">=</span> <span class="n">get_mnist_testset</span><span class="p">()</span> <span class="k">if</span> <span class="n">fold</span> <span class="o">==</span> <span class="s1">&#39;test&#39;</span> <span class="k">else</span> <span class="n">get_mnist_trainset</span><span class="p">()</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">SimulatedDataset</span><span class="p">(</span>
+                <span class="n">image_dataset</span><span class="p">,</span> <span class="n">ray_trafo</span><span class="p">,</span>
+                <span class="n">white_noise_rel_stddev</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">,</span>
+                <span class="n">use_fixed_seeds_starting_from</span><span class="o">=</span><span class="n">use_fixed_seeds_starting_from</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;kmnist&#39;</span><span class="p">:</span>
+
+        <span class="n">image_dataset</span> <span class="o">=</span> <span class="n">get_kmnist_testset</span><span class="p">()</span> <span class="k">if</span> <span class="n">fold</span> <span class="o">==</span> <span class="s1">&#39;test&#39;</span> <span class="k">else</span> <span class="n">get_kmnist_trainset</span><span class="p">()</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">SimulatedDataset</span><span class="p">(</span>
+                <span class="n">image_dataset</span><span class="p">,</span> <span class="n">ray_trafo</span><span class="p">,</span>
+                <span class="n">white_noise_rel_stddev</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">,</span>
+                <span class="n">use_fixed_seeds_starting_from</span><span class="o">=</span><span class="n">use_fixed_seeds_starting_from</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;rectangles&#39;</span><span class="p">:</span>
+
+        <span class="n">image_dataset</span> <span class="o">=</span> <span class="n">RectanglesDataset</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">im_size</span><span class="p">,</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">im_size</span><span class="p">),</span>
+                <span class="n">num_rects</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_rects</span><span class="p">,</span>
+                <span class="n">num_angle_modes</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_angle_modes</span><span class="p">,</span>
+                <span class="n">angle_modes_sigma</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">angle_modes_sigma</span><span class="p">,</span>
+                <span class="n">fixed_seed</span><span class="o">=</span><span class="mi">1</span> <span class="k">if</span> <span class="n">fold</span> <span class="o">==</span> <span class="s1">&#39;test&#39;</span> <span class="k">else</span> <span class="mi">1000001</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">SimulatedDataset</span><span class="p">(</span>
+                <span class="n">image_dataset</span><span class="p">,</span> <span class="n">ray_trafo</span><span class="p">,</span>
+                <span class="n">white_noise_rel_stddev</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">,</span>
+                <span class="n">use_fixed_seeds_starting_from</span><span class="o">=</span><span class="n">use_fixed_seeds_starting_from</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;walnut&#39;</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">fold</span> <span class="o">==</span> <span class="s1">&#39;validation&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Walnut dataset has no validation fold implemented.&#39;</span><span class="p">)</span>
+
+        <span class="n">noisy_observation</span> <span class="o">=</span> <span class="n">get_walnut_2d_observation</span><span class="p">(</span>
+                <span class="n">data_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_original_cwd</span><span class="p">(),</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">data_path</span><span class="p">),</span>
+                <span class="n">walnut_id</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">walnut_id</span><span class="p">,</span> <span class="n">orbit_id</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">orbit_id</span><span class="p">,</span>
+                <span class="n">angular_sub_sampling</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">angular_sub_sampling</span><span class="p">,</span>
+                <span class="n">proj_col_sub_sampling</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">proj_col_sub_sampling</span><span class="p">,</span>
+                <span class="n">scaling_factor</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">scaling_factor</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">get_walnut_2d_ground_truth</span><span class="p">(</span>
+                <span class="n">data_path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">get_original_cwd</span><span class="p">(),</span> <span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">data_path</span><span class="p">),</span>
+                <span class="n">walnut_id</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">walnut_id</span><span class="p">,</span> <span class="n">orbit_id</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">orbit_id</span><span class="p">,</span>
+                <span class="n">scaling_factor</span><span class="o">=</span><span class="n">cfg</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">scaling_factor</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">filtbackproj</span> <span class="o">=</span> <span class="n">ray_trafo</span><span class="o">.</span><span class="n">fbp</span><span class="p">(</span>
+                <span class="n">noisy_observation</span><span class="p">[</span><span class="kc">None</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span>  <span class="c1"># include batch dims</span>
+                <span class="n">noisy_observation</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">ground_truth</span><span class="p">[</span><span class="kc">None</span><span class="p">],</span> <span class="n">filtbackproj</span><span class="p">[</span><span class="kc">None</span><span class="p">])</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
+
+    <span class="k">return</span> <span class="n">dataset</span></div>
+
+<div class="viewcode-block" id="get_predefined_patch_idx_list"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.experiment_utils.html#bayes_dip.utils.experiment_utils.get_predefined_patch_idx_list">[docs]</a><span class="k">def</span> <span class="nf">get_predefined_patch_idx_list</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">patch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a predefined list of patch indices.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Name of the patch index list.</span>
+<span class="sd">    patch_size : int</span>
+<span class="sd">        Side length of the patches (patches are usually square).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    patch_idx_list : list of int</span>
+<span class="sd">        Indices of the patches.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;walnut_inner&#39;</span><span class="p">:</span>
+        <span class="n">patch_idx_list</span> <span class="o">=</span> <span class="n">get_walnut_2d_inner_patch_indices</span><span class="p">(</span><span class="n">patch_size</span><span class="o">=</span><span class="n">patch_size</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown patch_idx_list configuration: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">patch_idx_list</span></div>
+
+<div class="viewcode-block" id="assert_sample_matches"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.experiment_utils.html#bayes_dip.utils.experiment_utils.assert_sample_matches">[docs]</a><span class="k">def</span> <span class="nf">assert_sample_matches</span><span class="p">(</span><span class="n">data_sample</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">raise_if_file_not_found</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Assert that the saved data for sample ``i`` in ``path`` matches the passed ``data_sample``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_sample : 3-tuple of Tensor</span>
+<span class="sd">        Sample data ``(observation, ground_truth, filtbackproj)``. Only ``filtbackproj`` is used.</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Hydra output directory of a previous run.</span>
+<span class="sd">    i : int</span>
+<span class="sd">        Sample index.</span>
+<span class="sd">    raise_if_file_not_found : bool, optional</span>
+<span class="sd">        If ``False``, warn instead of raising a ``FileNotFoundError``. The default is ``True``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">filtbackproj</span> <span class="o">=</span> <span class="n">data_sample</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sample_dict</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;sample_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">.pt&#39;</span><span class="p">),</span> <span class="n">map_location</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+                <span class="n">sample_dict</span><span class="p">[</span><span class="s1">&#39;filtbackproj&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">filtbackproj</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">raise_if_file_not_found</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Did not find sample </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1"> in </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">, so could not verify it matches.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="save_samples"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.experiment_utils.html#bayes_dip.utils.experiment_utils.save_samples">[docs]</a><span class="k">def</span> <span class="nf">save_samples</span><span class="p">(</span><span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">samples</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save samples to file(s) in the current working directory.</span>
+
+<span class="sd">    The files are named ``f&#39;{prefix}samples_{i}_chunk_{j}.pt&#39;`` (where ``j`` is the chunk index).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    i : int</span>
+<span class="sd">        Data sample index.</span>
+<span class="sd">    samples : Tensor</span>
+<span class="sd">        Samples. Shape: ``(num_samples, ...)``.</span>
+<span class="sd">    chunk_size : int</span>
+<span class="sd">        Number of samples per file.</span>
+<span class="sd">    prefix : str, optional</span>
+<span class="sd">        If specified, prefix each filename with this string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">start_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span> <span class="n">chunk_size</span><span class="p">)):</span>
+        <span class="n">sample_chunk</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">start_i</span><span class="p">:</span><span class="n">start_i</span><span class="o">+</span><span class="n">chunk_size</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sample_chunk</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">samples_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">_chunk_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">.pt&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="load_samples"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.experiment_utils.html#bayes_dip.utils.experiment_utils.load_samples">[docs]</a><span class="k">def</span> <span class="nf">load_samples</span><span class="p">(</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">restrict_to_num_samples</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">map_location</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load samples from file(s) in ``path`` that were saved by :func:`save_samples`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str</span>
+<span class="sd">        Path containing the samples file(s).</span>
+<span class="sd">    i : int</span>
+<span class="sd">        Data sample index.</span>
+<span class="sd">    num_samples : int</span>
+<span class="sd">        Minimum number of samples to load.</span>
+<span class="sd">        If ``restrict_to_num_samples`` or the number of saved samples is divisible by the chunk</span>
+<span class="sd">        size, this is the number of returned samples.</span>
+<span class="sd">    restrict_to_num_samples : bool, optional</span>
+<span class="sd">        Whether to restrict the loaded samples to the first ``num_samples`` samples; otherwise more</span>
+<span class="sd">        samples may be returned (due to the chunk size of the saved files).</span>
+<span class="sd">        The default is ``True``.</span>
+<span class="sd">    prefix : str, optional</span>
+<span class="sd">        Prefix of the filename(s).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    samples : Tensor</span>
+<span class="sd">        Samples. Shape: ``(eff_num_samples, ...)``, where</span>
+<span class="sd">        ``eff_num_samples`` is ``num_samples`` if ``restrict_to_num_samples`` or</span>
+<span class="sd">        ``ceil(num_samples / chunk_size) * chunk_size`` otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sample_chunks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">num_loaded_samples</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">num_loaded_samples</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">chunk</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s1">samples_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">_chunk_</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s1">.pt&#39;</span><span class="p">),</span>
+                    <span class="n">map_location</span><span class="o">=</span><span class="n">map_location</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;Failed to load </span><span class="si">{</span><span class="n">num_samples</span><span class="si">}</span><span class="s1"> samples from </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">, &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;only found </span><span class="si">{</span><span class="n">num_loaded_samples</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="n">sample_chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+        <span class="n">num_loaded_samples</span> <span class="o">+=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">sample_chunks</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">restrict_to_num_samples</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[:</span><span class="n">num_samples</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">samples</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

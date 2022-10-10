@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.marginal_likelihood_optim.preconditioner &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.marginal_likelihood_optim.preconditioner</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.marginal_likelihood_optim.preconditioner</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides preconditioners for applying CG to the linear system of the observation covariance.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">..probabilistic_models</span> <span class="kn">import</span> <span class="n">BaseObservationCov</span><span class="p">,</span> <span class="n">LowRankObservationCov</span>
+<span class="kn">from</span> <span class="nn">.preconditioner_utils</span> <span class="kn">import</span> <span class="n">pivoted_cholesky</span>
+
+<div class="viewcode-block" id="BasePreconditioner"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner">[docs]</a><span class="k">class</span> <span class="nc">BasePreconditioner</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base preconditioner class.</span>
+
+<span class="sd">    The preconditioner commonly is an approximation of the system matrix, and its inverse is</span>
+<span class="sd">    applied to the residuals to solve an equivalent system with improved condition with conjugate</span>
+<span class="sd">    gradients.</span>
+
+<span class="sd">    The closure returned by :meth:`get_closure` multiplies with the inverse (like needed for</span>
+<span class="sd">    preconditioning), i.e. it performs a :meth:`matmul` with ``use_inverse=True``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="BasePreconditioner.__init__"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">update_kwargs</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call :meth:`update`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **update_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed to :meth:`update`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">update_kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BasePreconditioner.sample"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.sample">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample from a Gaussian with the covariance given by ``self`` (e.g., matrix-vector products</span>
+<span class="sd">        of the Cholesky factor of ``self`` with normal distributed samples) and mean zero.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_samples : int</span>
+<span class="sd">            Number of samples.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Samples. Shape: ``(num_samples, size)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BasePreconditioner.matmul"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.matmul">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">use_inverse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multiply with self or its inverse.</span>
+
+<span class="sd">        Evaluates ``mat @ v`` where ``mat`` is a matrix representation of ``self`` or its inverse.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v : Tensor</span>
+<span class="sd">            Vectors. Shape: ``(size, batch_size)``.</span>
+<span class="sd">        use_inverse : bool</span>
+<span class="sd">            If ``True``, multiply with the inverse.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Products. Shape: same as ``v``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BasePreconditioner.update"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.update">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update ``self``, e.g. adapting the approximation to an updated matrix.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="BasePreconditioner.get_closure"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.BasePreconditioner.get_closure">[docs]</a>    <span class="k">def</span> <span class="nf">get_closure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a preconditioning closure that multiplies with the inverse of ``self``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        closure : callable</span>
+<span class="sd">            Closure multiplying with the inverse of ``self``. The closure receives and returns</span>
+<span class="sd">            tensors of shape ``(size, batch_size)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matmul</span><span class="p">,</span> <span class="n">use_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="LowRankObservationCovPreconditioner"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner">[docs]</a><span class="k">class</span> <span class="nc">LowRankObservationCovPreconditioner</span><span class="p">(</span><span class="n">BasePreconditioner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Preconditioner employing a :class:`LowRankObservationCov` instance to approximate an observation</span>
+<span class="sd">    covariance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LowRankObservationCovPreconditioner.__init__"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">low_rank_observation_cov</span><span class="p">:</span> <span class="n">LowRankObservationCov</span><span class="p">,</span>
+            <span class="n">default_update_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">):</span>  <span class="c1"># pylint: disable=super-init-not-called</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        low_rank_observation_cov : class:`bayes_dip.probabilistic_models.LowRankObservationCov`</span>
+<span class="sd">            Low-rank approximation of an observation covariance. It is expected to be updated</span>
+<span class="sd">            already, i.e. this constructor does *not* call :meth:`update`.</span>
+<span class="sd">        default_update_kwargs : dict</span>
+<span class="sd">            Default keyword arguments passed to :meth:`LowRankObservationCov.update` when calling</span>
+<span class="sd">            :meth:`update` (may be enhanced and/or overridden by keyword arguments passed to</span>
+<span class="sd">            :meth:`update`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_observation_cov</span> <span class="o">=</span> <span class="n">low_rank_observation_cov</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_update_kwargs</span> <span class="o">=</span> <span class="n">default_update_kwargs</span> <span class="ow">or</span> <span class="p">{}</span></div>
+        <span class="c1"># do not call super().__init__(), low_rank_observation_cov should be updated already</span>
+
+<div class="viewcode-block" id="LowRankObservationCovPreconditioner.sample"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_observation_cov</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_samples</span><span class="o">=</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LowRankObservationCovPreconditioner.matmul"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.matmul">[docs]</a>    <span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">use_inverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_observation_cov</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">use_inverse</span><span class="o">=</span><span class="n">use_inverse</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="LowRankObservationCovPreconditioner.update"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.LowRankObservationCovPreconditioner.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call :meth:`LowRankObservationCov.update`.</span>
+
+<span class="sd">        The keyword arguments :attr:`default_update_kwargs` are passed, optionally updated with the</span>
+<span class="sd">        passed keyword arguments.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **kwargs : dict</span>
+<span class="sd">            Keyword arguments, enhancing and/or overriding :attr:`default_update_kwargs`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">merged_kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_update_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">merged_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_observation_cov</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">merged_kwargs</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="JacobiPreconditioner"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner">[docs]</a><span class="k">class</span> <span class="nc">JacobiPreconditioner</span><span class="p">(</span><span class="n">BasePreconditioner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Jacobi (diagonal) preconditioner.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="JacobiPreconditioner.__init__"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">vector</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vector : Tensor</span>
+<span class="sd">            Jacobi (diagonal) vector. Shape: ``(size,)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vector</span><span class="o">=</span><span class="n">vector</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="JacobiPreconditioner.sample"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">normal_std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">normal_std</span></div>
+
+<div class="viewcode-block" id="JacobiPreconditioner.matmul"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.matmul">[docs]</a>    <span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">use_inverse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_inverse</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="JacobiPreconditioner.update"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the Jacobi (diagonal) vector.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vector : Tensor</span>
+<span class="sd">            New diagonal vector. Shape: ``(size,)``.</span>
+<span class="sd">            Must be passed as a keyword argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;vector&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="JacobiPreconditioner.get_closure"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.JacobiPreconditioner.get_closure">[docs]</a>    <span class="k">def</span> <span class="nf">get_closure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matmul</span><span class="p">,</span> <span class="n">use_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="IncompleteCholeskyPreconditioner"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner">[docs]</a><span class="k">class</span> <span class="nc">IncompleteCholeskyPreconditioner</span><span class="p">(</span><span class="n">BasePreconditioner</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Preconditioner using the incomplete cholesky factorization for a matrix approximated as</span>
+<span class="sd">    ``ichol @ ichol.T + noise * torch.eye(ichol.shape[0])``, like implemented in</span>
+<span class="sd">    https://github.com/cornellius-gp/linear_operator/blob/987df55260afea79eb0590c7e546b221cfec3fe5/linear_operator/operators/added_diag_linear_operator.py#L84</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="IncompleteCholeskyPreconditioner.__init__"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">incomplete_cholesky</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">log_noise_variance</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        incomplete_cholesky : Tensor</span>
+<span class="sd">            Incomplete Cholesky factor. Shape: ``(size, low_rank_rank_dim)``.</span>
+<span class="sd">        log_noise_variance : Tensor</span>
+<span class="sd">            Logarithm of the noise variance (cf. :attr:`ObservationCov.log_noise_variance`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">incomplete_cholesky</span><span class="o">=</span><span class="n">incomplete_cholesky</span><span class="p">,</span>
+                <span class="n">log_noise_variance</span><span class="o">=</span><span class="n">log_noise_variance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IncompleteCholeskyPreconditioner.sample"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Not implemented.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="IncompleteCholeskyPreconditioner.matmul"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.matmul">[docs]</a>    <span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">use_inverse</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">use_inverse</span><span class="p">:</span>
+            <span class="c1"># matmul with covariance</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">incomplete_cholesky</span> <span class="o">@</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">incomplete_cholesky</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">v</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_noise_variance</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># matmul with inverse</span>
+            <span class="n">qqt_v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_cache</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_q_cache</span><span class="o">.</span><span class="n">mT</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_noise_variance</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">qqt_v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="IncompleteCholeskyPreconditioner.update"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the incomplete Cholesky factor and the logarithm of the noise variance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        incomplete_cholesky : Tensor</span>
+<span class="sd">            Incomplete Cholesky factor. Shape: ``(size, low_rank_rank_dim)``.</span>
+<span class="sd">            Must be passed as a keyword argument.</span>
+<span class="sd">        log_noise_variance : Tensor</span>
+<span class="sd">            Logarithm of the noise variance (cf. :attr:`ObservationCov.log_noise_variance`).</span>
+<span class="sd">            Must be passed as a keyword argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">incomplete_cholesky</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;incomplete_cholesky&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_noise_variance</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;log_noise_variance&#39;</span><span class="p">]</span>
+
+        <span class="n">n</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incomplete_cholesky</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">_q_cache</span><span class="p">,</span> <span class="n">_r_cache</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">incomplete_cholesky</span><span class="p">,</span>
+                        <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_noise_variance</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">k</span><span class="p">,</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">incomplete_cholesky</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">incomplete_cholesky</span><span class="o">.</span><span class="n">device</span><span class="p">)),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_q_cache</span> <span class="o">=</span> <span class="n">_q_cache</span><span class="p">[:</span><span class="n">n</span><span class="p">,</span> <span class="p">:]</span></div>
+
+<div class="viewcode-block" id="IncompleteCholeskyPreconditioner.get_closure"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.IncompleteCholeskyPreconditioner.get_closure">[docs]</a>    <span class="k">def</span> <span class="nf">get_closure</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matmul</span><span class="p">,</span> <span class="n">use_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="get_preconditioner"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner.html#bayes_dip.marginal_likelihood_optim.preconditioner.get_preconditioner">[docs]</a><span class="k">def</span> <span class="nf">get_preconditioner</span><span class="p">(</span><span class="n">observation_cov</span><span class="p">:</span> <span class="n">BaseObservationCov</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePreconditioner</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a preconditioner for observation covariance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    kwargs : dict</span>
+<span class="sd">        Keyword arguments.</span>
+<span class="sd">        ``kwargs[&#39;name&#39;]`` is required, options are:</span>
+
+<span class="sd">        * ``kwargs[&#39;name&#39;] == &#39;low_rank_eig&#39;``</span>
+<span class="sd">            Return a :class:`LowRankObservationCovPreconditioner` instance.</span>
+<span class="sd">            Further (required) keyword arguments are ``&#39;batch_size&#39;``, ``&#39;low_rank_rank_dim&#39;`` and</span>
+<span class="sd">            ``&#39;oversampling_param&#39;`` (see :class:`LowRankObservationCovPreconditioner`).</span>
+<span class="sd">        * ``kwargs[&#39;name&#39;] == &#39;incomplete_chol&#39;``</span>
+<span class="sd">            Return an :class:`IncompleteCholeskyPreconditioner` instance.</span>
+<span class="sd">            Further (required) keyword arguments are ``&#39;batch_size&#39;``, ``&#39;low_rank_rank_dim&#39;`` and</span>
+<span class="sd">            ``&#39;approx_diag_num_samples&#39;`` (see :class:`IncompleteCholeskyPreconditioner`).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    preconditioner : :class:`BasePreconditioner`</span>
+<span class="sd">        Preconditioner instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;low_rank_eig&#39;</span><span class="p">:</span>
+        <span class="n">update_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;batch_size&#39;</span><span class="p">:</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;batch_size&#39;</span><span class="p">]}</span>
+        <span class="n">low_rank_observation_cov</span> <span class="o">=</span> <span class="n">LowRankObservationCov</span><span class="p">(</span>
+                <span class="n">trafo</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">trafo</span><span class="p">,</span>
+                <span class="n">image_cov</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">image_cov</span><span class="p">,</span>
+                <span class="n">low_rank_rank_dim</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;low_rank_rank_dim&#39;</span><span class="p">],</span>
+                <span class="n">oversampling_param</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;oversampling_param&#39;</span><span class="p">],</span>
+                <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">update_kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">preconditioner</span> <span class="o">=</span> <span class="n">LowRankObservationCovPreconditioner</span><span class="p">(</span>
+                <span class="n">low_rank_observation_cov</span><span class="o">=</span><span class="n">low_rank_observation_cov</span><span class="p">,</span>
+                <span class="n">default_update_kwargs</span><span class="o">=</span><span class="n">update_kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;incomplete_chol&#39;</span><span class="p">:</span>
+        <span class="n">ichol</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">pivoted_cholesky</span><span class="p">(</span>
+                <span class="n">closure</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">get_closure</span><span class="p">(),</span>
+                <span class="n">size</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">max_iter</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;low_rank_rank_dim&#39;</span><span class="p">],</span>
+                <span class="n">approx_diag_num_samples</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;approx_diag_num_samples&#39;</span><span class="p">],</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;batch_size&#39;</span><span class="p">],</span>
+                <span class="n">error_tol</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>  <span class="c1"># always use kwargs[&#39;low_rank_rank_dim&#39;] dimensions</span>
+                <span class="n">recompute_max_diag_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="n">preconditioner</span> <span class="o">=</span> <span class="n">IncompleteCholeskyPreconditioner</span><span class="p">(</span>
+                <span class="n">incomplete_cholesky</span><span class="o">=</span><span class="n">ichol</span><span class="p">,</span> <span class="n">log_noise_variance</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">log_noise_variance</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown preconditioner name &quot;</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">preconditioner</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

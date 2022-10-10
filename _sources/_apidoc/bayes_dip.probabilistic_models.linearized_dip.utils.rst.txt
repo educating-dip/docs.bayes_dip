@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.utils module
+=============================================================
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

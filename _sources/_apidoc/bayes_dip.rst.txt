@@ -1,0 +1,23 @@
+bayes\_dip package
+==================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.data
+   bayes_dip.dip
+   bayes_dip.inference
+   bayes_dip.marginal_likelihood_optim
+   bayes_dip.probabilistic_models
+   bayes_dip.utils
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip
+   :members:
+   :undoc-members:
+   :show-inheritance:

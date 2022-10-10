@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors package" href="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.html" />
+    <link rel="prev" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion module" href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#module-bayes_dip.probabilistic_models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.linearized_dip.html">bayes_dip.probabilistic_models.linearized_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.html">bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion package</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion">
+<span id="bayes-dip-probabilistic-models-linearized-dip-neural-basis-expansion-neural-basis-expansion-module"></span><h1>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion module<a class="headerlink" href="#module-bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion" title="Permalink to this heading"></a></h1>
+<p>Provides a neural basis expansion implementation using functorch.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.</span></span><span class="sig-name descname"><span class="pre">MatmulNeuralBasisExpansion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nn_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Module</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/neural_basis_expansion.html#MatmulNeuralBasisExpansion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion.BaseMatmulNeuralBasisExpansion" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion.BaseMatmulNeuralBasisExpansion"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMatmulNeuralBasisExpansion</span></code></a></p>
+<p>Implementation of Jacobian vector products (<code class="xref py py-meth docutils literal notranslate"><span class="pre">jvp()</span></code>) and vector Jacobian products
+(<code class="xref py py-meth docutils literal notranslate"><span class="pre">vjp()</span></code>) using matmul with the Jacobian matrix assembled via
+<code class="xref py py-func docutils literal notranslate"><span class="pre">autograd.functional.jacobian()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.matrix" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matrix</span></code></a></dt><dd><p>Tensor Jacobian matrix.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.get_matrix" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.get_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_matrix</span></code></a>()</p></td>
+<td><p>Assemble and return the Jacobian matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.update_matrix" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.update_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_matrix</span></code></a>()</p></td>
+<td><p>Assemble and update the Jacobian matrix <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.matrix" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nn_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Module</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/neural_basis_expansion.html#MatmulNeuralBasisExpansion.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>nn_model</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Module</span></code></span></dt><dd><p>Network.</p>
+</dd>
+<dt><strong>nn_input</strong><span class="classifier">Tensor</span></dt><dd><p>Network input.</p>
+</dd>
+<dt><strong>ordered_nn_params</strong><span class="classifier">sequence of nn.Parameter</span></dt><dd><p>Sequence of parameters that should be included in this expansion.</p>
+</dd>
+<dt><strong>nn_out_shape</strong><span class="classifier">4-tuple of int, optional</span></dt><dd><p>Shape of the network output. If not specified, it is determined by a forward call
+(performed in eval mode).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.get_matrix">
+<span class="sig-name descname"><span class="pre">get_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/neural_basis_expansion.html#MatmulNeuralBasisExpansion.get_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.get_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Assemble and return the Jacobian matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>matrix</strong><span class="classifier">Tensor</span></dt><dd><p>Jacobian matrix. Shape: <code class="docutils literal notranslate"><span class="pre">self.jac_shape</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.matrix">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">matrix</span></span><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.matrix" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Tensor</dt><dd><p>Jacobian matrix. Shape: <code class="docutils literal notranslate"><span class="pre">self.jac_shape</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.update_matrix">
+<span class="sig-name descname"><span class="pre">update_matrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/neural_basis_expansion.html#MatmulNeuralBasisExpansion.update_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.update_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Assemble and update the Jacobian matrix <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.matrix" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.MatmulNeuralBasisExpansion.matrix"><code class="xref py py-attr docutils literal notranslate"><span class="pre">matrix</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.</span></span><span class="sig-name descname"><span class="pre">NeuralBasisExpansion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">functional_forward_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/neural_basis_expansion.html#NeuralBasisExpansion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion.BaseNeuralBasisExpansion" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion.BaseNeuralBasisExpansion"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNeuralBasisExpansion</span></code></a></p>
+<p>Implementation of Jacobian vector products (<a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.jvp" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.jvp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">jvp()</span></code></a>) and vector Jacobian products
+(<a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.vjp" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.vjp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">vjp()</span></code></a>) via functorch. Both methods support autograd.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.jvp" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.jvp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">jvp</span></code></a>(v)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.vjp" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.vjp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vjp</span></code></a>(v)</p></td>
+<td><p><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">functional_forward_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/neural_basis_expansion.html#NeuralBasisExpansion.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>nn_model</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Module</span></code></span></dt><dd><p>Network.</p>
+</dd>
+<dt><strong>nn_input</strong><span class="classifier">Tensor</span></dt><dd><p>Network input.</p>
+</dd>
+<dt><strong>ordered_nn_params</strong><span class="classifier">sequence of nn.Parameter</span></dt><dd><p>Sequence of parameters that should be included in this expansion.</p>
+</dd>
+<dt><strong>nn_out_shape</strong><span class="classifier">4-tuple of int, optional</span></dt><dd><p>Shape of the network output. If not specified, it is determined by a forward call
+(performed in eval mode).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.jvp">
+<span class="sig-name descname"><span class="pre">jvp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/neural_basis_expansion.html#NeuralBasisExpansion.jvp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.jvp" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Input. Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">self.num_params)</span></code></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Output. Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">*self.nn_out_shape)</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.vjp">
+<span class="sig-name descname"><span class="pre">vjp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/neural_basis_expansion.html#NeuralBasisExpansion.vjp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion.NeuralBasisExpansion.vjp" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Input. Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">*self.nn_out_shape)</span></code></p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Output. Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">self.num_params)</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html" class="btn btn-neutral float-left" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.html" class="btn btn-neutral float-right" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

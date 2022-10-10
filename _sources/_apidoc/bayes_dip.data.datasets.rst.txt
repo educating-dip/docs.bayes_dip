@@ -1,0 +1,20 @@
+bayes\_dip.data.datasets package
+================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.data.datasets.mnist
+   bayes_dip.data.datasets.rectangles
+   bayes_dip.data.datasets.walnut
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.data.datasets
+   :members:
+   :undoc-members:
+   :show-inheritance:

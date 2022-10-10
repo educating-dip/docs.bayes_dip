@@ -1,0 +1,7 @@
+bayes\_dip.utils.tv module
+==========================
+
+.. automodule:: bayes_dip.utils.tv
+   :members:
+   :undoc-members:
+   :show-inheritance:

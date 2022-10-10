@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.neural\_basis\_expansion.functorch\_utils module
+=================================================================================================
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

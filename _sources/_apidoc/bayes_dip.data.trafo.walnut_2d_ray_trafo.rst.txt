@@ -1,0 +1,7 @@
+bayes\_dip.data.trafo.walnut\_2d\_ray\_trafo module
+===================================================
+
+.. automodule:: bayes_dip.data.trafo.walnut_2d_ray_trafo
+   :members:
+   :undoc-members:
+   :show-inheritance:

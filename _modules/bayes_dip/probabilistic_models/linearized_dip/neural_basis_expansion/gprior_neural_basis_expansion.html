@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides neural basis expansion with a scaling in weight space, used for the isotropic g-prior.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">bayes_dip.data.trafo.base_ray_trafo</span> <span class="kn">import</span> <span class="n">BaseRayTrafo</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.data.trafo.matmul_ray_trafo</span>  <span class="kn">import</span> <span class="n">MatmulRayTrafo</span>
+<span class="kn">from</span> <span class="nn">.neural_basis_expansion</span> <span class="kn">import</span> <span class="n">BaseNeuralBasisExpansion</span>
+<span class="kn">from</span> <span class="nn">.base_neural_basis_expansion</span> <span class="kn">import</span> <span class="n">BaseMatmulNeuralBasisExpansion</span>
+
+<div class="viewcode-block" id="compute_scale"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.compute_scale">[docs]</a><span class="k">def</span> <span class="nf">compute_scale</span><span class="p">(</span>
+        <span class="n">neural_basis_expansion</span><span class="p">:</span> <span class="n">BaseNeuralBasisExpansion</span><span class="p">,</span>
+        <span class="n">trafo</span><span class="p">:</span> <span class="n">BaseRayTrafo</span><span class="p">,</span>
+        <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">max_scale_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e5</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">use_single_batch</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute a scaling vector for the weight space, which can help to improve the condition of the</span>
+<span class="sd">    (surrogate) observation covariance matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    neural_basis_expansion : :class:`BaseNeuralBasisExpansion`</span>
+<span class="sd">        Neural basis expansion (original, without the scaling in weight space).</span>
+<span class="sd">    trafo : :class:`BaseRayTrafo`</span>
+<span class="sd">        Ray transform.</span>
+<span class="sd">    reduction : {``&#39;mean&#39;``, ``&#39;sum&#39;``}, optional</span>
+<span class="sd">        Reduction kind for the tensors accumulated over observation space.</span>
+<span class="sd">        If ``mean`` (the default), values are divided by ``np.prod(trafo.obs_shape)``.</span>
+<span class="sd">    eps : float, optional</span>
+<span class="sd">        Minimum value for clamping before taking the inverse. The default is ``1e-6``.</span>
+<span class="sd">    max_scale_thresh : float, optional</span>
+<span class="sd">        Maximum value, if exceeded, a warning is raised. The default is ``1e5``.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Whether to print minimum and maximum values before applying the square-root, the clamping</span>
+<span class="sd">        and the inversion. The default is ``True``.</span>
+<span class="sd">    batch_size : int, optional</span>
+<span class="sd">        Batch size for trafo adjoint and vjp evaluations. This is not used if a single matmul is</span>
+<span class="sd">        employed, see ``use_single_batch``.</span>
+<span class="sd">    use_single_batch : bool or ``None``, optional</span>
+<span class="sd">        Whether to perform a single matmul instead of evaluating in batches via a closure.</span>
+<span class="sd">        If ``None``, a single matmul is used iff both ``neural_basis_expansion`` and ``trafo`` are</span>
+<span class="sd">        matmul implementations.</span>
+<span class="sd">        If ``True``, a single matmul is used iff ``isinstance(trafo, MatmulRayTrafo)``.</span>
+<span class="sd">        If ``False``, batched closure evaluations are used.</span>
+<span class="sd">    device : str or torch.device, optional</span>
+<span class="sd">        Device. If ``None`` (the default), ``&#39;cuda:0&#39;`` is chosen if available or ``&#39;cpu&#39;``</span>
+<span class="sd">        otherwise.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    scale_vec : Tensor</span>
+<span class="sd">        Scale vector. Shape: ``(neural_basis_expansion.num_params,)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">device</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">((</span><span class="s1">&#39;cuda:0&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">))</span>
+
+    <span class="n">vjp_no_scale</span> <span class="o">=</span> <span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">vjp</span>
+    <span class="k">if</span> <span class="n">use_single_batch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">use_single_batch</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">neural_basis_expansion</span><span class="p">,</span> <span class="n">BaseMatmulNeuralBasisExpansion</span><span class="p">)</span>
+
+    <span class="n">obs_numel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">obs_shape</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">use_single_batch</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">trafo</span><span class="p">,</span> <span class="n">MatmulRayTrafo</span><span class="p">):</span>
+
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">vjp_no_scale</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">obs_numel</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">trafo</span><span class="o">.</span><span class="n">im_shape</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="k">def</span> <span class="nf">closure</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">vjp_no_scale</span><span class="p">(</span><span class="n">trafo</span><span class="o">.</span><span class="n">trafo_adjoint</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="n">v</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">trafo</span><span class="o">.</span><span class="n">obs_shape</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">rows</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">num_params</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">obs_numel</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)),</span>
+                        <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;compute_scale&#39;</span><span class="p">,</span> <span class="n">miniters</span><span class="o">=</span><span class="n">obs_numel</span><span class="o">//</span><span class="n">batch_size</span><span class="o">//</span><span class="mi">100</span>
+                    <span class="p">):</span>
+                <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.</span>
+                <span class="c1"># set v.view(batch_size, -1) to be a subset of rows of torch.eye(obs_numel);</span>
+                <span class="c1"># in last batch, it may contain some additional (zero) rows</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)[:,</span> <span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">batch_size</span><span class="p">]</span><span class="o">.</span><span class="n">fill_diagonal_</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+                <span class="n">rows_batch</span> <span class="o">=</span> <span class="n">closure</span><span class="p">(</span>
+                    <span class="n">v</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">rows_batch</span> <span class="o">=</span> <span class="n">rows_batch</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="n">batch_size</span> <span class="o">&gt;</span> <span class="n">obs_numel</span><span class="p">:</span>  <span class="c1"># last batch</span>
+                    <span class="n">rows_batch</span> <span class="o">=</span> <span class="n">rows_batch</span><span class="p">[:</span><span class="n">obs_numel</span><span class="o">%</span><span class="n">batch_size</span><span class="p">]</span>
+                <span class="n">rows</span> <span class="o">+=</span> <span class="n">rows_batch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;mean&#39;</span><span class="p">:</span>
+            <span class="n">rows</span> <span class="o">/=</span> <span class="n">obs_numel</span>
+        <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;sum&#39;</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;unknown reduction kind </span><span class="si">{</span><span class="n">reduction</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;scale.min: </span><span class="si">{</span><span class="n">rows</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s1">, scale.max: </span><span class="si">{</span><span class="n">rows</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rows</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">max_scale_thresh</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;max scale values reached.&#39;</span><span class="p">)</span>
+
+        <span class="n">scale_vec</span> <span class="o">=</span> <span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># num_params</span>
+
+    <span class="k">return</span> <span class="n">scale_vec</span></div>
+
+<div class="viewcode-block" id="MixinGpriorNeuralBasisExpansion"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.MixinGpriorNeuralBasisExpansion">[docs]</a><span class="k">class</span> <span class="nc">MixinGpriorNeuralBasisExpansion</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Mixin/interface for neural basis expansions that apply a scale vector in weight space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Scale vector. Shape: ``(num_params,)``,</span>
+<span class="sd">            where ``num_params`` is like ``BaseNeuralBasisExpansion.num_params``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+<div class="viewcode-block" id="MixinGpriorNeuralBasisExpansion.update_scale"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.MixinGpriorNeuralBasisExpansion.update_scale">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">update_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Update the scale vector.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="MixinGpriorNeuralBasisExpansion.compute_scale"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.MixinGpriorNeuralBasisExpansion.compute_scale">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">compute_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a recomputed scale vector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scale : Tensor</span>
+<span class="sd">            Scale vector. Shape: ``(num_params,)``,</span>
+<span class="sd">            where ``num_params`` is like ``BaseNeuralBasisExpansion.num_params``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+<div class="viewcode-block" id="GpriorNeuralBasisExpansion"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.GpriorNeuralBasisExpansion">[docs]</a><span class="k">class</span> <span class="nc">GpriorNeuralBasisExpansion</span><span class="p">(</span><span class="n">BaseNeuralBasisExpansion</span><span class="p">,</span> <span class="n">MixinGpriorNeuralBasisExpansion</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for :class:`BaseNeuralBasisExpansion` that applies a scale vector in weight space.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :class:`MatmulGpriorNeuralBasisExpansion` : Similar wrapper specific to</span>
+<span class="sd">            :class:`BaseMatmulNeuralBasisExpansion`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GpriorNeuralBasisExpansion.__init__"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.GpriorNeuralBasisExpansion.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">neural_basis_expansion</span><span class="p">:</span> <span class="n">BaseNeuralBasisExpansion</span><span class="p">,</span>
+            <span class="n">trafo</span><span class="p">:</span> <span class="n">BaseRayTrafo</span><span class="p">,</span>
+            <span class="n">scale_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        neural_basis_expansion : :class:`BaseNeuralBasisExpansion`</span>
+<span class="sd">            Neural basis expansion to be wrapped (original, without the scaling in weight space).</span>
+<span class="sd">        trafo : :class:`BaseRayTrafo`</span>
+<span class="sd">            Ray transform.</span>
+<span class="sd">        scale_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed to :func:`compute_scale`. Should not include</span>
+<span class="sd">            ``&#39;neural_basis_expansion&#39;`` and ``&#39;trafo&#39;``, which are passed on from this class.</span>
+<span class="sd">        device : str or torch.device, optional</span>
+<span class="sd">            Device. If ``None`` (the default), ``&#39;cuda:0&#39;`` is chosen if available or ``&#39;cpu&#39;``</span>
+<span class="sd">            otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">nn_model</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_model</span><span class="p">,</span> <span class="n">nn_input</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_input</span><span class="p">,</span>
+                <span class="n">ordered_nn_params</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">ordered_nn_params</span><span class="p">,</span>
+                <span class="n">nn_out_shape</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_out_shape</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">((</span><span class="s1">&#39;cuda:0&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span> <span class="o">=</span> <span class="n">neural_basis_expansion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span> <span class="o">=</span> <span class="n">trafo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_scale</span><span class="p">(</span><span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span>
+
+<div class="viewcode-block" id="GpriorNeuralBasisExpansion.update_scale"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.GpriorNeuralBasisExpansion.update_scale">[docs]</a>    <span class="k">def</span> <span class="nf">update_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the scale vector.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **scale_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed to :func:`compute_scale`. Should not include</span>
+<span class="sd">            ``neural_basis_expansion`` and ``trafo``, which are passed on from this class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_scale</span><span class="p">(</span><span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GpriorNeuralBasisExpansion.compute_scale"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.GpriorNeuralBasisExpansion.compute_scale">[docs]</a>    <span class="k">def</span> <span class="nf">compute_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a recomputed scale vector.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **scale_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed to :func:`compute_scale`. Should not include</span>
+<span class="sd">            ``neural_basis_expansion`` and ``trafo``, which are passed on from this class.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scale : Tensor</span>
+<span class="sd">            Scale vector. Shape: ``(self.neural_basis_expansion.num_params,)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scale_vec</span> <span class="o">=</span> <span class="n">compute_scale</span><span class="p">(</span>
+                <span class="n">neural_basis_expansion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span><span class="p">,</span> <span class="n">trafo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scale_vec</span></div>
+
+<div class="viewcode-block" id="GpriorNeuralBasisExpansion.jvp"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.GpriorNeuralBasisExpansion.jvp">[docs]</a>    <span class="k">def</span> <span class="nf">jvp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">jvp</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GpriorNeuralBasisExpansion.vjp"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.GpriorNeuralBasisExpansion.vjp">[docs]</a>    <span class="k">def</span> <span class="nf">vjp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">vjp</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span></div></div>
+
+<div class="viewcode-block" id="MatmulGpriorNeuralBasisExpansion"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.MatmulGpriorNeuralBasisExpansion">[docs]</a><span class="k">class</span> <span class="nc">MatmulGpriorNeuralBasisExpansion</span><span class="p">(</span>
+        <span class="n">BaseMatmulNeuralBasisExpansion</span><span class="p">,</span> <span class="n">MixinGpriorNeuralBasisExpansion</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper for :class:`BaseMatmulNeuralBasisExpansion` that applies a scale vector in weight space.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :class:`GpriorNeuralBasisExpansion` : Similar wrapper for the more general</span>
+<span class="sd">            :class:`BaseNeuralBasisExpansion`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MatmulGpriorNeuralBasisExpansion.__init__"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.MatmulGpriorNeuralBasisExpansion.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">neural_basis_expansion</span><span class="p">:</span> <span class="n">BaseMatmulNeuralBasisExpansion</span><span class="p">,</span>
+            <span class="n">trafo</span><span class="p">:</span> <span class="n">BaseRayTrafo</span><span class="p">,</span>
+            <span class="n">scale_kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        neural_basis_expansion : :class:`BaseMatmulNeuralBasisExpansion`</span>
+<span class="sd">            Neural basis expansion to be wrapped (original, without the scaling in weight space).</span>
+<span class="sd">        trafo : :class:`BaseRayTrafo`</span>
+<span class="sd">            Ray transform.</span>
+<span class="sd">        scale_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed to :func:`compute_scale`. Should not include</span>
+<span class="sd">            ``&#39;neural_basis_expansion&#39;`` and ``&#39;trafo&#39;``, which are passed on from this class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">nn_model</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_model</span><span class="p">,</span> <span class="n">nn_input</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_input</span><span class="p">,</span>
+                <span class="n">ordered_nn_params</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">ordered_nn_params</span><span class="p">,</span>
+                <span class="n">nn_out_shape</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_out_shape</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span> <span class="o">=</span> <span class="n">neural_basis_expansion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span> <span class="o">=</span> <span class="n">trafo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_matrix</span><span class="p">(</span><span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span>
+
+<div class="viewcode-block" id="MatmulGpriorNeuralBasisExpansion.compute_scale"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.MatmulGpriorNeuralBasisExpansion.compute_scale">[docs]</a>    <span class="k">def</span> <span class="nf">compute_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a recomputed scale vector.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **scale_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed to :func:`compute_scale`. Should not include</span>
+<span class="sd">            ``neural_basis_expansion`` and ``trafo``, which are passed on from this class.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        scale : Tensor</span>
+<span class="sd">            Scale vector. Shape: ``(self.neural_basis_expansion.num_params,)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">scale_vec</span> <span class="o">=</span> <span class="n">compute_scale</span><span class="p">(</span>
+                <span class="n">neural_basis_expansion</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span><span class="p">,</span> <span class="n">trafo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scale_vec</span></div>
+
+<div class="viewcode-block" id="MatmulGpriorNeuralBasisExpansion.get_matrix"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.MatmulGpriorNeuralBasisExpansion.get_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">return_scale</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">scale_kwargs</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a matrix representing ``self``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        return_scale : bool, optional</span>
+<span class="sd">            If ``True``, also return the scale vector (which is recomputed in this method).</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        **scale_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed to :func:`compute_scale`. Should not include</span>
+<span class="sd">            ``neural_basis_expansion`` and ``trafo``, which are passed on from this class.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix : Tensor</span>
+<span class="sd">            Matrix representing ``self``. Shape: ``self.neural_basis_expansion.jac_shape``.</span>
+<span class="sd">        scale : Tensor, optional</span>
+<span class="sd">            Scale vector. Only returned if ``return_scale``.</span>
+<span class="sd">            Shape: ``(self.neural_basis_expansion.num_params,)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">matrix_no_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">matrix</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_scale</span><span class="p">(</span><span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix_no_scale</span> <span class="o">*</span> <span class="n">scale</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span> <span class="k">if</span> <span class="n">return_scale</span> <span class="k">else</span> <span class="n">matrix</span></div>
+
+<div class="viewcode-block" id="MatmulGpriorNeuralBasisExpansion.update"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion.MatmulGpriorNeuralBasisExpansion.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">scale_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the scale vector and the matrix representation of ``self``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **scale_kwargs : dict</span>
+<span class="sd">            Keyword arguments passed to :func:`compute_scale`. Should not include</span>
+<span class="sd">            ``neural_basis_expansion`` and ``trafo``, which are passed on from this class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matrix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_matrix</span><span class="p">(</span><span class="o">**</span><span class="n">scale_kwargs</span><span class="p">,</span> <span class="n">return_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+    <span class="c1"># scale contributes to self.matrix, so we need to update both if updating one</span>
+    <span class="n">update_matrix</span> <span class="o">=</span> <span class="n">update</span>
+    <span class="n">update_scale</span> <span class="o">=</span> <span class="n">update</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

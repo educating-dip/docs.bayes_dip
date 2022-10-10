@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.parameter_cov &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.parameter_cov</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.probabilistic_models.linearized_dip.parameter_cov</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Provides :class:`ParameterCov`&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.utils</span> <span class="kn">import</span> <span class="n">get_modules_by_names</span>
+<span class="kn">from</span> <span class="nn">.parameter_priors.priors</span> <span class="kn">import</span> <span class="n">BaseGaussPrior</span>
+
+<div class="viewcode-block" id="ParameterCov"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.parameter_cov.html#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov">[docs]</a><span class="k">class</span> <span class="nc">ParameterCov</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Covariance in parameter space.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ParameterCov.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.parameter_cov.html#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">nn_model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">prior_assignment_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">BaseGaussPrior</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]],</span>
+        <span class="n">hyperparams_init_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span>
+        <span class="n">device</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nn_model : :class:`nn.Module`</span>
+<span class="sd">            Network.</span>
+<span class="sd">        prior_assignment_dict : dict</span>
+<span class="sd">            Dictionary specifying the assignment of priors over network modules.</span>
+<span class="sd">            The keys are prior names, and each value is a tuple ``(constructor, module_names)``,</span>
+<span class="sd">            where ``constructor`` is a callable with parameters</span>
+<span class="sd">            ``init_hyperparams: Dict, modules: List[nn.Module], device: Union[str, torch.device]``</span>
+<span class="sd">            and ``module_names`` is a list of module names in ``nn_model`` used to create the</span>
+<span class="sd">            ``modules`` list passed to ``constructor``. The prior object created by ``constructor``</span>
+<span class="sd">            must be an instance of :class:`BaseGaussPrior`.</span>
+<span class="sd">        hyperparams_init_dict : dict</span>
+<span class="sd">            Initial hyperparameter values for the priors.</span>
+<span class="sd">            The keys are prior names (same as ``prior_assignment_dict``), and each value specifies</span>
+<span class="sd">            the ``init_hyperparams`` argument to ``constructor`` (see ``prior_assignment_dict``).</span>
+<span class="sd">        device : str or torch.device, optional</span>
+<span class="sd">            Device. If ``None`` (the default), ``&#39;cuda:0&#39;`` is chosen if available or ``&#39;cpu&#39;``</span>
+<span class="sd">            otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prior_assignment_dict</span> <span class="o">=</span> <span class="n">prior_assignment_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hyperparams_init_dict</span> <span class="o">=</span> <span class="n">hyperparams_init_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">((</span><span class="s1">&#39;cuda:0&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">priors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_prior_dict</span><span class="p">(</span><span class="n">nn_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_per_prior_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ordered_params_per_prior_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">priors_per_prior_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ordered_priors_per_prior_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_numel_per_prior_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params_numel_per_prior_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params_slices_per_prior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_params_slices_per_prior</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ordered_nn_params</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of all parameters under prior, in the order expected by :meth:`forward`.</span>
+
+<span class="sd">        The parameters are ordered first (outer-most) by prior type, then by prior in the order of</span>
+<span class="sd">        occurence in :attr:`priors` (same order as in the ``prior_assignment_dict``), and finally</span>
+<span class="sd">        (inner-most) in the order returned by ``prior.get_params_under_prior()``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ordered_params_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">params</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_per_prior_type</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">ordered_params_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ordered_params_list</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">log_variances</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List of all ``log_variance`` parameters, in the order of :attr:`self.priors` (same order as</span>
+<span class="sd">        in the ``prior_assignment_dict``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">prior</span><span class="o">.</span><span class="n">log_variance</span> <span class="k">for</span> <span class="n">prior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+    <span class="k">def</span> <span class="nf">_create_prior_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+
+        <span class="n">priors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">prior_name</span><span class="p">,</span> <span class="p">(</span><span class="n">prior_type</span><span class="p">,</span> <span class="n">layer_names</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_assignment_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">init_hyperparams</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hyperparams_init_dict</span><span class="p">[</span><span class="n">prior_name</span><span class="p">]</span>
+            <span class="n">modules</span> <span class="o">=</span> <span class="n">get_modules_by_names</span><span class="p">(</span><span class="n">nn_model</span><span class="p">,</span> <span class="n">layer_names</span><span class="p">)</span>
+            <span class="n">priors</span><span class="p">[</span><span class="n">prior_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">prior_type</span><span class="p">(</span>
+                    <span class="n">init_hyperparams</span><span class="o">=</span><span class="n">init_hyperparams</span><span class="p">,</span> <span class="n">modules</span><span class="o">=</span><span class="n">modules</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">(</span><span class="n">priors</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_ordered_params_per_prior_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">params_per_prior_type</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">prior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">params_per_prior_type</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">prior</span><span class="p">),</span> <span class="p">[])</span>
+            <span class="n">params_per_prior_type</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">prior</span><span class="p">)]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">prior</span><span class="o">.</span><span class="n">get_params_under_prior</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">params_per_prior_type</span>
+
+    <span class="k">def</span> <span class="nf">_ordered_priors_per_prior_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">priors_per_prior_type</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">prior</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">priors_per_prior_type</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">prior</span><span class="p">),</span> <span class="p">[])</span>
+            <span class="n">priors_per_prior_type</span><span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">prior</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">priors_per_prior_type</span>
+
+    <span class="k">def</span> <span class="nf">_params_numel_per_prior_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">params_numel_per_prior_type</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">prior_type</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_per_prior_type</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">params_numel_per_prior_type</span><span class="p">[</span><span class="n">prior_type</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">params_numel_per_prior_type</span>
+
+    <span class="k">def</span> <span class="nf">_params_slices_per_prior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">params_slices_per_prior</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">params_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">priors</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">priors_per_prior_type</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">prior</span> <span class="ow">in</span> <span class="n">priors</span><span class="p">:</span>
+                <span class="n">params_numel</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prior</span><span class="o">.</span><span class="n">get_params_under_prior</span><span class="p">())</span>
+                <span class="n">params_slices_per_prior</span><span class="p">[</span><span class="n">prior</span><span class="p">]</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">params_cnt</span><span class="p">,</span> <span class="n">params_cnt</span> <span class="o">+</span> <span class="n">params_numel</span><span class="p">)</span>
+                <span class="n">params_cnt</span> <span class="o">+=</span> <span class="n">params_numel</span>
+
+        <span class="k">return</span> <span class="n">params_slices_per_prior</span>
+
+<div class="viewcode-block" id="ParameterCov.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.parameter_cov.html#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">only_prior</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multiply with the covariance &quot;matrix&quot;.</span>
+
+<span class="sd">        I.e., evaluate ``(cov @ v.T).T`` where ``cov`` is a matrix representation of ``self``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v : Tensor</span>
+<span class="sd">            Parameter sets.</span>
+<span class="sd">            Shape: ``(batch_size, num_params)``, where ``num_params`` is ``self.shape[0]`` if</span>
+<span class="sd">            ``only_prior is None`` and otherwise the restricted parameter number</span>
+<span class="sd">            ``params_slice.stop - params_slice.start`` with</span>
+<span class="sd">            ``params_slice == self.params_slices_per_prior[only_prior]``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Products. Shape: same as ``v``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">only_prior</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">v_parameter_cov_mul</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">params_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">prior_type</span><span class="p">,</span> <span class="n">priors</span><span class="p">),</span> <span class="n">len_params</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">priors_per_prior_type</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">params_numel_per_prior_type</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="p">):</span>
+
+                <span class="n">v_parameter_cov_mul</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prior_type</span><span class="o">.</span><span class="n">batched_cov_mul</span><span class="p">(</span>
+                        <span class="n">priors</span><span class="o">=</span><span class="n">priors</span><span class="p">,</span>
+                        <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">[:,</span> <span class="n">params_cnt</span><span class="p">:</span><span class="n">params_cnt</span><span class="o">+</span><span class="n">len_params</span><span class="p">],</span>
+                        <span class="o">**</span><span class="n">kwargs</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">params_cnt</span> <span class="o">+=</span> <span class="n">len_params</span>
+
+            <span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">v_parameter_cov_mul</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">only_prior</span><span class="p">)</span><span class="o">.</span><span class="n">batched_cov_mul</span><span class="p">(</span>
+                <span class="n">priors</span><span class="o">=</span><span class="p">[</span><span class="n">only_prior</span><span class="p">],</span>
+                <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="ParameterCov.sample"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.parameter_cov.html#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sample_only_from_prior</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample from a Gaussian with this covariance.</span>
+
+<span class="sd">        By default, the mean is zero, but a custom ``mean`` can be specified.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_samples : int, optional</span>
+<span class="sd">            Number of samples. The default is ``10``.</span>
+<span class="sd">        mean : Tensor, optional</span>
+<span class="sd">            Mean. If ``None`` (the default), the mean is zero.</span>
+<span class="sd">            Shape: ``(batch_size, num_params)`` (same shape as the return value).</span>
+<span class="sd">        sample_only_from_prior : :class:`nn.Module`, optional</span>
+<span class="sd">            If specified, return only samples for the parameters under this prior.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        samples : Tensor</span>
+<span class="sd">            Samples. Shape: ``(batch_size, num_params)``, where ``num_params`` is ``self.shape[0]``</span>
+<span class="sd">            if ``sample_only_from_prior is None`` and otherwise the restricted parameter number</span>
+<span class="sd">            ``params_slice.stop - params_slice.start`` with</span>
+<span class="sd">            ``params_slice == self.params_slices_per_prior[sample_only_from_prior]``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_params</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">sample_only_from_prior</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params_slices_per_prior</span><span class="p">[</span><span class="n">sample_only_from_prior</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span> <span class="o">-</span>
+                 <span class="bp">self</span><span class="o">.</span><span class="n">params_slices_per_prior</span><span class="p">[</span><span class="n">sample_only_from_prior</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">))</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span>
+            <span class="n">num_samples</span><span class="p">,</span> <span class="n">num_params</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">use_cholesky</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">only_prior</span><span class="o">=</span><span class="n">sample_only_from_prior</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mean</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">+</span> <span class="n">mean</span>
+        <span class="k">return</span> <span class="n">samples</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;Shape of the (theoretical) matrix representation.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params_numel_per_prior_type</span><span class="o">.</span><span class="n">values</span><span class="p">()),)</span> <span class="o">*</span> <span class="mi">2</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

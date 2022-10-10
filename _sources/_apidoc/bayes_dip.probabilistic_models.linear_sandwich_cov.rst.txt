@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.linear\_sandwich\_cov module
+=============================================================
+
+.. automodule:: bayes_dip.probabilistic_models.linear_sandwich_cov
+   :members:
+   :undoc-members:
+   :show-inheritance:

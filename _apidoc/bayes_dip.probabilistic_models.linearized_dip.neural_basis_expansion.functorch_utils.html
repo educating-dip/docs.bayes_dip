@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.getter module" href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.getter.html" />
+    <link rel="prev" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion module" href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#module-bayes_dip.probabilistic_models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.linearized_dip.html">bayes_dip.probabilistic_models.linearized_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.html">bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion package</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils">
+<span id="bayes-dip-probabilistic-models-linearized-dip-neural-basis-expansion-functorch-utils-module"></span><h1>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils module<a class="headerlink" href="#module-bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils" title="Permalink to this heading"></a></h1>
+<p>Utilities for using the flattened parameter representation from <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseNeuralBasisExpansion</span></code>
+with functorch.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.flatten_grad_functorch">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.</span></span><span class="sig-name descname"><span class="pre">flatten_grad_functorch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inds_from_ordered_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grads</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/functorch_utils.html#flatten_grad_functorch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.flatten_grad_functorch" title="Permalink to this definition"></a></dt>
+<dd><p>Flatten and concatenate selected tensors from a tuple as returned from functorch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inds_from_ordered_params</strong><span class="classifier">sequence of int</span></dt><dd><p>Indices of the selected parameters in <code class="docutils literal notranslate"><span class="pre">grads</span></code> (which is usually ordered like the full list
+of parameters of a model, <code class="docutils literal notranslate"><span class="pre">list(nn_model.parameters())</span></code>).</p>
+</dd>
+<dt><strong>grads</strong><span class="classifier">sequence of Tensor</span></dt><dd><p>Gradient tensors.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>flat_grads</strong><span class="classifier">Tensor</span></dt><dd><p>Flat and concatenated gradients. Shape: <code class="docutils literal notranslate"><span class="pre">(total_selected_num_params,)</span></code>, i.e.
+<code class="docutils literal notranslate"><span class="pre">sum(grads[ind].numel()</span> <span class="pre">for</span> <span class="pre">ind</span> <span class="pre">in</span> <span class="pre">inds_from_ordered_params)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.unflatten_nn_functorch">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.</span></span><span class="sig-name descname"><span class="pre">unflatten_nn_functorch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nn_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Module</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inds_from_ordered_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slices_from_ordered_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><span class="pre">slice</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/neural_basis_expansion/functorch_utils.html#unflatten_nn_functorch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.unflatten_nn_functorch" title="Permalink to this definition"></a></dt>
+<dd><p>Unpack flat and concatenated selected parameters into a tuple that can be passed to functorch.</p>
+<p>For the parameters that are not selected by <code class="docutils literal notranslate"><span class="pre">inds_from_ordered_params</span></code>, zero tensors are
+placed in the returned tuple.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>nn_model</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Module</span></code></span></dt><dd><p>Network.</p>
+</dd>
+<dt><strong>inds_from_ordered_params</strong><span class="classifier">sequence of int</span></dt><dd><p>Indices of the selected parameters in <code class="docutils literal notranslate"><span class="pre">list(nn_model.parameters())</span></code>.</p>
+</dd>
+<dt><strong>slices_from_ordered_params</strong><span class="classifier">sequence of slice</span></dt><dd><p>Slice objects to sub-slice <code class="docutils literal notranslate"><span class="pre">weights</span></code>, in the same order as <code class="docutils literal notranslate"><span class="pre">inds_from_ordered_params</span></code>.</p>
+</dd>
+<dt><strong>weights</strong><span class="classifier">Tensor</span></dt><dd><p>Flat and concatenated selected parameters. Shape: <code class="docutils literal notranslate"><span class="pre">(total_selected_num_params,)</span></code>, i.e.
+<code class="docutils literal notranslate"><span class="pre">sum(list(nn_model.parameters())[ind].numel()</span> <span class="pre">for</span> <span class="pre">ind</span> <span class="pre">in</span> <span class="pre">inds_from_ordered_params)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>weights_tuple</strong><span class="classifier">tuple of Tensor</span></dt><dd><p>Weights tuple, in the order of <code class="docutils literal notranslate"><span class="pre">nn_model.parameters()</span></code>.
+Values for the parameters selected by <code class="docutils literal notranslate"><span class="pre">inds_from_ordered_params</span></code> are unpacked from
+<code class="docutils literal notranslate"><span class="pre">weights</span></code>; for the other parameters, zeros are inserted.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion.html" class="btn btn-neutral float-left" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.getter.html" class="btn btn-neutral float-right" title="bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.getter module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

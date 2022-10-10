@@ -1,0 +1,7 @@
+bayes\_dip.marginal\_likelihood\_optim.utils module
+===================================================
+
+.. automodule:: bayes_dip.marginal_likelihood_optim.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

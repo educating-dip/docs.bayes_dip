@@ -1,0 +1,25 @@
+bayes\_dip.utils package
+========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.utils.evaluation_utils
+   bayes_dip.utils.experiment_utils
+   bayes_dip.utils.linear_cg_gpytorch
+   bayes_dip.utils.linear_cg_gpytorch_log_cg_re
+   bayes_dip.utils.plot_utils
+   bayes_dip.utils.test_utils
+   bayes_dip.utils.tv
+   bayes_dip.utils.utils
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

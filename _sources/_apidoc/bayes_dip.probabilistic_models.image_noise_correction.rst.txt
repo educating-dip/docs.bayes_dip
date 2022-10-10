@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.image\_noise\_correction module
+================================================================
+
+.. automodule:: bayes_dip.probabilistic_models.image_noise_correction
+   :members:
+   :undoc-members:
+   :show-inheritance:

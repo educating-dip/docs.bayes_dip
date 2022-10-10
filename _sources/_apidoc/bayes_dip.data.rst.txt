@@ -1,0 +1,29 @@
+bayes\_dip.data package
+=======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.data.datasets
+   bayes_dip.data.trafo
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.data.simulation
+   bayes_dip.data.utils
+   bayes_dip.data.walnut_utils
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.data
+   :members:
+   :undoc-members:
+   :show-inheritance:

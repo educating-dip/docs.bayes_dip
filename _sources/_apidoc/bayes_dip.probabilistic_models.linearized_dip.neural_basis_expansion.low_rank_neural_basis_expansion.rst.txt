@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.neural\_basis\_expansion.low\_rank\_neural\_basis\_expansion module
+====================================================================================================================
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion
+   :members:
+   :undoc-members:
+   :show-inheritance:

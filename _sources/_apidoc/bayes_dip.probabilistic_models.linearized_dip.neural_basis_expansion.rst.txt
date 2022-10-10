@@ -1,0 +1,23 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.neural\_basis\_expansion package
+=================================================================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.base_neural_basis_expansion
+   bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils
+   bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.getter
+   bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.gprior_neural_basis_expansion
+   bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion
+   bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.neural_basis_expansion
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion
+   :members:
+   :undoc-members:
+   :show-inheritance:

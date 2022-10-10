@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.dip.network.unet &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.dip.network.unet</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.dip.network.unet</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides a U-Net-like architecture.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="UNet"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UNet">[docs]</a><span class="k">class</span> <span class="nc">UNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;U-Net model&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="UNet.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UNet.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">in_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">out_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">channels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+            <span class="n">skip_channels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+            <span class="n">use_sigmoid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">use_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">sigmoid_saturation_thresh</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">9.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        in_ch : int</span>
+<span class="sd">            Number of input channels.</span>
+<span class="sd">        out_ch : int</span>
+<span class="sd">            Number of output channels.</span>
+<span class="sd">        channels : sequence of int</span>
+<span class="sd">            Numbers of channels, specified individually for each scale.</span>
+<span class="sd">        skip_channels : sequence of int</span>
+<span class="sd">            Numbers of skip channels, specified individually for each scale.</span>
+<span class="sd">            Note that then length must match ``channels``, but ``channels[-1]`` is unused,</span>
+<span class="sd">            since there is no skip connection at the coarsest scale.</span>
+<span class="sd">        use_sigmoid : bool, optional</span>
+<span class="sd">            Whether to include a sigmoid activation at the network output.</span>
+<span class="sd">            The default is ``True``.</span>
+<span class="sd">        use_norm : bool, optional</span>
+<span class="sd">            Whether to include group norm layers after each convolutional layer.</span>
+<span class="sd">            The default is ``True``.</span>
+<span class="sd">        sigmoid_saturation_thresh : float, optional</span>
+<span class="sd">            Threshold for clamping pre-sigmoid activations</span>
+<span class="sd">            if ``saturation_safety`` (is ``True`` by default) in :meth:`forward`.</span>
+<span class="sd">            Has no effect if not ``use_sigmoid``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">skip_channels</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scales</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_sigmoid</span> <span class="o">=</span> <span class="n">use_sigmoid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigmoid_saturation_thresh</span> <span class="o">=</span> <span class="n">sigmoid_saturation_thresh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inc</span> <span class="o">=</span> <span class="n">InBlock</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">use_norm</span><span class="o">=</span><span class="n">use_norm</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">down</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">up</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scales</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">down</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">DownBlock</span><span class="p">(</span><span class="n">in_ch</span><span class="o">=</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+                                       <span class="n">out_ch</span><span class="o">=</span><span class="n">channels</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                       <span class="n">use_norm</span><span class="o">=</span><span class="n">use_norm</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scales</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">UpBlock</span><span class="p">(</span><span class="n">in_ch</span><span class="o">=</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="p">],</span>
+                                   <span class="n">out_ch</span><span class="o">=</span><span class="n">channels</span><span class="p">[</span><span class="o">-</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+                                   <span class="n">skip_ch</span><span class="o">=</span><span class="n">skip_channels</span><span class="p">[</span><span class="o">-</span><span class="n">i</span><span class="p">],</span>
+                                   <span class="n">use_norm</span><span class="o">=</span><span class="n">use_norm</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outc</span> <span class="o">=</span> <span class="n">OutBlock</span><span class="p">(</span><span class="n">in_ch</span><span class="o">=</span><span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                             <span class="n">out_ch</span><span class="o">=</span><span class="n">out_ch</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UNet.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UNet.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">x0</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">saturation_safety</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">return_pre_sigmoid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x0 : Tensor</span>
+<span class="sd">            Network input.</span>
+<span class="sd">        saturation_safety : bool, optional</span>
+<span class="sd">            If ``self.use_sigmoid``, this option controls whether the pre-sigmoid activations are</span>
+<span class="sd">            clamped to ``(-self.sigmoid_saturation_thresh, self.sigmoid_saturation_thresh)``.</span>
+<span class="sd">            The default is ``True``.</span>
+<span class="sd">        return_pre_sigmoid : bool, optional</span>
+<span class="sd">            If ``self.use_sigmoid``, this option can be used to return the pre-sigmoid activations</span>
+<span class="sd">            instead of the final network output. This may save from numerically unstable inversion</span>
+<span class="sd">            of the sigmoid, while the user can still manually apply :func:`torch.sigmoid` to obtain</span>
+<span class="sd">            the final network output. If ``saturation_safety`` is active, the returned pre-sigmoid</span>
+<span class="sd">            activations are clamped.</span>
+<span class="sd">            The default is ``False``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Network output (or pre-sigmoid activations if ``return_pre_sigmoid``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inc</span><span class="p">(</span><span class="n">x0</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scales</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">down</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">xs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scales</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">xs</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span> <span class="o">-</span> <span class="n">i</span><span class="p">])</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">outc</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_sigmoid</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">saturation_safety</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span>
+                        <span class="nb">min</span><span class="o">=-</span><span class="bp">self</span><span class="o">.</span><span class="n">sigmoid_saturation_thresh</span><span class="p">,</span>
+                        <span class="nb">max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sigmoid_saturation_thresh</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">return_pre_sigmoid</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span></div></div>
+
+
+<div class="viewcode-block" id="UNetReturnPreSigmoid"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UNetReturnPreSigmoid">[docs]</a><span class="k">class</span> <span class="nc">UNetReturnPreSigmoid</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Same as UNet, but always passing ``return_pre_sigmoid=True`` and defaulting to</span>
+<span class="sd">    ``saturation_safety=False`` in ``UNet.forward``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="UNetReturnPreSigmoid.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UNetReturnPreSigmoid.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unet</span><span class="p">:</span> <span class="n">UNet</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unet</span> <span class="o">=</span> <span class="n">unet</span></div>
+
+<div class="viewcode-block" id="UNetReturnPreSigmoid.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UNetReturnPreSigmoid.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">saturation_safety</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : Tensor</span>
+<span class="sd">            Network input.</span>
+<span class="sd">        saturation_safety : bool, optional</span>
+<span class="sd">            If ``self.unet.use_sigmoid``, this option controls whether the pre-sigmoid activations</span>
+<span class="sd">            are clamped to ``(-self.sigmoid_saturation_thresh, self.sigmoid_saturation_thresh)``.</span>
+<span class="sd">            The default is ``False``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Pre-sigmoid activations of the network.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unet</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">saturation_safety</span><span class="o">=</span><span class="n">saturation_safety</span><span class="p">,</span> <span class="n">return_pre_sigmoid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="DownBlock"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.DownBlock">[docs]</a><span class="k">class</span> <span class="nc">DownBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Down-sampling block.</span>
+
+<span class="sd">    Includes two convolutional layers. The down-sampling is obtained by ``stride=2``</span>
+<span class="sd">    in the first convolutional layer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DownBlock.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.DownBlock.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">in_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">out_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">kernel_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="n">num_groups</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">use_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        in_ch : int</span>
+<span class="sd">            Number of input channels.</span>
+<span class="sd">        out_ch : int</span>
+<span class="sd">            Number of output channels.</span>
+<span class="sd">        kernel_size : int, optional</span>
+<span class="sd">            Kernel size. The default is ``3``.</span>
+<span class="sd">        num_groups : int, optional</span>
+<span class="sd">            Number of groups for group norm. The default is ``4``.</span>
+<span class="sd">        use_norm : bool, optional</span>
+<span class="sd">            Whether to include group norm layers after each convolutional layer.</span>
+<span class="sd">            The default is ``True``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">to_pad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">use_norm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                          <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="n">num_channels</span><span class="o">=</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">num_groups</span><span class="o">=</span><span class="n">num_groups</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                          <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="n">num_channels</span><span class="o">=</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">num_groups</span><span class="o">=</span><span class="n">num_groups</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                          <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                          <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="DownBlock.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.DownBlock.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : Tensor</span>
+<span class="sd">            Block input.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Block output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div></div>
+
+
+<div class="viewcode-block" id="InBlock"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.InBlock">[docs]</a><span class="k">class</span> <span class="nc">InBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Input block&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="InBlock.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.InBlock.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">in_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">out_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">kernel_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="n">num_groups</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">use_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        in_ch : int</span>
+<span class="sd">            Number of input channels.</span>
+<span class="sd">        out_ch : int</span>
+<span class="sd">            Number of output channels.</span>
+<span class="sd">        kernel_size : int, optional</span>
+<span class="sd">            Kernel size. The default is ``3``.</span>
+<span class="sd">        num_groups : int, optional</span>
+<span class="sd">            Number of groups for group norm. The default is ``2``.</span>
+<span class="sd">        use_norm : bool, optional</span>
+<span class="sd">            Whether to include a group norm layer after the convolutional layer.</span>
+<span class="sd">            The default is ``True``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">to_pad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">use_norm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                          <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="n">num_channels</span><span class="o">=</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">num_groups</span><span class="o">=</span><span class="n">num_groups</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                          <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="InBlock.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.InBlock.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : Tensor</span>
+<span class="sd">            Block input.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Block output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div></div>
+
+
+<div class="viewcode-block" id="UpBlock"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UpBlock">[docs]</a><span class="k">class</span> <span class="nc">UpBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Up-sampling block&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="UpBlock.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UpBlock.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">in_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">out_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">skip_ch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">kernel_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+            <span class="n">num_groups</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="n">use_norm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        in_ch : int</span>
+<span class="sd">            Number of input channels.</span>
+<span class="sd">        out_ch : int</span>
+<span class="sd">            Number of output channels.</span>
+<span class="sd">        skip_ch : int, optional</span>
+<span class="sd">            Number of skip channels. The default is ``4``.</span>
+<span class="sd">        kernel_size : int, optional</span>
+<span class="sd">            Kernel size. The default is ``3``.</span>
+<span class="sd">        num_groups : int, optional</span>
+<span class="sd">            Number of groups for group norm. The default is ``2``.</span>
+<span class="sd">        use_norm : bool, optional</span>
+<span class="sd">            Whether to include a group norm layer after the convolutional layer.</span>
+<span class="sd">            The default is ``True``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">to_pad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="n">skip_ch</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">skip_ch</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">skip_ch</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">use_norm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="n">num_channels</span><span class="o">=</span><span class="n">in_ch</span> <span class="o">+</span> <span class="n">skip_ch</span><span class="p">,</span> <span class="n">num_groups</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span> <span class="o">+</span> <span class="n">skip_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                          <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="n">num_channels</span><span class="o">=</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">num_groups</span><span class="o">=</span><span class="n">num_groups</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                          <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="n">num_channels</span><span class="o">=</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">num_groups</span><span class="o">=</span><span class="n">num_groups</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span> <span class="o">+</span> <span class="n">skip_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                          <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                          <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">to_pad</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">use_norm</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">skip_conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">skip_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">GroupNorm</span><span class="p">(</span><span class="n">num_channels</span><span class="o">=</span><span class="n">skip_ch</span><span class="p">,</span> <span class="n">num_groups</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">skip_conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">out_ch</span><span class="p">,</span> <span class="n">skip_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">up</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Upsample</span><span class="p">(</span><span class="n">scale_factor</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">,</span>
+                              <span class="n">align_corners</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">concat</span> <span class="o">=</span> <span class="n">Concat</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="UpBlock.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UpBlock.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">x2</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x1 : Tensor</span>
+<span class="sd">            Block input.</span>
+<span class="sd">        x2 : Tensor</span>
+<span class="sd">            Input from skip connection.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Block output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">:</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_conv</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># leading batch dims like x1, skip_ch=1, image shape like x2</span>
+            <span class="n">x2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="o">*</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">x2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x1</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x1</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div></div>
+
+
+<div class="viewcode-block" id="Concat"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.Concat">[docs]</a><span class="k">class</span> <span class="nc">Concat</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Layer concatenating channels.</span>
+
+<span class="sd">    Crops to the central image parts if inputs have different image shapes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Concat.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.Concat.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        inputs : list of Tensor</span>
+<span class="sd">            Inputs to concatenate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Concatenated tensor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inputs_shapes2</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
+        <span class="n">inputs_shapes3</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inputs_shapes2</span><span class="p">)</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">inputs_shapes2</span><span class="p">))</span> <span class="ow">and</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">inputs_shapes3</span><span class="p">)</span> <span class="o">==</span> <span class="nb">min</span><span class="p">(</span><span class="n">inputs_shapes3</span><span class="p">))):</span>
+            <span class="n">inputs_</span> <span class="o">=</span> <span class="n">inputs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">target_shape2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">inputs_shapes2</span><span class="p">)</span>
+            <span class="n">target_shape3</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">inputs_shapes3</span><span class="p">)</span>
+
+            <span class="n">inputs_</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">inputs</span><span class="p">:</span>
+                <span class="n">diff2</span> <span class="o">=</span> <span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">target_shape2</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="n">diff3</span> <span class="o">=</span> <span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">target_shape3</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+                <span class="n">inputs_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inp</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">diff2</span><span class="p">:</span><span class="n">diff2</span> <span class="o">+</span> <span class="n">target_shape2</span><span class="p">,</span>
+                                   <span class="n">diff3</span><span class="p">:</span><span class="n">diff3</span> <span class="o">+</span> <span class="n">target_shape3</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">inputs_</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="OutBlock"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.OutBlock">[docs]</a><span class="k">class</span> <span class="nc">OutBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Output block&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="OutBlock.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.OutBlock.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        in_ch : int</span>
+<span class="sd">            Number of input channels.</span>
+<span class="sd">        out_ch : int</span>
+<span class="sd">            Number of output channels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OutBlock.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.OutBlock.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : Tensor</span>
+<span class="sd">            Block input.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Block output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_modules</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

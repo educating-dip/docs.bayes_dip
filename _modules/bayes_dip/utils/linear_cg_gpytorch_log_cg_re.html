@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.utils.linear_cg_gpytorch_log_cg_re &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.utils.linear_cg_gpytorch_log_cg_re</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.utils.linear_cg_gpytorch_log_cg_re</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Clone of :func:`linear_log_cg_re` from</span>
+<span class="sd">https://github.com/AndPotap/halfpres_gps/blob/6aead66d9d9efc30b5e3ee3a49697d660a8c4043/core/gpytorch_log_cg_re.py</span>
+<span class="sd">also returning the residual, a re-orthogonalizing CG variant introduced in [1]_.</span>
+
+<span class="sd">.. [1] W.J. Maddox, A. Potapczynski, and A.G. Wilson, 2022, &quot;Low Precision Arithmetic for Fast</span>
+<span class="sd">        Gaussian Processes&quot;. The 38th Conference on Uncertainty in Artificial Intelligence.</span>
+<span class="sd">        https://openreview.net/forum?id=S3NOX_Ij9xc</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c1"># pylint: disable=all</span>
+
+<span class="k">def</span> <span class="nf">_default_preconditioner</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="linear_log_cg_re"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.linear_log_cg_re">[docs]</a><span class="k">def</span> <span class="nf">linear_log_cg_re</span><span class="p">(</span>
+    <span class="n">matmul_closure</span><span class="p">,</span>
+    <span class="n">rhs</span><span class="p">,</span>
+    <span class="n">tolerance</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="p">,</span>
+    <span class="n">initial_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">preconditioner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">eps</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
+    <span class="n">stop_updating_after</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span>
+    <span class="n">max_tridiag_iter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">initial_guess</span> <span class="k">if</span> <span class="n">initial_guess</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+    <span class="n">rhs_norm</span> <span class="o">=</span> <span class="n">rhs</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">rhs_is_zero</span> <span class="o">=</span> <span class="n">rhs_norm</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
+    <span class="n">rhs_norm</span> <span class="o">=</span> <span class="n">rhs_norm</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">rhs_is_zero</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">rhs</span> <span class="o">=</span> <span class="n">rhs</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">rhs_norm</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">preconditioner</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">preconditioner</span> <span class="o">=</span> <span class="n">_default_preconditioner</span>
+
+    <span class="n">state</span> <span class="o">=</span> <span class="n">initialize_log_re</span><span class="p">(</span><span class="n">matmul_closure</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">preconditioner</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">take_cg_step_log_re</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">matmul_closure</span><span class="p">,</span> <span class="n">preconditioner</span><span class="p">)</span>
+        <span class="c1"># print(&#39;residual from state:&#39;, state[1].norm(2, dim=-2, keepdim=True))</span>
+        <span class="c1"># print(&#39;actual residual:&#39;, (matmul_closure(state[0]) - rhs).norm(2, dim=-2, keepdim=True))</span>
+        <span class="k">if</span> <span class="n">cond_fun</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">):</span>
+            <span class="k">break</span>
+
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">x0</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">rhs_norm</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CG Iters: </span><span class="si">{</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x0</span><span class="p">,</span> <span class="n">r0</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="initialize_log_re"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.initialize_log_re">[docs]</a><span class="k">def</span> <span class="nf">initialize_log_re</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">preconditioner</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">max_iters</span><span class="p">):</span>
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">b</span> <span class="o">-</span> <span class="n">A</span><span class="p">(</span><span class="n">x0</span><span class="p">)</span>
+    <span class="n">z0</span> <span class="o">=</span> <span class="n">preconditioner</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span>
+    <span class="n">p0</span> <span class="o">=</span> <span class="n">z0</span>
+    <span class="n">log_gamma0</span> <span class="o">=</span> <span class="n">update_log_gamma_unclipped</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="n">r0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z0</span><span class="p">)</span>
+    <span class="n">u_all</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">max_iters</span><span class="p">,)</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">x0</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x0</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">log_gamma0</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">u_all</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="re_orthogonalization"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.re_orthogonalization">[docs]</a><span class="k">def</span> <span class="nf">re_orthogonalization</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">u_all</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">dotprod</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">u_all</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">u_all</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dotprod</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="take_cg_step_log_re"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.take_cg_step_log_re">[docs]</a><span class="k">def</span> <span class="nf">take_cg_step_log_re</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">preconditioner</span><span class="p">):</span>
+    <span class="n">x0</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">log_gamma0</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">u_all</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">state</span>
+    <span class="n">has_converged</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.e-8</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">p0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">Ap0</span> <span class="o">=</span> <span class="n">A</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">update_alpha_log_unclipped</span><span class="p">(</span><span class="n">log_gamma0</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">Ap0</span><span class="p">,</span> <span class="n">has_converged</span><span class="p">)</span>
+
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">p0</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">r0</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">Ap0</span>
+
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">re_orthogonalization</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">u_all</span><span class="p">)</span>
+    <span class="n">z1</span> <span class="o">=</span> <span class="n">preconditioner</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span>
+
+    <span class="n">log_gamma1</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">update_log_gamma_beta_unclipped</span><span class="p">(</span>
+        <span class="n">r1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">log_gamma0</span><span class="p">,</span> <span class="n">has_converged</span><span class="p">)</span>
+    <span class="n">u_all</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">r1</span> <span class="o">/</span> <span class="n">r1</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">z1</span> <span class="o">+</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">p0</span>
+    <span class="c1"># print_progress(k, alpha, r1, torch.exp(log_gamma1), beta)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">log_gamma1</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">u_all</span><span class="p">,</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="update_alpha_log_unclipped"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.update_alpha_log_unclipped">[docs]</a><span class="k">def</span> <span class="nf">update_alpha_log_unclipped</span><span class="p">(</span><span class="n">log_gamma</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">Ap</span><span class="p">,</span> <span class="n">has_converged</span><span class="p">):</span>
+    <span class="n">log_alpha_abs</span><span class="p">,</span> <span class="n">sign</span> <span class="o">=</span> <span class="n">compute_robust_denom_unclipped</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Ap</span><span class="p">)</span>
+    <span class="n">log_denom</span> <span class="o">=</span> <span class="n">logsumexp</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">log_alpha_abs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">sign</span><span class="p">)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_gamma</span> <span class="o">-</span> <span class="n">log_denom</span><span class="p">)</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">has_converged</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">alpha</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">alpha</span></div>
+
+<div class="viewcode-block" id="compute_robust_denom_unclipped"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.compute_robust_denom_unclipped">[docs]</a><span class="k">def</span> <span class="nf">compute_robust_denom_unclipped</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Ap</span><span class="p">):</span>
+    <span class="n">p_abs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="nb">min</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.e-8</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
+    <span class="n">Ap_abs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Ap</span><span class="p">),</span> <span class="nb">min</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.e-8</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">Ap</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">Ap</span><span class="p">)</span>
+    <span class="n">log_alpha_abs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_abs</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Ap_abs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">log_alpha_abs</span><span class="p">,</span> <span class="n">sign</span></div>
+
+
+<div class="viewcode-block" id="update_log_gamma_beta_unclipped"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.update_log_gamma_beta_unclipped">[docs]</a><span class="k">def</span> <span class="nf">update_log_gamma_beta_unclipped</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">log_gamma0</span><span class="p">,</span> <span class="n">has_converged</span><span class="p">):</span>
+    <span class="n">log_gamma1</span> <span class="o">=</span> <span class="n">update_log_gamma_unclipped</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">log_gamma1</span> <span class="o">-</span> <span class="n">log_gamma0</span><span class="p">)</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">has_converged</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">beta</span><span class="p">),</span> <span class="n">beta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">log_gamma1</span><span class="p">,</span> <span class="n">beta</span></div>
+
+
+<div class="viewcode-block" id="update_log_gamma_unclipped"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.update_log_gamma_unclipped">[docs]</a><span class="k">def</span> <span class="nf">update_log_gamma_unclipped</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">1e-45</span><span class="p">):</span>
+    <span class="n">r_abs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">min_val</span><span class="p">)</span>
+    <span class="n">z_abs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">min_val</span><span class="p">)</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">log_gamma_abs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r_abs</span><span class="p">)</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">z_abs</span><span class="p">)</span>
+    <span class="n">log_gamma</span> <span class="o">=</span> <span class="n">logsumexp</span><span class="p">(</span><span class="n">tensor</span><span class="o">=</span><span class="n">log_gamma_abs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">sign</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">log_gamma</span></div>
+
+
+<div class="viewcode-block" id="cond_fun"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.cond_fun">[docs]</a><span class="k">def</span> <span class="nf">cond_fun</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_iters</span><span class="p">):</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="n">state</span>
+    <span class="n">rs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">res_meet</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">rs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tolerance</span>
+    <span class="n">min_val</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+                            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">max_iters</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="p">((</span><span class="n">res_meet</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;=</span> <span class="n">min_val</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="n">max_iters</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">flag</span></div>
+
+
+<div class="viewcode-block" id="logsumexp"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.utils.linear_cg_gpytorch_log_cg_re.html#bayes_dip.utils.linear_cg_gpytorch_log_cg_re.logsumexp">[docs]</a><span class="k">def</span> <span class="nf">logsumexp</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_sign</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_val</span><span class="o">=</span><span class="mf">1e-45</span><span class="p">):</span>
+    <span class="n">max_entry</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tensor</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">summ</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">tensor</span> <span class="o">-</span> <span class="n">max_entry</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span> <span class="o">*</span> <span class="n">mask</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">max_entry</span> <span class="o">+</span> <span class="n">summ</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">min_val</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+bayes\_dip.data.utils module
+============================
+
+.. automodule:: bayes_dip.data.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

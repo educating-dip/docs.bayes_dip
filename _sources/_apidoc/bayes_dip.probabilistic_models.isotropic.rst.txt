@@ -1,0 +1,10 @@
+bayes\_dip.probabilistic\_models.isotropic package
+==================================================
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.probabilistic_models.isotropic
+   :members:
+   :undoc-members:
+   :show-inheritance:

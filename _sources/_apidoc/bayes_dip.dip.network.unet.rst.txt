@@ -1,0 +1,7 @@
+bayes\_dip.dip.network.unet module
+==================================
+
+.. automodule:: bayes_dip.dip.network.unet
+   :members:
+   :undoc-members:
+   :show-inheritance:

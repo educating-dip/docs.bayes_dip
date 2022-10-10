@@ -1,0 +1,7 @@
+bayes\_dip.utils.evaluation\_utils module
+=========================================
+
+.. automodule:: bayes_dip.utils.evaluation_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

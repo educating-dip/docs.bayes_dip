@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.marginal_likelihood_optim.preconditioner_utils module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.marginal_likelihood_optim.random_probes module" href="bayes_dip.marginal_likelihood_optim.random_probes.html" />
+    <link rel="prev" title="bayes_dip.marginal_likelihood_optim.preconditioner module" href="bayes_dip.marginal_likelihood_optim.preconditioner.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html#module-bayes_dip.marginal_likelihood_optim">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a> &raquo;</li>
+      <li>bayes_dip.marginal_likelihood_optim.preconditioner_utils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.marginal_likelihood_optim.preconditioner_utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.marginal_likelihood_optim.preconditioner_utils">
+<span id="bayes-dip-marginal-likelihood-optim-preconditioner-utils-module"></span><h1>bayes_dip.marginal_likelihood_optim.preconditioner_utils module<a class="headerlink" href="#module-bayes_dip.marginal_likelihood_optim.preconditioner_utils" title="Permalink to this heading"></a></h1>
+<p>Provides utilities for the preconditioners in <a class="reference internal" href="bayes_dip.marginal_likelihood_optim.preconditioner.html#module-bayes_dip.marginal_likelihood_optim.preconditioner" title="bayes_dip.marginal_likelihood_optim.preconditioner"><code class="xref py py-mod docutils literal notranslate"><span class="pre">preconditioner</span></code></a>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner_utils.approx_diag">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.marginal_likelihood_optim.preconditioner_utils.</span></span><span class="sig-name descname"><span class="pre">approx_diag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">closure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner_utils.html#approx_diag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner_utils.approx_diag" title="Permalink to this definition"></a></dt>
+<dd><p>Return an approximation of a matrix diagonal, estimated using matrix-vector products.</p>
+<p>This implements the matrix-free estimator described in Figure 1 in <a class="reference internal" href="#r180556e6d4a4-1" id="id1">[1]</a>.</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r180556e6d4a4-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>C. Bekas, E. Kokiopoulou, and Y. Saad, 2007, “An estimator for the diagonal of a matrix”.
+Applied Numerical Mathematics. <a class="reference external" href="https://doi.org/10.1016/J.APNUM.2007.01.003">https://doi.org/10.1016/J.APNUM.2007.01.003</a></p>
+</div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>closure</strong><span class="classifier">callable</span></dt><dd><p>Matmul closure. The closure receives and returns tensors of shape <code class="docutils literal notranslate"><span class="pre">(size,</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+<dt><strong>size</strong><span class="classifier">int</span></dt><dd><p>Matrix size (side length).</p>
+</dd>
+<dt><strong>num_samples</strong><span class="classifier">int</span></dt><dd><p>Number of samples to use for the estimation.</p>
+</dd>
+<dt><strong>batch_size</strong><span class="classifier">int, optional</span></dt><dd><p>Batch size for evaluating the closure. The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">str or torch.dtype, optional</span></dt><dd><p>Data type.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device, optional</span></dt><dd><p>Device.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>estimated_diag</strong><span class="classifier">Tensor</span></dt><dd><p>Matrix diagonal estimate. Shape: <code class="docutils literal notranslate"><span class="pre">(size,)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.preconditioner_utils.pivoted_cholesky">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.marginal_likelihood_optim.preconditioner_utils.</span></span><span class="sig-name descname"><span class="pre">pivoted_cholesky</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">closure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">approx_diag_num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recompute_max_diag_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix_diag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/preconditioner_utils.html#pivoted_cholesky"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.preconditioner_utils.pivoted_cholesky" title="Permalink to this definition"></a></dt>
+<dd><p>Simplified clone of the Pivoted Cholesky decomposition implementation from
+<a class="reference external" href="https://github.com/cornellius-gp/linear_operator/blob/main/linear_operator/functions/_pivoted_cholesky.py">https://github.com/cornellius-gp/linear_operator/blob/main/linear_operator/functions/_pivoted_cholesky.py</a>
+that directly uses a closure.</p>
+<p>Changes made to the original implementation:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>use closure instead of LinearOperator instance</p></li>
+<li><p>do not support batch dims (we just need one matrix)</p></li>
+<li><p>estimate diagonal with <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.preconditioner_utils.approx_diag" title="bayes_dip.marginal_likelihood_optim.preconditioner_utils.approx_diag"><code class="xref py py-func docutils literal notranslate"><span class="pre">approx_diag()</span></code></a> or use manually passed diagonal</p></li>
+<li><dl class="simple">
+<dt>use square root of the <em>exact</em> diagonal value for each selected pivot to populate</dt><dd><p><code class="docutils literal notranslate"><span class="pre">L[m,</span> <span class="pre">m]</span></code> (the row is computed anyways)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.marginal_likelihood_optim.preconditioner.html" class="btn btn-neutral float-left" title="bayes_dip.marginal_likelihood_optim.preconditioner module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.marginal_likelihood_optim.random_probes.html" class="btn btn-neutral float-right" title="bayes_dip.marginal_likelihood_optim.random_probes module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

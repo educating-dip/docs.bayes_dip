@@ -1,0 +1,26 @@
+bayes\_dip.dip package
+======================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.dip.network
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.dip.deep_image_prior
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.dip
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.inference.utils module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.marginal_likelihood_optim package" href="bayes_dip.marginal_likelihood_optim.html" />
+    <link rel="prev" title="bayes_dip.inference.sample_based_predictive_posterior module" href="bayes_dip.inference.sample_based_predictive_posterior.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.inference.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.inference.html#module-bayes_dip.inference">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.inference.html">bayes_dip.inference package</a> &raquo;</li>
+      <li>bayes_dip.inference.utils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.inference.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.inference.utils">
+<span id="bayes-dip-inference-utils-module"></span><h1>bayes_dip.inference.utils module<a class="headerlink" href="#module-bayes_dip.inference.utils" title="Permalink to this heading"></a></h1>
+<p>Provides utilities for inference.</p>
+<p>In particular, functionality for patch-wise evaluation is included.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.inference.utils.get_image_patch_mask_inds">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.inference.utils.</span></span><span class="sig-name descname"><span class="pre">get_image_patch_mask_inds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/inference/utils.html#get_image_patch_mask_inds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.utils.get_image_patch_mask_inds" title="Permalink to this definition"></a></dt>
+<dd><p>Return mask indices defining patches of an image.</p>
+<p>The flattened <code class="docutils literal notranslate"><span class="pre">i</span></code>-th patch of an <code class="docutils literal notranslate"><span class="pre">image</span></code> tensor is defined as <code class="docutils literal notranslate"><span class="pre">image[patch_mask_inds[i]]</span></code>.</p>
+<p>If an <code class="docutils literal notranslate"><span class="pre">image_shape</span></code> dimension is not divisible by <code class="docutils literal notranslate"><span class="pre">patch_size</span></code>, the last patches along this
+dimension that would fit in the image are enlarged to also contain the remaining pixels in this
+dimension; patches can be non-square for this reason.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>image_shape</strong><span class="classifier">2-tuple of int</span></dt><dd><p>Image shape.</p>
+</dd>
+<dt><strong>patch_size</strong><span class="classifier">int</span></dt><dd><p>Side length of the patches (patches are usually square).
+It is clipped to the maximum value <code class="docutils literal notranslate"><span class="pre">min(*image_shape)</span></code>.</p>
+</dd>
+<dt><strong>flatten</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to flatten each array in the returned <code class="docutils literal notranslate"><span class="pre">patch_mask_inds</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>patch_mask_inds</strong><span class="classifier">list of array</span></dt><dd><p>Mask indices for each patch. The length is the number of patches.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.inference.utils.get_image_patch_slices">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.inference.utils.</span></span><span class="sig-name descname"><span class="pre">get_image_patch_slices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><span class="pre">slice</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><span class="pre">slice</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/inference/utils.html#get_image_patch_slices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.utils.get_image_patch_slices" title="Permalink to this definition"></a></dt>
+<dd><p>Return slice objects defining patches of an image.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">i</span></code>-th patch of a 2D <code class="docutils literal notranslate"><span class="pre">image</span></code> tensor is defined as
+<code class="docutils literal notranslate"><span class="pre">image[patch_slices_0[i],</span> <span class="pre">patch_slices_1[i]]</span></code>.</p>
+<p>If an <code class="docutils literal notranslate"><span class="pre">image_shape</span></code> dimension is not divisible by <code class="docutils literal notranslate"><span class="pre">patch_size</span></code>, the last patches along this
+dimension that would fit in the image are enlarged to also contain the remaining pixels in this
+dimension; patches can be non-square for this reason.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>image_shape</strong><span class="classifier">2-tuple of int</span></dt><dd><p>Image shape.</p>
+</dd>
+<dt><strong>patch_size</strong><span class="classifier">int</span></dt><dd><p>Side length of the patches (patches are usually square).
+It is clipped to the maximum value <code class="docutils literal notranslate"><span class="pre">min(*image_shape)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>patch_slices_0</strong><span class="classifier">list of slice</span></dt><dd><p>Slices in image dimension 0. The length is the number of patches.</p>
+</dd>
+<dt><strong>patch_slices_1</strong><span class="classifier">list of slice</span></dt><dd><p>Slices in image dimension 1. The length is the number of patches.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.inference.utils.is_invalid">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.inference.utils.</span></span><span class="sig-name descname"><span class="pre">is_invalid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/inference/utils.html#is_invalid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.utils.is_invalid" title="Permalink to this definition"></a></dt>
+<dd><p>Return whether all numbers are finite per batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">Tensor</span></dt><dd><p>Tensor. Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">...)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>batch_invalid_values</strong><span class="classifier">Tensor</span></dt><dd><p>Boolean tensor specifying if all numbers are finite, batch-wise. Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.inference.utils.yield_padded_batched_images_patches">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.inference.utils.</span></span><span class="sig-name descname"><span class="pre">yield_padded_batched_images_patches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_patch_numels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterator" title="(in Python v3.10)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/inference/utils.html#yield_padded_batched_images_patches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.utils.yield_padded_batched_images_patches" title="Permalink to this definition"></a></dt>
+<dd><p>Yield batches of patches from images.</p>
+<p>The effective batch size (denote it by <code class="docutils literal notranslate"><span class="pre">eff_batch_size</span></code>) is
+<code class="docutils literal notranslate"><span class="pre">patch_kwargs.get('batch_size',</span> <span class="pre">1)</span></code> for all batches except for the potentially smaller last
+batch.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>images</strong><span class="classifier">Tensor</span></dt><dd><p>Images. Shape: <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">1,</span> <span class="pre">*im_shape)</span></code>.</p>
+</dd>
+<dt><strong>patch_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Keyword arguments specifying how to split the image into patches.</p>
+<dl class="simple">
+<dt>The arguments are:</dt><dd><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'patch_size'</span></code><span class="classifier">int, optional</span></dt><dd><p>The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'patch_idx_list'</span></code><span class="classifier">list of int, optional</span></dt><dd><p>Patch indices. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, all patches are used.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'batch_size'</span></code><span class="classifier">int, optional</span></dt><dd><p>The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt><strong>return_patch_numels</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, also return the number of pixels for each patch in the batch.
+The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Yields<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>batch_patch_inds</strong><span class="classifier">list of int</span></dt><dd><p>Patch indices. The length is <code class="docutils literal notranslate"><span class="pre">eff_batch_size</span></code>.</p>
+</dd>
+<dt><strong>batch_samples_patches</strong><span class="classifier">Tensor</span></dt><dd><p>Batch of patches from images.
+Shape: <code class="docutils literal notranslate"><span class="pre">(eff_batch_size,</span> <span class="pre">num_samples,</span> <span class="pre">max(batch_len_mask_inds))</span></code>.</p>
+</dd>
+<dt><strong>batch_len_mask_inds</strong><span class="classifier">list of int, optional</span></dt><dd><p>Number of pixels for each patch. Only returned if <code class="docutils literal notranslate"><span class="pre">return_patch_numels</span></code>.
+These numbers can be used to remove the padding from the
+individual elements in the batch: <code class="docutils literal notranslate"><span class="pre">batch_samples_patches[i,</span> <span class="pre">:,</span> <span class="pre">:batch_len_mask_inds[i]]</span></code>.
+The length is <code class="docutils literal notranslate"><span class="pre">eff_batch_size</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.inference.sample_based_predictive_posterior.html" class="btn btn-neutral float-left" title="bayes_dip.inference.sample_based_predictive_posterior module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.marginal_likelihood_optim.html" class="btn btn-neutral float-right" title="bayes_dip.marginal_likelihood_optim package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

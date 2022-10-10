@@ -1,0 +1,7 @@
+bayes\_dip.marginal\_likelihood\_optim.sample\_based\_predcp module
+===================================================================
+
+.. automodule:: bayes_dip.marginal_likelihood_optim.sample_based_predcp
+   :members:
+   :undoc-members:
+   :show-inheritance:

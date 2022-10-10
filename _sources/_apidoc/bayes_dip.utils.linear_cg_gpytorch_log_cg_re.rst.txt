@@ -1,0 +1,7 @@
+bayes\_dip.utils.linear\_cg\_gpytorch\_log\_cg\_re module
+=========================================================
+
+.. automodule:: bayes_dip.utils.linear_cg_gpytorch_log_cg_re
+   :members:
+   :undoc-members:
+   :show-inheritance:

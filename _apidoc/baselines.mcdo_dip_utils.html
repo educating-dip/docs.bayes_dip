@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>baselines.mcdo_dip_utils module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>baselines.mcdo_dip_utils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/baselines.mcdo_dip_utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-baselines.mcdo_dip_utils">
+<span id="baselines-mcdo-dip-utils-module"></span><h1>baselines.mcdo_dip_utils module<a class="headerlink" href="#module-baselines.mcdo_dip_utils" title="Permalink to this heading"></a></h1>
+<p>Provides utilities for the Monte-Carlo Dropout baseline.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="baselines.mcdo_dip_utils.approx_kernel_density">
+<span class="sig-prename descclassname"><span class="pre">baselines.mcdo_dip_utils.</span></span><span class="sig-name descname"><span class="pre">approx_kernel_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_x_correction_term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/baselines/mcdo_dip_utils.html#approx_kernel_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#baselines.mcdo_dip_utils.approx_kernel_density" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="baselines.mcdo_dip_utils.bayesianize_unet_architecture">
+<span class="sig-prename descclassname"><span class="pre">baselines.mcdo_dip_utils.</span></span><span class="sig-name descname"><span class="pre">bayesianize_unet_architecture</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nn_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.dip.network.unet.html#bayes_dip.dip.network.unet.UNet" title="bayes_dip.dip.network.unet.UNet"><span class="pre">UNet</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/baselines/mcdo_dip_utils.html#bayesianize_unet_architecture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#baselines.mcdo_dip_utils.bayesianize_unet_architecture" title="Permalink to this definition"></a></dt>
+<dd><p>Replace all 3x3 <code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Conv2d</span></code> layers that are contained in an
+<code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Sequential</span></code> module with wrapping <a class="reference internal" href="#baselines.mcdo_dip_utils.conv2d_dropout" title="baselines.mcdo_dip_utils.conv2d_dropout"><code class="xref py py-class docutils literal notranslate"><span class="pre">conv2d_dropout</span></code></a> layers.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>nn_model</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bayes_dip.dip.network.UNet</span></code></span></dt><dd><p>U-Net model (or other supported model).</p>
+</dd>
+<dt><strong>p</strong><span class="classifier">float, optional</span></dt><dd><p>Dropout rate. The default is <code class="docutils literal notranslate"><span class="pre">0.05</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="baselines.mcdo_dip_utils.conv2d_dropout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">baselines.mcdo_dip_utils.</span></span><span class="sig-name descname"><span class="pre">conv2d_dropout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/baselines/mcdo_dip_utils.html#conv2d_dropout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#baselines.mcdo_dip_utils.conv2d_dropout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
+<p>Wrapper for a given layer that appends a subsequent dropout layer.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#baselines.mcdo_dip_utils.conv2d_dropout.forward" title="baselines.mcdo_dip_utils.conv2d_dropout.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(x)</p></td>
+<td><p>Apply layer followed by dropout.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="baselines.mcdo_dip_utils.conv2d_dropout.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/baselines/mcdo_dip_utils.html#conv2d_dropout.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#baselines.mcdo_dip_utils.conv2d_dropout.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="baselines.mcdo_dip_utils.conv2d_dropout.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/baselines/mcdo_dip_utils.html#conv2d_dropout.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#baselines.mcdo_dip_utils.conv2d_dropout.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Apply layer followed by dropout.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="baselines.mcdo_dip_utils.mc_dropout2d">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">baselines.mcdo_dip_utils.</span></span><span class="sig-name descname"><span class="pre">mc_dropout2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/baselines/mcdo_dip_utils.html#mc_dropout2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#baselines.mcdo_dip_utils.mc_dropout2d" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_DropoutNd</span></code></p>
+<p>Dropout 2D layer</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#baselines.mcdo_dip_utils.mc_dropout2d.forward" title="baselines.mcdo_dip_utils.mc_dropout2d.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(inp)</p></td>
+<td><p>Apply dropout.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="baselines.mcdo_dip_utils.mc_dropout2d.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/baselines/mcdo_dip_utils.html#mc_dropout2d.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#baselines.mcdo_dip_utils.mc_dropout2d.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Apply dropout.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="baselines.mcdo_dip_utils.sample_from_bayesianized_model">
+<span class="sig-prename descclassname"><span class="pre">baselines.mcdo_dip_utils.</span></span><span class="sig-name descname"><span class="pre">sample_from_bayesianized_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nn_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtbackproj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/baselines/mcdo_dip_utils.html#sample_from_bayesianized_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#baselines.mcdo_dip_utils.sample_from_bayesianized_model" title="Permalink to this definition"></a></dt>
+<dd><p>Sample from MCDO model.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>nn_model</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bayes_dip.dip.network.UNet</span></code></span></dt><dd><p>Model returned from <a class="reference internal" href="#baselines.mcdo_dip_utils.bayesianize_unet_architecture" title="baselines.mcdo_dip_utils.bayesianize_unet_architecture"><code class="xref py py-func docutils literal notranslate"><span class="pre">bayesianize_unet_architecture()</span></code></a>.</p>
+</dd>
+<dt><strong>filtbackproj</strong><span class="classifier">Tensor</span></dt><dd><p>Filtered back-projection.</p>
+</dd>
+<dt><strong>mc_samples</strong><span class="classifier">int</span></dt><dd><p>Number of Monte-Carlo samples to draw.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device, optional</span></dt><dd><p>Device. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), <code class="docutils literal notranslate"><span class="pre">filtbackproj.device</span></code> is used.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

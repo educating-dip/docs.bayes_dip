@@ -1,0 +1,31 @@
+bayes\_dip.probabilistic\_models package
+========================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.probabilistic_models.isotropic
+   bayes_dip.probabilistic_models.linearized_dip
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.probabilistic_models.base_image_cov
+   bayes_dip.probabilistic_models.base_observation_cov
+   bayes_dip.probabilistic_models.image_noise_correction
+   bayes_dip.probabilistic_models.linear_sandwich_cov
+   bayes_dip.probabilistic_models.observation_cov
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.probabilistic_models
+   :members:
+   :undoc-members:
+   :show-inheritance:

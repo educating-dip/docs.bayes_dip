@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.low\_rank\_observation\_cov module
+===================================================================================
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov
+   :members:
+   :undoc-members:
+   :show-inheritance:

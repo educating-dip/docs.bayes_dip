@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Provides :class:`LowRankObservationCov`&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">bayes_dip.data.trafo.base_ray_trafo</span> <span class="kn">import</span> <span class="n">BaseRayTrafo</span>
+<span class="kn">from</span> <span class="nn">..base_image_cov</span> <span class="kn">import</span> <span class="n">BaseImageCov</span>
+<span class="kn">from</span> <span class="nn">..observation_cov</span> <span class="kn">import</span> <span class="n">BaseObservationCov</span>
+
+
+<div class="viewcode-block" id="LowRankObservationCov"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov">[docs]</a><span class="k">class</span> <span class="nc">LowRankObservationCov</span><span class="p">(</span><span class="n">BaseObservationCov</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Covariance in observation space using low-rank matrix approximation.</span>
+<span class="sd">    The algorithm is described in [1]_.</span>
+
+<span class="sd">    .. [1] N. Halko, P.G. Martinsson, and J.A. Tropp, 2011, &quot;Finding Structure with Randomness:</span>
+<span class="sd">           probabilistic algorithms for constructing approximate matrix decompositions&quot;.</span>
+<span class="sd">           SIAM Review. https://doi.org/10.1137/090771806.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LowRankObservationCov.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">trafo</span><span class="p">:</span> <span class="n">BaseRayTrafo</span><span class="p">,</span>
+            <span class="n">image_cov</span><span class="p">:</span> <span class="n">BaseImageCov</span><span class="p">,</span>
+            <span class="n">init_noise_variance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">,</span>
+            <span class="n">low_rank_rank_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+            <span class="n">oversampling_param</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="n">load_state_dict</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">load_approx_basis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">update_kwargs</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        trafo : :class:`bayes_dip.data.BaseRayTrafo`</span>
+<span class="sd">            Ray transform.</span>
+<span class="sd">        image_cov : :class:`bayes_dip.probabilistic_models.BaseImageCov`</span>
+<span class="sd">            Image space covariance module.</span>
+<span class="sd">        init_noise_variance : float, optional</span>
+<span class="sd">            Initial value for noise variance parameter. The default is ``1.``.</span>
+<span class="sd">        low_rank_rank_dim : int, optional</span>
+<span class="sd">            Number of dimensions of the low-rank approximation. The default is ``100``.</span>
+<span class="sd">        oversampling_param : int, optional</span>
+<span class="sd">            Number of oversampling dimensions for the low-rank approximation. The default is ``10``.</span>
+<span class="sd">        load_state_dict : str or dict, optional</span>
+<span class="sd">            State dict (or path to it) to load.</span>
+<span class="sd">        load_approx_basis : str or dict, optional</span>
+<span class="sd">            Approximate basis (or path to it) to load.</span>
+<span class="sd">            Only supported if ``requires_grad=False``. If using this option, ``load_state_dict`` is</span>
+<span class="sd">            required, and the user is responsible for consistency.</span>
+<span class="sd">        requires_grad : bool, optional</span>
+<span class="sd">            Whether gradient computation should be enabled. Note that the parameters are only used</span>
+<span class="sd">            in :meth:`update`, so computations will use the values from the last :meth:`update`</span>
+<span class="sd">            call, and back-propagating from the output of any method (e.g. :meth:`forward`)</span>
+<span class="sd">            repeatedly, without calling :meth:`update` in between, requires ``retain_graph=True``.</span>
+<span class="sd">            The default is ``True``.</span>
+<span class="sd">        device : str or torch.device, optional</span>
+<span class="sd">            Device. If ``None`` (the default), ``&#39;cuda:0&#39;`` is chosen if available or ``&#39;cpu&#39;``</span>
+<span class="sd">            otherwise.</span>
+<span class="sd">        update_kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to :meth:`update`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=too-many-arguments</span>
+
+        <span class="k">assert</span> <span class="ow">not</span> <span class="p">(</span><span class="n">load_approx_basis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">load_state_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">),</span> <span class="p">(</span>
+                <span class="s1">&#39;`load_state_dict` is required when using `load_approx_basis`&#39;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">trafo</span><span class="o">=</span><span class="n">trafo</span><span class="p">,</span>
+                <span class="n">image_cov</span><span class="o">=</span><span class="n">image_cov</span><span class="p">,</span>
+                <span class="n">init_noise_variance</span><span class="o">=</span><span class="n">init_noise_variance</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">load_state_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">load_state_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">load_state_dict</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">load_state_dict</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">load_state_dict</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="n">requires_grad</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_noise_variance</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+        <span class="c1"># can&#39;t call self.image_cov.requires_grad_() because it might be shared, will disable grads</span>
+        <span class="c1"># locally when using self.image_cov</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span> <span class="o">=</span> <span class="n">low_rank_rank_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oversampling_param</span> <span class="o">=</span> <span class="n">oversampling_param</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assemble_random_matrix</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">load_approx_basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">update_kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_approx_basis</span><span class="p">(</span><span class="n">load_approx_basis</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LowRankObservationCov.load_approx_basis"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.load_approx_basis">[docs]</a>    <span class="k">def</span> <span class="nf">load_approx_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_dict</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load approximate basis. Only supported if ``not self.requires_grad``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath_or_dict : str or dict</span>
+<span class="sd">            Approximate basis (or path to it) to load.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">requires_grad</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">filepath_or_dict</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_variance_obs_and_eps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sysmat</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;U&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;L&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;noise_stddev&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;noise_variance_obs_and_eps&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;sysmat&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="LowRankObservationCov.save_approx_basis"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.save_approx_basis">[docs]</a>    <span class="k">def</span> <span class="nf">save_approx_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save approximate basis to file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : str</span>
+<span class="sd">            Path for saving.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span>
+                <span class="s1">&#39;U&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span>
+                <span class="s1">&#39;noise_stddev&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_stddev</span><span class="p">,</span>
+                <span class="s1">&#39;noise_variance_obs_and_eps&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_variance_obs_and_eps</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span>
+                <span class="s1">&#39;sysmat&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sysmat</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()},</span>
+                <span class="n">filepath</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_assemble_random_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">low_rank_rank_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">oversampling_param</span>
+        <span class="n">random_matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">low_rank_rank_dim</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">obs_shape</span><span class="p">)),</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">random_matrix</span>
+
+<div class="viewcode-block" id="LowRankObservationCov.get_low_rank_observation_cov_basis"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.get_low_rank_observation_cov_basis">[docs]</a>    <span class="k">def</span> <span class="nf">get_low_rank_observation_cov_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">use_cpu</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-1</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Eigenvalue Decomposition in One Pass.</span>
+
+<span class="sd">        This method implements Algo. 5.6 from Halko et al. and computes an</span>
+<span class="sd">        approximate eigenvalue decomposition of the low-rank term of</span>
+<span class="sd">        covariance in observation space.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        use_cpu : bool, optional</span>
+<span class="sd">            Whether to compute QR on CPU.</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        eps : float, optional</span>
+<span class="sd">            Minimum value eigenvalues.</span>
+<span class="sd">            The default is ``1e-3``.</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            If ``True``, print eigenvalue information. The default is ``True``.</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            Batch size for multiplying with the observation covariance.</span>
+<span class="sd">            The default is ``1``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        U : Tensor</span>
+<span class="sd">            Eigenvectors. Shape: ``(np.prod(self.trafo.obs_shape), self.low_rank_rank_dim)``</span>
+<span class="sd">        L : Tensor</span>
+<span class="sd">            Eigenvalues. Shape: ``(self.low_rank_rank_dim)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">num_batches</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">oversampling_param</span><span class="p">)</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">)</span>
+        <span class="c1"># step 2 in Algorithm 4.1 of Halko et al.</span>
+        <span class="n">v_cov_obs_mat</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># image_cov might require grads (shared module), so disable grads if not self.requires_grad</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_batches</span><span class="p">),</span> <span class="n">miniters</span><span class="o">=</span><span class="n">num_batches</span><span class="o">//</span><span class="mi">100</span><span class="p">,</span>
+                    <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;get_low_rank_observation_cov_basis&#39;</span><span class="p">):</span>
+                <span class="n">rnd_vect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">random_matrix</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+                <span class="n">eff_batch_size</span> <span class="o">=</span> <span class="n">rnd_vect</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">eff_batch_size</span> <span class="o">&lt;</span> <span class="n">batch_size</span><span class="p">:</span>
+                    <span class="n">rnd_vect</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">rnd_vect</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                                <span class="p">(</span><span class="n">batch_size</span><span class="o">-</span><span class="n">eff_batch_size</span><span class="p">,</span> <span class="o">*</span><span class="n">rnd_vect</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="n">rnd_vect</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                                    <span class="n">device</span><span class="o">=</span><span class="n">rnd_vect</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                            <span class="p">]</span>
+                        <span class="p">)</span>
+                <span class="c1"># apply observation cov without noise variance term</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">trafo_adjoint</span><span class="p">(</span><span class="n">rnd_vect</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_cov</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">eff_batch_size</span> <span class="o">&lt;</span> <span class="n">batch_size</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:</span><span class="n">eff_batch_size</span><span class="p">]</span>
+                <span class="n">v_cov_obs_mat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">v_cov_obs_mat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">v_cov_obs_mat</span><span class="p">)</span>
+        <span class="n">v_cov_obs_mat</span> <span class="o">=</span> <span class="n">v_cov_obs_mat</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">v_cov_obs_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># new shape: (dy, L)</span>
+        <span class="c1"># step 3 in Algorithm 4.1 of Halko et al.</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span>
+                <span class="n">v_cov_obs_mat</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span> <span class="k">if</span> <span class="n">use_cpu</span> <span class="k">else</span> <span class="n">v_cov_obs_mat</span><span class="p">)</span>  <span class="c1"># shape: (dy, L), assuming L&lt;=dy</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">use_cpu</span> <span class="k">else</span> <span class="n">Q</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span><span class="p">]</span>
+        <span class="c1"># step 1 in Algorithm 5.6 of Halko et al.</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_matrix</span> <span class="o">@</span> <span class="n">Q</span><span class="p">,</span> <span class="n">v_cov_obs_mat</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">Q</span><span class="p">)</span><span class="o">.</span><span class="n">solution</span>
+        <span class="c1"># step 2 in Algorithm 5.6 of Halko et al.</span>
+        <span class="n">L</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+        <span class="c1"># step 3 in Algorithm 5.6 of Halko et al.</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">@</span> <span class="n">V</span><span class="o">.</span><span class="n">real</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s1">&#39;L.min: </span><span class="si">{</span><span class="n">L</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">}</span><span class="s1">, &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;L.max: </span><span class="si">{</span><span class="n">L</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">}</span><span class="s1">, &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;L.num_vals_below_</span><span class="si">{</span><span class="n">eps</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">real</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">U</span><span class="p">,</span> <span class="n">L</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">eps</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LowRankObservationCov.forward"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">use_inverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multiply with the covariance &quot;matrix&quot; (or its inverse).</span>
+
+<span class="sd">        This is a non-flat version of :meth:`forward`, i.e. the same as</span>
+<span class="sd">        ``self.matmul(v.view(v.shape[0], -1).T, use_inverse=use_inverse).T.view(*v.shape)``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v : Tensor</span>
+<span class="sd">            Observations. Shape: ``(batch_size, 1, *self.trafo.obs_shape)``.</span>
+<span class="sd">        use_inverse : bool, optional</span>
+<span class="sd">            If ``True``, multiply with the inverse instead. The default is ``False``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Products. Shape: same as ``v``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">use_inverse</span><span class="o">=</span><span class="n">use_inverse</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">obs_shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="LowRankObservationCov.matmul"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.matmul">[docs]</a>    <span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">v</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">use_inverse</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Multiply with the covariance &quot;matrix&quot; (or its inverse).</span>
+
+<span class="sd">        Evaluates ``mat @ v`` where ``mat`` is a matrix representation of ``self`` (or its inverse).</span>
+
+<span class="sd">        See also the non-flat version: :meth:`forward`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        v : Tensor</span>
+<span class="sd">            Observations. Shape: ``(np.prod(self.trafo.obs_shape), batch_size)``.</span>
+<span class="sd">        use_inverse : bool, optional</span>
+<span class="sd">            If ``True``, multiply with the inverse instead. The default is ``False``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Products. Shape: same as ``v``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">use_inverse</span><span class="p">:</span>
+            <span class="c1"># matmul with covariance</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">@</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">v</span><span class="p">))</span>
+                    <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_variance_obs_and_eps</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># matmul with inverse</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_variance_obs_and_eps</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sysmat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">v</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">noise_variance_obs_and_eps</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="LowRankObservationCov.update"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">use_cpu</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-1</span><span class="p">,</span>
+        <span class="n">full_diag_eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the low-rank approximation and other state variables to the current parameter values.</span>
+
+<span class="sd">        This is the only function directly involving parameters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        use_cpu : bool, optional</span>
+<span class="sd">            Whether to compute QR on CPU.</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        eps : float, optional</span>
+<span class="sd">            Minumum value eigenvalues.</span>
+<span class="sd">            The default is ``1e-3``.</span>
+<span class="sd">        full_diag_eps : float, optional</span>
+<span class="sd">            Value to add to the noise variance in :meth:`matmul` (for stabilization).</span>
+<span class="sd">            The default is ``1e-6``.</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            Batch size for multiplying with the observation covariance.</span>
+<span class="sd">            The default is ``1``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_low_rank_observation_cov_basis</span><span class="p">(</span>
+                <span class="n">use_cpu</span><span class="o">=</span><span class="n">use_cpu</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise_stddev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_noise_variance</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># for self.sample()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">noise_variance_obs_and_eps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_noise_variance</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span> <span class="o">+</span> <span class="n">full_diag_eps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sysmat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_variance_obs_and_eps</span></div>
+
+<div class="viewcode-block" id="LowRankObservationCov.sample"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">flat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample from a Gaussian with this covariance and mean zero.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_samples : int</span>
+<span class="sd">            Number of samples.</span>
+<span class="sd">        flat : bool, optional</span>
+<span class="sd">            If ``True``, return a flattened tensor with ``num_samples`` as second dimension (see the</span>
+<span class="sd">            return value).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tensor</span>
+<span class="sd">            Samples.</span>
+<span class="sd">            Shape: Either ``(num_samples, 1, *self.trafo.obs_shape)`` if ``not flat`` (the default),</span>
+<span class="sd">            or ``(np.prod(self.trafo.obs_shape), num_samples)`` if ``flat``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">normal_std</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_samples</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+        <span class="n">normal_low_rank</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">normal_std</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">noise_stddev</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">U</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">L</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span> <span class="p">)</span> <span class="o">@</span> <span class="n">normal_low_rank</span>
+        <span class="k">return</span> <span class="n">samples</span> <span class="k">if</span> <span class="n">flat</span> <span class="k">else</span> <span class="n">samples</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">obs_shape</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

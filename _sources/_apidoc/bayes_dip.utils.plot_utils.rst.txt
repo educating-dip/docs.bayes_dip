@@ -1,0 +1,7 @@
+bayes\_dip.utils.plot\_utils module
+===================================
+
+.. automodule:: bayes_dip.utils.plot_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

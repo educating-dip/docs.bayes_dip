@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.parameter_cov module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.probabilistic_models.linearized_dip.utils module" href="bayes_dip.probabilistic_models.linearized_dip.utils.html" />
+    <link rel="prev" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov module" href="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#module-bayes_dip.probabilistic_models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.linearized_dip.html">bayes_dip.probabilistic_models.linearized_dip package</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.parameter_cov module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.probabilistic_models.linearized_dip.parameter_cov.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.probabilistic_models.linearized_dip.parameter_cov">
+<span id="bayes-dip-probabilistic-models-linearized-dip-parameter-cov-module"></span><h1>bayes_dip.probabilistic_models.linearized_dip.parameter_cov module<a class="headerlink" href="#module-bayes_dip.probabilistic_models.linearized_dip.parameter_cov" title="Permalink to this heading"></a></h1>
+<p>Provides <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParameterCov</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.parameter_cov.</span></span><span class="sig-name descname"><span class="pre">ParameterCov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nn_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Module</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_assignment_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.html#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior"><span class="pre">BaseGaussPrior</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparams_init_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_cov.html#ParameterCov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
+<p>Covariance in parameter space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.log_variances" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.log_variances"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_variances</span></code></a></dt><dd><p>List of all <code class="docutils literal notranslate"><span class="pre">log_variance</span></code> parameters, in the order of <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.priors</span></code> (same order as in the <code class="docutils literal notranslate"><span class="pre">prior_assignment_dict</span></code>).</p>
+</dd>
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.ordered_nn_params" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.ordered_nn_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ordered_nn_params</span></code></a></dt><dd><p>List of all parameters under prior, in the order expected by <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>.</p>
+</dd>
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.shape" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></dt><dd><p>Shape of the (theoretical) matrix representation.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(v[, only_prior])</p></td>
+<td><p>Multiply with the covariance &quot;matrix&quot;.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.sample" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>([num_samples, mean, ...])</p></td>
+<td><p>Sample from a Gaussian with this covariance.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nn_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Module</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_assignment_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.html#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior"><span class="pre">BaseGaussPrior</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hyperparams_init_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_cov.html#ParameterCov.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>nn_model</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Module</span></code></span></dt><dd><p>Network.</p>
+</dd>
+<dt><strong>prior_assignment_dict</strong><span class="classifier">dict</span></dt><dd><p>Dictionary specifying the assignment of priors over network modules.
+The keys are prior names, and each value is a tuple <code class="docutils literal notranslate"><span class="pre">(constructor,</span> <span class="pre">module_names)</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">constructor</span></code> is a callable with parameters
+<code class="docutils literal notranslate"><span class="pre">init_hyperparams:</span> <span class="pre">Dict,</span> <span class="pre">modules:</span> <span class="pre">List[nn.Module],</span> <span class="pre">device:</span> <span class="pre">Union[str,</span> <span class="pre">torch.device]</span></code>
+and <code class="docutils literal notranslate"><span class="pre">module_names</span></code> is a list of module names in <code class="docutils literal notranslate"><span class="pre">nn_model</span></code> used to create the
+<code class="docutils literal notranslate"><span class="pre">modules</span></code> list passed to <code class="docutils literal notranslate"><span class="pre">constructor</span></code>. The prior object created by <code class="docutils literal notranslate"><span class="pre">constructor</span></code>
+must be an instance of <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussPrior</span></code>.</p>
+</dd>
+<dt><strong>hyperparams_init_dict</strong><span class="classifier">dict</span></dt><dd><p>Initial hyperparameter values for the priors.
+The keys are prior names (same as <code class="docutils literal notranslate"><span class="pre">prior_assignment_dict</span></code>), and each value specifies
+the <code class="docutils literal notranslate"><span class="pre">init_hyperparams</span></code> argument to <code class="docutils literal notranslate"><span class="pre">constructor</span></code> (see <code class="docutils literal notranslate"><span class="pre">prior_assignment_dict</span></code>).</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device, optional</span></dt><dd><p>Device. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), <code class="docutils literal notranslate"><span class="pre">'cuda:0'</span></code> is chosen if available or <code class="docutils literal notranslate"><span class="pre">'cpu'</span></code>
+otherwise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_prior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Module</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_cov.html#ParameterCov.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Multiply with the covariance “matrix”.</p>
+<p>I.e., evaluate <code class="docutils literal notranslate"><span class="pre">(cov</span> <span class="pre">&#64;</span> <span class="pre">v.T).T</span></code> where <code class="docutils literal notranslate"><span class="pre">cov</span></code> is a matrix representation of <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Parameter sets.
+Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">num_params)</span></code>, where <code class="docutils literal notranslate"><span class="pre">num_params</span></code> is <code class="docutils literal notranslate"><span class="pre">self.shape[0]</span></code> if
+<code class="docutils literal notranslate"><span class="pre">only_prior</span> <span class="pre">is</span> <span class="pre">None</span></code> and otherwise the restricted parameter number
+<code class="docutils literal notranslate"><span class="pre">params_slice.stop</span> <span class="pre">-</span> <span class="pre">params_slice.start</span></code> with
+<code class="docutils literal notranslate"><span class="pre">params_slice</span> <span class="pre">==</span> <span class="pre">self.params_slices_per_prior[only_prior]</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Products. Shape: same as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.log_variances">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_variances</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.parameter.Parameter.html#torch.nn.parameter.Parameter" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Parameter</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.log_variances" title="Permalink to this definition"></a></dt>
+<dd><p>List of all <code class="docutils literal notranslate"><span class="pre">log_variance</span></code> parameters, in the order of <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.priors</span></code> (same order as
+in the <code class="docutils literal notranslate"><span class="pre">prior_assignment_dict</span></code>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.ordered_nn_params">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ordered_nn_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.parameter.Parameter.html#torch.nn.parameter.Parameter" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Parameter</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.ordered_nn_params" title="Permalink to this definition"></a></dt>
+<dd><p>List of all parameters under prior, in the order expected by <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>.</p>
+<p>The parameters are ordered first (outer-most) by prior type, then by prior in the order of
+occurence in <code class="xref py py-attr docutils literal notranslate"><span class="pre">priors</span></code> (same order as in the <code class="docutils literal notranslate"><span class="pre">prior_assignment_dict</span></code>), and finally
+(inner-most) in the order returned by <code class="docutils literal notranslate"><span class="pre">prior.get_params_under_prior()</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_only_from_prior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Module</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_cov.html#ParameterCov.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Sample from a Gaussian with this covariance.</p>
+<p>By default, the mean is zero, but a custom <code class="docutils literal notranslate"><span class="pre">mean</span></code> can be specified.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>num_samples</strong><span class="classifier">int, optional</span></dt><dd><p>Number of samples. The default is <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p>
+</dd>
+<dt><strong>mean</strong><span class="classifier">Tensor, optional</span></dt><dd><p>Mean. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), the mean is zero.
+Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">num_params)</span></code> (same shape as the return value).</p>
+</dd>
+<dt><strong>sample_only_from_prior</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Module</span></code>, optional</span></dt><dd><p>If specified, return only samples for the parameters under this prior.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">Tensor</span></dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">num_params)</span></code>, where <code class="docutils literal notranslate"><span class="pre">num_params</span></code> is <code class="docutils literal notranslate"><span class="pre">self.shape[0]</span></code>
+if <code class="docutils literal notranslate"><span class="pre">sample_only_from_prior</span> <span class="pre">is</span> <span class="pre">None</span></code> and otherwise the restricted parameter number
+<code class="docutils literal notranslate"><span class="pre">params_slice.stop</span> <span class="pre">-</span> <span class="pre">params_slice.start</span></code> with
+<code class="docutils literal notranslate"><span class="pre">params_slice</span> <span class="pre">==</span> <span class="pre">self.params_slices_per_prior[sample_only_from_prior]</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_cov.ParameterCov.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Shape of the (theoretical) matrix representation.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.html" class="btn btn-neutral float-left" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.probabilistic_models.linearized_dip.utils.html" class="btn btn-neutral float-right" title="bayes_dip.probabilistic_models.linearized_dip.utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

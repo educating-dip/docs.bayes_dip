@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.default\_unet\_priors module
+=============================================================================
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.default_unet_priors
+   :members:
+   :undoc-members:
+   :show-inheritance:

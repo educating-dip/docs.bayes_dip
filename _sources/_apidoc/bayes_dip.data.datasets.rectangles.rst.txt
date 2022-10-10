@@ -1,0 +1,7 @@
+bayes\_dip.data.datasets.rectangles module
+==========================================
+
+.. automodule:: bayes_dip.data.datasets.rectangles
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+bayes\_dip.data.simulation module
+=================================
+
+.. automodule:: bayes_dip.data.simulation
+   :members:
+   :undoc-members:
+   :show-inheritance:

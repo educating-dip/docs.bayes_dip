@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>baselines.mcdo_dip_utils &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>baselines.mcdo_dip_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for baselines.mcdo_dip_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides utilities for the Monte-Carlo Dropout baseline.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">torch.nn.modules.dropout</span> <span class="kn">import</span> <span class="n">_DropoutNd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.dip.network</span> <span class="kn">import</span> <span class="n">UNet</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KernelDensity</span>
+
+<div class="viewcode-block" id="mc_dropout2d"><a class="viewcode-back" href="../../_apidoc/baselines.mcdo_dip_utils.html#baselines.mcdo_dip_utils.mc_dropout2d">[docs]</a><span class="k">class</span> <span class="nc">mc_dropout2d</span><span class="p">(</span><span class="n">_DropoutNd</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Dropout 2D layer&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="mc_dropout2d.forward"><a class="viewcode-back" href="../../_apidoc/baselines.mcdo_dip_utils.html#baselines.mcdo_dip_utils.mc_dropout2d.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Apply dropout.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout2d</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inplace</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="conv2d_dropout"><a class="viewcode-back" href="../../_apidoc/baselines.mcdo_dip_utils.html#baselines.mcdo_dip_utils.conv2d_dropout">[docs]</a><span class="k">class</span> <span class="nc">conv2d_dropout</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Wrapper for a given layer that appends a subsequent dropout layer.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="conv2d_dropout.__init__"><a class="viewcode-back" href="../../_apidoc/baselines.mcdo_dip_utils.html#baselines.mcdo_dip_utils.conv2d_dropout.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_module</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="o">=</span> <span class="n">sub_module</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">mc_dropout2d</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">)</span></div>
+<div class="viewcode-block" id="conv2d_dropout.forward"><a class="viewcode-back" href="../../_apidoc/baselines.mcdo_dip_utils.html#baselines.mcdo_dip_utils.conv2d_dropout.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Apply layer followed by dropout.&quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="bayesianize_unet_architecture"><a class="viewcode-back" href="../../_apidoc/baselines.mcdo_dip_utils.html#baselines.mcdo_dip_utils.bayesianize_unet_architecture">[docs]</a><span class="k">def</span> <span class="nf">bayesianize_unet_architecture</span><span class="p">(</span><span class="n">nn_model</span><span class="p">:</span> <span class="n">UNet</span><span class="p">,</span> <span class="n">p</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Replace all 3x3 :class:`nn.Conv2d` layers that are contained in an</span>
+<span class="sd">    :class:`nn.Sequential` module with wrapping :class:`conv2d_dropout` layers.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nn_model : :class:`bayes_dip.dip.network.UNet`</span>
+<span class="sd">        U-Net model (or other supported model).</span>
+<span class="sd">    p : float, optional</span>
+<span class="sd">        Dropout rate. The default is ``0.05``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">nn_model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">name_sub_module</span><span class="p">,</span> <span class="n">sub_module</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">named_children</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">sub_module</span><span class="o">.</span><span class="n">kernel_size</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">name_sub_module</span><span class="p">,</span> <span class="n">conv2d_dropout</span><span class="p">(</span><span class="n">sub_module</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="sample_from_bayesianized_model"><a class="viewcode-back" href="../../_apidoc/baselines.mcdo_dip_utils.html#baselines.mcdo_dip_utils.sample_from_bayesianized_model">[docs]</a><span class="k">def</span> <span class="nf">sample_from_bayesianized_model</span><span class="p">(</span><span class="n">nn_model</span><span class="p">,</span> <span class="n">filtbackproj</span><span class="p">,</span> <span class="n">mc_samples</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sample from MCDO model.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nn_model : :class:`bayes_dip.dip.network.UNet`</span>
+<span class="sd">        Model returned from :func:`bayesianize_unet_architecture`.</span>
+<span class="sd">    filtbackproj : Tensor</span>
+<span class="sd">        Filtered back-projection.</span>
+<span class="sd">    mc_samples : int</span>
+<span class="sd">        Number of Monte-Carlo samples to draw.</span>
+<span class="sd">    device : str or torch.device, optional</span>
+<span class="sd">        Device. If ``None`` (the default), ``filtbackproj.device`` is used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sampled_recons</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">filtbackproj</span><span class="o">.</span><span class="n">device</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">mc_samples</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;sampling&#39;</span><span class="p">):</span>
+        <span class="n">sampled_recons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn_model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">filtbackproj</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">sampled_recons</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="approx_kernel_density"><a class="viewcode-back" href="../../_apidoc/baselines.mcdo_dip_utils.html#baselines.mcdo_dip_utils.approx_kernel_density">[docs]</a><span class="k">def</span> <span class="nf">approx_kernel_density</span><span class="p">(</span>
+        <span class="n">ground_truth</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">samples</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">bw</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">noise_x_correction_term</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+
+    <span class="k">assert</span> <span class="n">ground_truth</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="n">samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="k">if</span> <span class="n">noise_x_correction_term</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">*</span> <span class="n">noise_x_correction_term</span> <span class="o">**</span><span class="mf">.5</span>
+    <span class="n">kde</span> <span class="o">=</span> <span class="n">KernelDensity</span><span class="p">(</span>
+            <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
+            <span class="n">bandwidth</span><span class="o">=</span><span class="n">bw</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                <span class="n">samples</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">kde</span><span class="o">.</span><span class="n">score_samples</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

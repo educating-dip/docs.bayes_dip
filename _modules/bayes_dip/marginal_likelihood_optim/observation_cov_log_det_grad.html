@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides :func:`approx_observation_cov_log_det_grads`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">..probabilistic_models</span> <span class="kn">import</span> <span class="n">ObservationCov</span><span class="p">,</span> <span class="n">LinearSandwichCov</span>
+<span class="kn">from</span> <span class="nn">.random_probes</span> <span class="kn">import</span> <span class="n">generate_probes_bernoulli</span>
+<span class="kn">from</span> <span class="nn">.preconditioner</span> <span class="kn">import</span> <span class="n">BasePreconditioner</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">cg</span>
+
+<div class="viewcode-block" id="approx_observation_cov_log_det_grads"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad.html#bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad.approx_observation_cov_log_det_grads">[docs]</a><span class="k">def</span> <span class="nf">approx_observation_cov_log_det_grads</span><span class="p">(</span>
+        <span class="n">observation_cov</span><span class="p">:</span> <span class="n">ObservationCov</span><span class="p">,</span>
+        <span class="n">precon</span><span class="p">:</span> <span class="n">BasePreconditioner</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_cg_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="n">cg_rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+        <span class="n">num_probes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">use_log_re_variant</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">use_preconditioned_probes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">ignore_numerical_warning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimates the gradient for the log-determinant ``0.5*log|observation_cov|`` w.r.t. its</span>
+<span class="sd">    parameters via Hutchinson&#39;s trace estimator</span>
+<span class="sd">    ``E(0.5 * v.T @ observation_cov**-1 @ d observation_cov / d params @ v)``,</span>
+<span class="sd">    with ``v.T @ observation_cov**-1`` being approximated by the conjugate gradient (CG) method.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    observation_cov : :class:`ObservationCov`</span>
+<span class="sd">        Observation covariance.</span>
+<span class="sd">    precon : :class:`BasePreconditioner`, optional</span>
+<span class="sd">        Left-preconditioner.</span>
+<span class="sd">    max_cg_iter : int, optional</span>
+<span class="sd">        Maximum number of CG iterations. The default is ``50``.</span>
+<span class="sd">    cg_rtol : float, optional</span>
+<span class="sd">        Tolerance at which to stop early (before ``max_iter``). The default is ``1e-3``.</span>
+<span class="sd">    num_probes : int, optional</span>
+<span class="sd">        Number of probes to use for the trace estimator. The default is ``1``.</span>
+<span class="sd">    use_log_re_variant : bool, optional</span>
+<span class="sd">        Whether to use the low precision arithmetic variant by Maddox et al.,</span>
+<span class="sd">        :meth:`linear_log_cg_re`. The default is ``False``.</span>
+<span class="sd">    use_preconditioned_probes : bool, optional</span>
+<span class="sd">        Whether to use preconditioned probes, as described in Section 4.1 in [1]_.</span>
+<span class="sd">        If ``True``, ``precon`` must not be ``None``. The default is ``False``.</span>
+
+<span class="sd">        .. [1] J.R. Gardner, G. Pleiss, D. Bindel, K.Q. Weinberger, A.G. Wilson, 2018,</span>
+<span class="sd">               &quot;GPyTorch: Blackbox Matrix-Matrix Gaussian Process Inference with GPU</span>
+<span class="sd">               Acceleration&quot;. https://arxiv.org/pdf/1809.11165v6.pdf</span>
+<span class="sd">    ignore_numerical_warning : bool, optional</span>
+<span class="sd">        Not implemented yet. Should control whether numerical warnings are ignored.</span>
+<span class="sd">        The default is ``False``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    grads : dict</span>
+<span class="sd">        Gradient dictionary, with :class:`torch.nn.Parameter` instances as keys and gradient tensors</span>
+<span class="sd">        as values.</span>
+<span class="sd">    residual_norm : Tensor</span>
+<span class="sd">        Residual norm of the CG solution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-locals</span>
+
+    <span class="n">trafo</span> <span class="o">=</span> <span class="n">observation_cov</span><span class="o">.</span><span class="n">trafo</span>
+    <span class="n">image_cov</span> <span class="o">=</span> <span class="n">observation_cov</span><span class="o">.</span><span class="n">image_cov</span>
+    <span class="n">log_noise_variance</span> <span class="o">=</span> <span class="n">observation_cov</span><span class="o">.</span><span class="n">log_noise_variance</span>
+
+    <span class="n">image_cov_parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">image_cov</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+    <span class="c1"># observation_cov.parameters() should consist of image_cov_parameters and log_noise_variance</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">parameters</span><span class="p">()))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">image_cov_parameters</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">image_cov</span><span class="p">,</span> <span class="n">LinearSandwichCov</span><span class="p">)</span>
+    <span class="c1"># image_cov == image_cov.lin_op @ image_cov.inner_cov @ image_cov.lin_op_transposed</span>
+    <span class="c1"># =&gt; d image_cov / d params ==</span>
+    <span class="c1">#    image_cov.lin_op @ d image_cov.inner_cov / d params @ image_cov.lin_op_transposed</span>
+
+    <span class="k">def</span> <span class="nf">observation_cov_closure</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">observation_cov</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num_probes</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">obs_shape</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">num_probes</span><span class="p">,</span> <span class="n">observation_cov</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+
+    <span class="n">precon_closure</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">precon</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">precon</span><span class="o">.</span><span class="n">get_closure</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">use_preconditioned_probes</span><span class="p">:</span>
+        <span class="n">v_flat</span> <span class="o">=</span> <span class="n">generate_probes_bernoulli</span><span class="p">(</span>
+            <span class="n">side_length</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">num_probes</span><span class="o">=</span><span class="n">num_probes</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="n">jacobi_vector</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># (obs_numel, num_probes)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">precon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="c1"># The preconditioned BBMM is here used, proposed in [1]_. Refer to section 4.1 as well as</span>
+        <span class="c1"># Appendix D.</span>
+
+        <span class="c1"># .. [1] Gardner, J., Pleiss, G., Weinberger, K.Q., Bindel, D. and Wilson, A.G.,</span>
+        <span class="c1">#         2018. &quot;Gpytorch: Blackbox matrix-matrix gaussian process inference with</span>
+        <span class="c1">#         gpu acceleration.&quot;</span>
+        <span class="c1">#         Advances in neural information processing systems, 31.</span>
+        <span class="c1">#         https://arxiv.org/pdf/1809.11165.pdf</span>
+
+        <span class="n">v_flat</span> <span class="o">=</span> <span class="n">precon</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">num_samples</span><span class="o">=</span><span class="n">num_probes</span><span class="p">)</span>
+
+    <span class="n">grads</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1">## gradients for parameters in image_cov</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">v_obs_left_flat</span><span class="p">,</span> <span class="n">residual_norm</span> <span class="o">=</span> <span class="n">cg</span><span class="p">(</span>
+                <span class="n">observation_cov_closure</span><span class="p">,</span> <span class="n">v_flat</span><span class="p">,</span> <span class="n">precon_closure</span><span class="o">=</span><span class="n">precon_closure</span><span class="p">,</span>
+                <span class="n">max_niter</span><span class="o">=</span><span class="n">max_cg_iter</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">cg_rtol</span><span class="p">,</span> <span class="n">use_log_re_variant</span><span class="o">=</span><span class="n">use_log_re_variant</span><span class="p">,</span>
+                <span class="n">ignore_numerical_warning</span><span class="o">=</span><span class="n">ignore_numerical_warning</span>
+            <span class="p">)</span>
+        <span class="n">v_left</span> <span class="o">=</span> <span class="n">trafo</span><span class="o">.</span><span class="n">trafo_adjoint_flat</span><span class="p">(</span><span class="n">v_obs_left_flat</span><span class="p">)</span>  <span class="c1"># (im_numel, num_probes)</span>
+        <span class="n">v_left</span> <span class="o">=</span> <span class="n">v_left</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num_probes</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">trafo</span><span class="o">.</span><span class="n">im_shape</span><span class="p">)</span>
+        <span class="n">v_left</span> <span class="o">=</span> <span class="n">image_cov</span><span class="o">.</span><span class="n">lin_op_transposed</span><span class="p">(</span><span class="n">v_left</span><span class="p">)</span>  <span class="c1"># (num_probes, nn_params_numel)</span>
+        <span class="c1"># v_left = v.T @ observation_cov**-1 @ trafo @ lin_op</span>
+
+        <span class="k">if</span> <span class="n">use_preconditioned_probes</span><span class="p">:</span>
+            <span class="n">v_flat</span> <span class="o">=</span> <span class="n">precon_closure</span><span class="p">(</span><span class="n">v_flat</span><span class="p">)</span>
+        <span class="n">v_right</span> <span class="o">=</span> <span class="n">trafo</span><span class="o">.</span><span class="n">trafo_adjoint_flat</span><span class="p">(</span><span class="n">v_flat</span><span class="p">)</span>
+        <span class="n">v_right</span> <span class="o">=</span> <span class="n">v_right</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">num_probes</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">trafo</span><span class="o">.</span><span class="n">im_shape</span><span class="p">)</span>
+        <span class="n">v_right</span> <span class="o">=</span> <span class="n">image_cov</span><span class="o">.</span><span class="n">lin_op_transposed</span><span class="p">(</span><span class="n">v_right</span><span class="p">)</span> <span class="c1"># (num_probes, nn_params_numel)</span>
+        <span class="c1"># v_right = lin_op_transposed @ trafo_adjoint @ v</span>
+
+    <span class="c1"># estimate expected value E(v_left @ d image_cov.inner_cov / d params @ v_right.T)</span>
+    <span class="n">v_scalar</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">image_cov</span><span class="o">.</span><span class="n">inner_cov</span><span class="p">(</span><span class="n">v_left</span><span class="p">)</span> <span class="o">*</span> <span class="n">v_right</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="c1"># (scalar product over network params)</span>
+    <span class="n">image_cov_grads</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">((</span><span class="n">v_scalar</span><span class="p">,),</span> <span class="n">image_cov_parameters</span><span class="p">)</span>
+    <span class="n">grads</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">image_cov_parameters</span><span class="p">,</span> <span class="n">image_cov_grads</span><span class="p">)))</span>
+
+    <span class="c1">## gradient for log_noise_variance</span>
+
+    <span class="c1"># estimate expected value E(exp(v_obs_left_flat.T @ v_flat))</span>
+    <span class="n">noise_scalar</span> <span class="o">=</span> <span class="mf">.5</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v_obs_left_flat</span> <span class="o">*</span> <span class="n">v_flat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="n">log_noise_variance</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span>
+
+    <span class="c1"># (scalar product over observation)</span>
+    <span class="n">grads</span><span class="p">[</span><span class="n">log_noise_variance</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">autograd</span><span class="o">.</span><span class="n">grad</span><span class="p">((</span><span class="n">noise_scalar</span><span class="p">,),</span> <span class="p">(</span><span class="n">log_noise_variance</span><span class="p">,))[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">grads</span><span class="p">,</span> <span class="n">residual_norm</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

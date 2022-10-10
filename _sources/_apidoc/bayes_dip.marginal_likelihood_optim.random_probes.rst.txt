@@ -1,0 +1,7 @@
+bayes\_dip.marginal\_likelihood\_optim.random\_probes module
+============================================================
+
+.. automodule:: bayes_dip.marginal_likelihood_optim.random_probes
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+bayes\_dip.data.datasets.walnut module
+======================================
+
+.. automodule:: bayes_dip.data.datasets.walnut
+   :members:
+   :undoc-members:
+   :show-inheritance:

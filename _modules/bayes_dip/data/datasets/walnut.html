@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.data.datasets.walnut &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.data.datasets.walnut</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.data.datasets.walnut</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides walnut projection data and ground truth.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.data.walnut_utils</span> <span class="kn">import</span> <span class="p">(</span>
+        <span class="n">get_projection_data</span><span class="p">,</span> <span class="n">get_single_slice_ray_trafo</span><span class="p">,</span>
+        <span class="n">get_single_slice_ind</span><span class="p">,</span> <span class="n">get_ground_truth</span><span class="p">,</span> <span class="n">VOL_SZ</span><span class="p">)</span>
+
+
+<span class="n">DEFAULT_WALNUT_SCALING_FACTOR</span> <span class="o">=</span> <span class="mf">14.</span>
+
+
+<div class="viewcode-block" id="get_walnut_2d_observation"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.datasets.walnut.html#bayes_dip.data.datasets.walnut.get_walnut_2d_observation">[docs]</a><span class="k">def</span> <span class="nf">get_walnut_2d_observation</span><span class="p">(</span>
+        <span class="n">data_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">walnut_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">orbit_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">angular_sub_sampling</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">proj_col_sub_sampling</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">scaling_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_WALNUT_SCALING_FACTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return walnut projection data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_path : str</span>
+<span class="sd">        Walnut dataset path (containing ``&#39;Walnut1&#39;`` as a subfolder).</span>
+<span class="sd">    walnut_id : int, optional</span>
+<span class="sd">        Walnut ID, an integer from 1 to 42.</span>
+<span class="sd">        The default is ``1``.</span>
+<span class="sd">    orbit_id : int, optional</span>
+<span class="sd">        Orbit (source position) ID, options are ``1``, ``2`` or ``3``.</span>
+<span class="sd">        The default is ``2``.</span>
+<span class="sd">    angular_sub_sampling : int, optional</span>
+<span class="sd">        Sub-sampling factor for the angles.</span>
+<span class="sd">        The default is ``1`` (no sub-sampling).</span>
+<span class="sd">    proj_col_sub_sampling : int, optional</span>
+<span class="sd">        Sub-sampling factor for the projection columns.</span>
+<span class="sd">        The default is ``1`` (no sub-sampling).</span>
+<span class="sd">    scaling_factor : float, optional</span>
+<span class="sd">        Scaling factor to multiply with.</span>
+<span class="sd">        The default is ``DEFAULT_WALNUT_SCALING_FACTOR``, scaling image values to</span>
+<span class="sd">        approximately ``[0., 1.]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    observation : Tensor</span>
+<span class="sd">        Projection data. Shape: ``(1, 1, obs_numel)``, where</span>
+<span class="sd">        ``obs_numel = ceil(1200 / angular_sub_sampling) * ceil(768 / proj_col_sub_sampling)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">walnut_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">walnut_id</span><span class="o">=</span><span class="n">walnut_id</span><span class="p">,</span> <span class="n">orbit_id</span><span class="o">=</span><span class="n">orbit_id</span><span class="p">,</span>
+            <span class="n">angular_sub_sampling</span><span class="o">=</span><span class="n">angular_sub_sampling</span><span class="p">,</span>
+            <span class="n">proj_col_sub_sampling</span><span class="o">=</span><span class="n">proj_col_sub_sampling</span><span class="p">)</span>
+
+    <span class="n">observation_full</span> <span class="o">=</span> <span class="n">get_projection_data</span><span class="p">(</span>
+            <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span><span class="p">,</span> <span class="o">**</span><span class="n">walnut_kwargs</span><span class="p">)</span>
+
+    <span class="c1"># WalnutRayTrafo instance needed for selecting and masking the projections</span>
+    <span class="n">walnut_ray_trafo</span> <span class="o">=</span> <span class="n">get_single_slice_ray_trafo</span><span class="p">(</span>
+            <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span><span class="p">,</span> <span class="o">**</span><span class="n">walnut_kwargs</span><span class="p">)</span>
+
+    <span class="n">observation</span> <span class="o">=</span> <span class="n">walnut_ray_trafo</span><span class="o">.</span><span class="n">flat_projs_in_mask</span><span class="p">(</span>
+            <span class="n">walnut_ray_trafo</span><span class="o">.</span><span class="n">projs_from_full</span><span class="p">(</span><span class="n">observation_full</span><span class="p">))[</span><span class="kc">None</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">scaling_factor</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
+        <span class="n">observation</span> <span class="o">*=</span> <span class="n">scaling_factor</span>
+
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">observation</span><span class="p">)[</span><span class="kc">None</span><span class="p">]</span>  <span class="c1"># add channel dim</span></div>
+
+
+<div class="viewcode-block" id="get_walnut_2d_ground_truth"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.datasets.walnut.html#bayes_dip.data.datasets.walnut.get_walnut_2d_ground_truth">[docs]</a><span class="k">def</span> <span class="nf">get_walnut_2d_ground_truth</span><span class="p">(</span>
+        <span class="n">data_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">walnut_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">orbit_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="n">scaling_factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_WALNUT_SCALING_FACTOR</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return walnut ground truth slice.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_path : str</span>
+<span class="sd">        Walnut dataset path (containing ``&#39;Walnut1&#39;`` as a subfolder).</span>
+<span class="sd">    walnut_id : int, optional</span>
+<span class="sd">        Walnut ID, an integer from 1 to 42.</span>
+<span class="sd">        The default is ``1``.</span>
+<span class="sd">    orbit_id : int, optional</span>
+<span class="sd">        Orbit (source position) ID, options are ``1``, ``2`` or ``3``.</span>
+<span class="sd">        The default is ``2``.</span>
+<span class="sd">    scaling_factor : float, optional</span>
+<span class="sd">        Scaling factor to multiply with.</span>
+<span class="sd">        The default is ``DEFAULT_WALNUT_SCALING_FACTOR``, scaling image values to</span>
+<span class="sd">        approximately ``[0., 1.]``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ground_truth : Tensor</span>
+<span class="sd">        Ground truth. Shape: ``(1, 501, 501)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">slice_ind</span> <span class="o">=</span> <span class="n">get_single_slice_ind</span><span class="p">(</span>
+            <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span><span class="p">,</span>
+            <span class="n">walnut_id</span><span class="o">=</span><span class="n">walnut_id</span><span class="p">,</span> <span class="n">orbit_id</span><span class="o">=</span><span class="n">orbit_id</span><span class="p">)</span>
+    <span class="n">ground_truth</span> <span class="o">=</span> <span class="n">get_ground_truth</span><span class="p">(</span>
+            <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span><span class="p">,</span>
+            <span class="n">walnut_id</span><span class="o">=</span><span class="n">walnut_id</span><span class="p">,</span>
+            <span class="n">slice_ind</span><span class="o">=</span><span class="n">slice_ind</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">scaling_factor</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
+        <span class="n">ground_truth</span> <span class="o">*=</span> <span class="n">scaling_factor</span>
+
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">)[</span><span class="kc">None</span><span class="p">]</span>  <span class="c1"># add channel dim</span></div>
+
+
+<span class="n">INNER_PART_START_0</span> <span class="o">=</span> <span class="mi">72</span>
+<span class="n">INNER_PART_START_1</span> <span class="o">=</span> <span class="mi">72</span>
+<span class="n">INNER_PART_END_0</span> <span class="o">=</span> <span class="mi">424</span>
+<span class="n">INNER_PART_END_1</span> <span class="o">=</span> <span class="mi">424</span>
+
+<span class="k">def</span> <span class="nf">_get_walnut_2d_inner_patch_slices</span><span class="p">(</span><span class="n">patch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]:</span>
+    <span class="n">start_patch_0</span> <span class="o">=</span> <span class="n">INNER_PART_START_0</span> <span class="o">//</span> <span class="n">patch_size</span>
+    <span class="n">start_patch_1</span> <span class="o">=</span> <span class="n">INNER_PART_START_1</span> <span class="o">//</span> <span class="n">patch_size</span>
+    <span class="n">end_patch_0</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">INNER_PART_END_0</span> <span class="o">/</span> <span class="n">patch_size</span><span class="p">)</span>
+    <span class="n">end_patch_1</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">INNER_PART_END_1</span> <span class="o">/</span> <span class="n">patch_size</span><span class="p">)</span>
+    <span class="n">patch_slice_0</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start_patch_0</span><span class="p">,</span> <span class="n">end_patch_0</span><span class="p">)</span>
+    <span class="n">patch_slice_1</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">start_patch_1</span><span class="p">,</span> <span class="n">end_patch_1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">patch_slice_0</span><span class="p">,</span> <span class="n">patch_slice_1</span>
+
+<div class="viewcode-block" id="get_walnut_2d_inner_patch_indices"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.datasets.walnut.html#bayes_dip.data.datasets.walnut.get_walnut_2d_inner_patch_indices">[docs]</a><span class="k">def</span> <span class="nf">get_walnut_2d_inner_patch_indices</span><span class="p">(</span><span class="n">patch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return patch indices for the inner part of the walnut image (that contains the walnut)</span>
+<span class="sd">    into the list returned by :func:`bayes_dip.inference.utils.get_image_patch_slices`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    patch_size : int</span>
+<span class="sd">        Side length of the patches (patches are usually square).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    patch_idx_list : list of int</span>
+<span class="sd">        Indices of the patches.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_patches_0</span> <span class="o">=</span> <span class="n">VOL_SZ</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">patch_size</span>
+    <span class="n">num_patches_1</span> <span class="o">=</span> <span class="n">VOL_SZ</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">//</span> <span class="n">patch_size</span>
+    <span class="n">patch_slice_0</span><span class="p">,</span> <span class="n">patch_slice_1</span> <span class="o">=</span> <span class="n">_get_walnut_2d_inner_patch_slices</span><span class="p">(</span><span class="n">patch_size</span><span class="p">)</span>
+
+    <span class="n">patch_idx_list</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">patch_idx</span> <span class="k">for</span> <span class="n">patch_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_patches_0</span> <span class="o">*</span> <span class="n">num_patches_1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">patch_idx</span> <span class="o">%</span> <span class="n">num_patches_0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_patches_0</span><span class="p">)[</span><span class="n">patch_slice_0</span><span class="p">]</span> <span class="ow">and</span>
+        <span class="n">patch_idx</span> <span class="o">//</span> <span class="n">num_patches_0</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_patches_1</span><span class="p">)[</span><span class="n">patch_slice_1</span><span class="p">]]</span>
+
+    <span class="k">return</span> <span class="n">patch_idx_list</span></div>
+
+<div class="viewcode-block" id="get_walnut_2d_inner_part_defined_by_patch_size"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.datasets.walnut.html#bayes_dip.data.datasets.walnut.get_walnut_2d_inner_part_defined_by_patch_size">[docs]</a><span class="k">def</span> <span class="nf">get_walnut_2d_inner_part_defined_by_patch_size</span><span class="p">(</span><span class="n">patch_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">slice</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a pair of slices specifying the inner part of the walnut image, which depends (to a minor</span>
+<span class="sd">    extent) on the ``patch_size``, since the inner part is defined by patch indices into the list</span>
+<span class="sd">    returned by :func:`bayes_dip.inference.utils.get_image_patch_slices`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    patch_size : int</span>
+<span class="sd">        Side length of the patches (patches are usually square).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">num_patches_0</span> <span class="o">=</span> <span class="n">VOL_SZ</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="n">patch_size</span>
+    <span class="n">num_patches_1</span> <span class="o">=</span> <span class="n">VOL_SZ</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">//</span> <span class="n">patch_size</span>
+    <span class="n">patch_slice_0</span><span class="p">,</span> <span class="n">patch_slice_1</span> <span class="o">=</span> <span class="n">_get_walnut_2d_inner_patch_slices</span><span class="p">(</span><span class="n">patch_size</span><span class="p">)</span>
+    <span class="n">slice_0</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span>
+            <span class="n">patch_slice_0</span><span class="o">.</span><span class="n">start</span> <span class="o">*</span> <span class="n">patch_size</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">patch_slice_0</span><span class="o">.</span><span class="n">stop</span> <span class="o">*</span> <span class="n">patch_size</span> <span class="k">if</span> <span class="n">patch_slice_0</span><span class="o">.</span><span class="n">stop</span> <span class="o">&lt;</span> <span class="n">num_patches_0</span> <span class="k">else</span> <span class="n">VOL_SZ</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">slice_1</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span>
+            <span class="n">patch_slice_1</span><span class="o">.</span><span class="n">start</span> <span class="o">*</span> <span class="n">patch_size</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">patch_slice_1</span><span class="o">.</span><span class="n">stop</span> <span class="o">*</span> <span class="n">patch_size</span> <span class="k">if</span> <span class="n">patch_slice_1</span><span class="o">.</span><span class="n">stop</span> <span class="o">&lt;</span> <span class="n">num_patches_1</span> <span class="k">else</span> <span class="n">VOL_SZ</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">slice_0</span><span class="p">,</span> <span class="n">slice_1</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

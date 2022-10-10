@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.data.datasets.walnut module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.data.trafo package" href="bayes_dip.data.trafo.html" />
+    <link rel="prev" title="bayes_dip.data.datasets.rectangles module" href="bayes_dip.data.datasets.rectangles.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.data.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.data.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.data.html#module-bayes_dip.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.data.html">bayes_dip.data package</a> &raquo;</li>
+          <li><a href="bayes_dip.data.datasets.html">bayes_dip.data.datasets package</a> &raquo;</li>
+      <li>bayes_dip.data.datasets.walnut module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.data.datasets.walnut.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.data.datasets.walnut">
+<span id="bayes-dip-data-datasets-walnut-module"></span><h1>bayes_dip.data.datasets.walnut module<a class="headerlink" href="#module-bayes_dip.data.datasets.walnut" title="Permalink to this heading"></a></h1>
+<p>Provides walnut projection data and ground truth.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.data.datasets.walnut.get_walnut_2d_ground_truth">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.data.datasets.walnut.</span></span><span class="sig-name descname"><span class="pre">get_walnut_2d_ground_truth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">walnut_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/data/datasets/walnut.html#get_walnut_2d_ground_truth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.datasets.walnut.get_walnut_2d_ground_truth" title="Permalink to this definition"></a></dt>
+<dd><p>Return walnut ground truth slice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_path</strong><span class="classifier">str</span></dt><dd><p>Walnut dataset path (containing <code class="docutils literal notranslate"><span class="pre">'Walnut1'</span></code> as a subfolder).</p>
+</dd>
+<dt><strong>walnut_id</strong><span class="classifier">int, optional</span></dt><dd><p>Walnut ID, an integer from 1 to 42.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+<dt><strong>orbit_id</strong><span class="classifier">int, optional</span></dt><dd><p>Orbit (source position) ID, options are <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">2</span></code> or <code class="docutils literal notranslate"><span class="pre">3</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+</dd>
+<dt><strong>scaling_factor</strong><span class="classifier">float, optional</span></dt><dd><p>Scaling factor to multiply with.
+The default is <code class="docutils literal notranslate"><span class="pre">DEFAULT_WALNUT_SCALING_FACTOR</span></code>, scaling image values to
+approximately <code class="docutils literal notranslate"><span class="pre">[0.,</span> <span class="pre">1.]</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>ground_truth</strong><span class="classifier">Tensor</span></dt><dd><p>Ground truth. Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">501,</span> <span class="pre">501)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.data.datasets.walnut.get_walnut_2d_inner_part_defined_by_patch_size">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.data.datasets.walnut.</span></span><span class="sig-name descname"><span class="pre">get_walnut_2d_inner_part_defined_by_patch_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><span class="pre">slice</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><span class="pre">slice</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/data/datasets/walnut.html#get_walnut_2d_inner_part_defined_by_patch_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.datasets.walnut.get_walnut_2d_inner_part_defined_by_patch_size" title="Permalink to this definition"></a></dt>
+<dd><p>Return a pair of slices specifying the inner part of the walnut image, which depends (to a minor
+extent) on the <code class="docutils literal notranslate"><span class="pre">patch_size</span></code>, since the inner part is defined by patch indices into the list
+returned by <a class="reference internal" href="bayes_dip.inference.utils.html#bayes_dip.inference.utils.get_image_patch_slices" title="bayes_dip.inference.utils.get_image_patch_slices"><code class="xref py py-func docutils literal notranslate"><span class="pre">bayes_dip.inference.utils.get_image_patch_slices()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>patch_size</strong><span class="classifier">int</span></dt><dd><p>Side length of the patches (patches are usually square).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.data.datasets.walnut.get_walnut_2d_inner_patch_indices">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.data.datasets.walnut.</span></span><span class="sig-name descname"><span class="pre">get_walnut_2d_inner_patch_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/data/datasets/walnut.html#get_walnut_2d_inner_patch_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.datasets.walnut.get_walnut_2d_inner_patch_indices" title="Permalink to this definition"></a></dt>
+<dd><p>Return patch indices for the inner part of the walnut image (that contains the walnut)
+into the list returned by <a class="reference internal" href="bayes_dip.inference.utils.html#bayes_dip.inference.utils.get_image_patch_slices" title="bayes_dip.inference.utils.get_image_patch_slices"><code class="xref py py-func docutils literal notranslate"><span class="pre">bayes_dip.inference.utils.get_image_patch_slices()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>patch_size</strong><span class="classifier">int</span></dt><dd><p>Side length of the patches (patches are usually square).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>patch_idx_list</strong><span class="classifier">list of int</span></dt><dd><p>Indices of the patches.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.data.datasets.walnut.get_walnut_2d_observation">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.data.datasets.walnut.</span></span><span class="sig-name descname"><span class="pre">get_walnut_2d_observation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">walnut_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbit_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_sub_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">proj_col_sub_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">14.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/data/datasets/walnut.html#get_walnut_2d_observation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.datasets.walnut.get_walnut_2d_observation" title="Permalink to this definition"></a></dt>
+<dd><p>Return walnut projection data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_path</strong><span class="classifier">str</span></dt><dd><p>Walnut dataset path (containing <code class="docutils literal notranslate"><span class="pre">'Walnut1'</span></code> as a subfolder).</p>
+</dd>
+<dt><strong>walnut_id</strong><span class="classifier">int, optional</span></dt><dd><p>Walnut ID, an integer from 1 to 42.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+<dt><strong>orbit_id</strong><span class="classifier">int, optional</span></dt><dd><p>Orbit (source position) ID, options are <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">2</span></code> or <code class="docutils literal notranslate"><span class="pre">3</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+</dd>
+<dt><strong>angular_sub_sampling</strong><span class="classifier">int, optional</span></dt><dd><p>Sub-sampling factor for the angles.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code> (no sub-sampling).</p>
+</dd>
+<dt><strong>proj_col_sub_sampling</strong><span class="classifier">int, optional</span></dt><dd><p>Sub-sampling factor for the projection columns.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code> (no sub-sampling).</p>
+</dd>
+<dt><strong>scaling_factor</strong><span class="classifier">float, optional</span></dt><dd><p>Scaling factor to multiply with.
+The default is <code class="docutils literal notranslate"><span class="pre">DEFAULT_WALNUT_SCALING_FACTOR</span></code>, scaling image values to
+approximately <code class="docutils literal notranslate"><span class="pre">[0.,</span> <span class="pre">1.]</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>observation</strong><span class="classifier">Tensor</span></dt><dd><p>Projection data. Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">obs_numel)</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">obs_numel</span> <span class="pre">=</span> <span class="pre">ceil(1200</span> <span class="pre">/</span> <span class="pre">angular_sub_sampling)</span> <span class="pre">*</span> <span class="pre">ceil(768</span> <span class="pre">/</span> <span class="pre">proj_col_sub_sampling)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.data.datasets.rectangles.html" class="btn btn-neutral float-left" title="bayes_dip.data.datasets.rectangles module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.data.trafo.html" class="btn btn-neutral float-right" title="bayes_dip.data.trafo package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

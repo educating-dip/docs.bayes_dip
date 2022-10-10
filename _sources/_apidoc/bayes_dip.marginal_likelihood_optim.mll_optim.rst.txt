@@ -1,0 +1,7 @@
+bayes\_dip.marginal\_likelihood\_optim.mll\_optim module
+========================================================
+
+.. automodule:: bayes_dip.marginal_likelihood_optim.mll_optim
+   :members:
+   :undoc-members:
+   :show-inheritance:

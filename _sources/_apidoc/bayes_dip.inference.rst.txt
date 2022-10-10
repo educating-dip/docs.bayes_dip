@@ -1,0 +1,21 @@
+bayes\_dip.inference package
+============================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.inference.base_predictive_posterior
+   bayes_dip.inference.exact_predictive_posterior
+   bayes_dip.inference.sample_based_predictive_posterior
+   bayes_dip.inference.utils
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.inference
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.dip.deep_image_prior module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.inference package" href="bayes_dip.inference.html" />
+    <link rel="prev" title="bayes_dip.dip.network.unet module" href="bayes_dip.dip.network.unet.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.dip.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.dip.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.dip.html#module-bayes_dip.dip">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.dip.html">bayes_dip.dip package</a> &raquo;</li>
+      <li>bayes_dip.dip.deep_image_prior module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.dip.deep_image_prior.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.dip.deep_image_prior">
+<span id="bayes-dip-dip-deep-image-prior-module"></span><h1>bayes_dip.dip.deep_image_prior module<a class="headerlink" href="#module-bayes_dip.dip.deep_image_prior" title="Permalink to this heading"></a></h1>
+<p>Provides <a class="reference internal" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor" title="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeepImagePriorReconstructor</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.dip.deep_image_prior.</span></span><span class="sig-name descname"><span class="pre">DeepImagePriorReconstructor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ray_trafo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">torch_manual_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">net_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_params_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/dip/deep_image_prior.html#DeepImagePriorReconstructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>CT reconstructor applying DIP with TV regularization (see <a class="reference internal" href="#rd02d99f938e0-2" id="id1">[2]</a>).
+The DIP was introduced in <a class="reference internal" href="#rd02d99f938e0-1" id="id2">[1]</a>.</p>
+<div role="list" class="citation-list">
+<div class="citation" id="rd02d99f938e0-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>V. Lempitsky, A. Vedaldi, and D. Ulyanov, 2018, “Deep Image Prior”.
+IEEE/CVF Conference on Computer Vision and Pattern Recognition.
+<a class="reference external" href="https://doi.org/10.1109/CVPR.2018.00984">https://doi.org/10.1109/CVPR.2018.00984</a></p>
+</div>
+<div class="citation" id="rd02d99f938e0-2" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">2</a><span class="fn-bracket">]</span></span>
+<p>D. Otero Baguer, J. Leuschner, and M. Schmidt, 2020, “Computed
+Tomography Reconstruction Using Deep Image Prior and Learned
+Reconstruction Methods”. Inverse Problems.
+<a class="reference external" href="https://doi.org/10.1088/1361-6420/aba415">https://doi.org/10.1088/1361-6420/aba415</a></p>
+</div>
+</div>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.init_nn_model" title="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.init_nn_model"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_nn_model</span></code></a>(torch_manual_seed)</p></td>
+<td><p>Initialize the network <code class="xref py py-attr docutils literal notranslate"><span class="pre">nn_model</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.load_params" title="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.load_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_params</span></code></a>(params_path)</p></td>
+<td><p>Load model state dict from file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.reconstruct" title="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.reconstruct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconstruct</span></code></a>(noisy_observation[, ...])</p></td>
+<td><p>Reconstruct (by &quot;training&quot; the DIP network).</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ray_trafo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">torch_manual_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">net_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_params_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/dip/deep_image_prior.html#DeepImagePriorReconstructor.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>ray_trafo</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bayes_dip.data.BaseRayTrafo</span></code></span></dt><dd><p>Ray transform.</p>
+</dd>
+<dt><strong>torch_manual_seed</strong><span class="classifier">int or None, optional</span></dt><dd><p>Random number generator seed, used for initializing the network.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, no seed is set and the global random generator is advanced;
+otherwise, the manual seed is set on a forked generator used for the initialization.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device, optional</span></dt><dd><p>Device for the reconstruction.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), <code class="docutils literal notranslate"><span class="pre">'cuda:0'</span></code> is chosen if available or <code class="docutils literal notranslate"><span class="pre">'cpu'</span></code> otherwise.</p>
+</dd>
+<dt><strong>net_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Network architecture keyword arguments.</p>
+</dd>
+<dt><strong>load_params_path</strong><span class="classifier">str, optional</span></dt><dd><p>If specified, load the specified parameters instead of random initialization.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.init_nn_model">
+<span class="sig-name descname"><span class="pre">init_nn_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">torch_manual_seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/dip/deep_image_prior.html#DeepImagePriorReconstructor.init_nn_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.init_nn_model" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize the network <code class="xref py py-attr docutils literal notranslate"><span class="pre">nn_model</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>torch_manual_seed</strong><span class="classifier">int or None</span></dt><dd><p>Random number generator seed.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, no seed is set and the global random generator is advanced;
+otherwise, the manual seed is set on a forked generator used for the initialization.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.load_params">
+<span class="sig-name descname"><span class="pre">load_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/dip/deep_image_prior.html#DeepImagePriorReconstructor.load_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.load_params" title="Permalink to this definition"></a></dt>
+<dd><p>Load model state dict from file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>params_path</strong><span class="classifier">str</span></dt><dd><p>Path to the parameters, either absolute or relative to the original
+current working directory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.reconstruct">
+<span class="sig-name descname"><span class="pre">reconstruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noisy_observation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtbackproj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon_from_randn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_tv_loss</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_pbar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/dip/deep_image_prior.html#DeepImagePriorReconstructor.reconstruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.dip.deep_image_prior.DeepImagePriorReconstructor.reconstruct" title="Permalink to this definition"></a></dt>
+<dd><p>Reconstruct (by “training” the DIP network).</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>noisy_observation</strong><span class="classifier">Tensor</span></dt><dd><p>Noisy observation. Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">*self.ray_trafo.obs_shape)</span></code>.</p>
+</dd>
+<dt><strong>filtbackproj</strong><span class="classifier">Tensor, optional</span></dt><dd><p>Filtered back-projection. Used as the network input if <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">recon_from_randn</span></code>.
+Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">*self.ray_trafo.im_shape)</span></code></p>
+</dd>
+<dt><strong>ground_truth</strong><span class="classifier">Tensor, optional</span></dt><dd><p>Ground truth. Used to print and log PSNR values.
+Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">*self.ray_trafo.im_shape)</span></code></p>
+</dd>
+<dt><strong>recon_from_randn</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, normal distributed noise with std-dev 0.1 is used as the network input;
+if <code class="docutils literal notranslate"><span class="pre">False</span></code> (the default), <code class="docutils literal notranslate"><span class="pre">filtbackproj</span></code> is used as the network input.</p>
+</dd>
+<dt><strong>use_tv_loss</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to include the TV loss term.
+The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>log_path</strong><span class="classifier">str, optional</span></dt><dd><p>Path for saving tensorboard logs. Each call to reconstruct creates a sub-folder
+in <code class="docutils literal notranslate"><span class="pre">log_path</span></code>, starting with the time of the reconstruction call.
+The default is <code class="docutils literal notranslate"><span class="pre">'.'</span></code>.</p>
+</dd>
+<dt><strong>show_pbar</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to show a progress bar.
+The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>optim_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Keyword arguments for optimization.
+The arguments are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'gamma'</span></code><span class="classifier">float</span></dt><dd><p>Weighting factor of the TV loss term, the default is <code class="docutils literal notranslate"><span class="pre">1e-4</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'lr'</span></code><span class="classifier">float</span></dt><dd><p>Learning rate, the default is <code class="docutils literal notranslate"><span class="pre">1e-4</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'iterations'</span></code><span class="classifier">int</span></dt><dd><p>Number of iterations, the default is <code class="docutils literal notranslate"><span class="pre">10000</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'loss_function'</span></code><span class="classifier">str</span></dt><dd><p>Discrepancy loss function, the default is <code class="docutils literal notranslate"><span class="pre">'mse'</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>best_output</strong><span class="classifier">Tensor</span></dt><dd><p>Model output with the minimum loss achieved during the training.
+Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">*self.ray_trafo.im_shape)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.dip.network.unet.html" class="btn btn-neutral float-left" title="bayes_dip.dip.network.unet module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.inference.html" class="btn btn-neutral float-right" title="bayes_dip.inference package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.data.trafo.matmul_ray_trafo &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.data.trafo.matmul_ray_trafo</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.data.trafo.matmul_ray_trafo</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides :class:`MatmulRayTrafo`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>  <span class="c1"># postponed evaluation, to make ArrayLike look good in docs</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">Any</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.data.trafo.base_ray_trafo</span> <span class="kn">import</span> <span class="n">BaseRayTrafo</span>
+
+
+<span class="k">def</span> <span class="nf">_convert_to_torch_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">isspmatrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">tocoo</span><span class="p">()</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">row</span><span class="p">),</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">col</span><span class="p">)])</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse_coo_tensor</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">matrix</span>
+
+
+<span class="k">def</span> <span class="nf">_convert_to_scipy_sparse_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">):</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+    <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">indices</span><span class="p">()</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">matrix</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">((</span><span class="n">values</span><span class="p">,</span> <span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">matrix</span>
+
+
+<div class="viewcode-block" id="MatmulRayTrafo"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.matmul_ray_trafo.html#bayes_dip.data.trafo.matmul_ray_trafo.MatmulRayTrafo">[docs]</a><span class="k">class</span> <span class="nc">MatmulRayTrafo</span><span class="p">(</span><span class="n">BaseRayTrafo</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ray transform implemented by (sparse) matrix multiplication.</span>
+
+<span class="sd">    Adjoint computations are accurate in this implementation (which is not</span>
+<span class="sd">    always the case when using back-projection for the adjoint).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MatmulRayTrafo.__init__"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.matmul_ray_trafo.html#bayes_dip.data.trafo.matmul_ray_trafo.MatmulRayTrafo.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">im_shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+            <span class="n">obs_shape</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+            <span class="n">matrix</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">scipy</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+            <span class="n">fbp_fun</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">[[</span><span class="n">Tensor</span><span class="p">],</span> <span class="n">Tensor</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">angles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        im_shape, obs_shape</span>
+<span class="sd">            See :meth:`BaseRayTrafo.__init__`.</span>
+<span class="sd">        matrix : tensor, scipy sparse matrix or numpy array</span>
+<span class="sd">            Matrix representation of the ray transform.</span>
+<span class="sd">            Shape: ``(np.prod(obs_shape), np.prod(im_shape))``.</span>
+<span class="sd">        fbp_fun : callable, optional</span>
+<span class="sd">            Function applying a filtered back-projection, used for providing</span>
+<span class="sd">            :meth:`fbp`.</span>
+<span class="sd">        angles : array-like, optional</span>
+<span class="sd">            Angles of the ray transform, only used for providing the</span>
+<span class="sd">            :attr:`angles` property; not used for any computations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">im_shape</span><span class="o">=</span><span class="n">im_shape</span><span class="p">,</span> <span class="n">obs_shape</span><span class="o">=</span><span class="n">obs_shape</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">):</span>
+            <span class="c1"># convert from numpy or scipy sparse matrix</span>
+            <span class="n">matrix</span> <span class="o">=</span> <span class="n">_convert_to_torch_matrix</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+
+        <span class="c1"># register for automatic moving to device (access: self.matrix)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;matrix&#39;</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">persistent</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">matrix</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">:</span>
+            <span class="c1"># cannot call .T on sparse torch tensor, so create new tensor and</span>
+            <span class="c1"># register it for automatic moving to device (access: self.matrix_t)</span>
+            <span class="n">indices_t</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">indices</span><span class="p">()[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">:]</span>  <span class="c1"># 2 x ??</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="n">shape_t</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">matrix_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse_coo_tensor</span><span class="p">(</span><span class="n">indices_t</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">shape_t</span><span class="p">)</span>
+            <span class="n">matrix_t</span> <span class="o">=</span> <span class="n">matrix_t</span><span class="o">.</span><span class="n">coalesce</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s1">&#39;matrix_t&#39;</span><span class="p">,</span> <span class="n">matrix_t</span><span class="p">,</span> <span class="n">persistent</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fbp_fun</span> <span class="o">=</span> <span class="n">fbp_fun</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span> <span class="o">=</span> <span class="n">angles</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">angles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArrayLike</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;array-like : The angles (in radian).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angles</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`angles` was not set for `MatmulRayTrafo`&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MatmulRayTrafo.trafo_flat"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.matmul_ray_trafo.html#bayes_dip.data.trafo.matmul_ray_trafo.MatmulRayTrafo.trafo_flat">[docs]</a>    <span class="k">def</span> <span class="nf">trafo_flat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">:</span>
+            <span class="n">observation</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">observation</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">observation</span></div>
+
+<div class="viewcode-block" id="MatmulRayTrafo.trafo_adjoint_flat"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.matmul_ray_trafo.html#bayes_dip.data.trafo.matmul_ray_trafo.MatmulRayTrafo.trafo_adjoint_flat">[docs]</a>    <span class="k">def</span> <span class="nf">trafo_adjoint_flat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">is_sparse</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sparse</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix_t</span><span class="p">,</span> <span class="n">observation</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">observation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="MatmulRayTrafo.fbp"><a class="viewcode-back" href="../../../../_apidoc/bayes_dip.data.trafo.matmul_ray_trafo.html#bayes_dip.data.trafo.matmul_ray_trafo.MatmulRayTrafo.fbp">[docs]</a>    <span class="k">def</span> <span class="nf">fbp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observation</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fbp_fun</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span></div>
+
+    <span class="n">trafo</span> <span class="o">=</span> <span class="n">BaseRayTrafo</span><span class="o">.</span><span class="n">_trafo_via_trafo_flat</span>
+    <span class="n">trafo_adjoint</span> <span class="o">=</span> <span class="n">BaseRayTrafo</span><span class="o">.</span><span class="n">_trafo_adjoint_via_trafo_adjoint_flat</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

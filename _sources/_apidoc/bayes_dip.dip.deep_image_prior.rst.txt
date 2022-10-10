@@ -1,0 +1,7 @@
+bayes\_dip.dip.deep\_image\_prior module
+========================================
+
+.. automodule:: bayes_dip.dip.deep_image_prior
+   :members:
+   :undoc-members:
+   :show-inheritance:

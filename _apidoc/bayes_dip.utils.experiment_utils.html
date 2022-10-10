@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.utils.experiment_utils module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.utils.linear_cg_gpytorch module" href="bayes_dip.utils.linear_cg_gpytorch.html" />
+    <link rel="prev" title="bayes_dip.utils.evaluation_utils module" href="bayes_dip.utils.evaluation_utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.utils.html#module-bayes_dip.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.utils.html">bayes_dip.utils package</a> &raquo;</li>
+      <li>bayes_dip.utils.experiment_utils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.utils.experiment_utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.utils.experiment_utils">
+<span id="bayes-dip-utils-experiment-utils-module"></span><h1>bayes_dip.utils.experiment_utils module<a class="headerlink" href="#module-bayes_dip.utils.experiment_utils" title="Permalink to this heading"></a></h1>
+<p>Utilities for experiments.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.experiment_utils.assert_sample_matches">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.experiment_utils.</span></span><span class="sig-name descname"><span class="pre">assert_sample_matches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_if_file_not_found</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/experiment_utils.html#assert_sample_matches"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.experiment_utils.assert_sample_matches" title="Permalink to this definition"></a></dt>
+<dd><p>Assert that the saved data for sample <code class="docutils literal notranslate"><span class="pre">i</span></code> in <code class="docutils literal notranslate"><span class="pre">path</span></code> matches the passed <code class="docutils literal notranslate"><span class="pre">data_sample</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data_sample</strong><span class="classifier">3-tuple of Tensor</span></dt><dd><p>Sample data <code class="docutils literal notranslate"><span class="pre">(observation,</span> <span class="pre">ground_truth,</span> <span class="pre">filtbackproj)</span></code>. Only <code class="docutils literal notranslate"><span class="pre">filtbackproj</span></code> is used.</p>
+</dd>
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Hydra output directory of a previous run.</p>
+</dd>
+<dt><strong>i</strong><span class="classifier">int</span></dt><dd><p>Sample index.</p>
+</dd>
+<dt><strong>raise_if_file_not_found</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">False</span></code>, warn instead of raising a <code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.experiment_utils.get_predefined_patch_idx_list">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.experiment_utils.</span></span><span class="sig-name descname"><span class="pre">get_predefined_patch_idx_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">patch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/experiment_utils.html#get_predefined_patch_idx_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.experiment_utils.get_predefined_patch_idx_list" title="Permalink to this definition"></a></dt>
+<dd><p>Return a predefined list of patch indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>name</strong><span class="classifier">str</span></dt><dd><p>Name of the patch index list.</p>
+</dd>
+<dt><strong>patch_size</strong><span class="classifier">int</span></dt><dd><p>Side length of the patches (patches are usually square).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>patch_idx_list</strong><span class="classifier">list of int</span></dt><dd><p>Indices of the patches.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.experiment_utils.get_standard_dataset">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.experiment_utils.</span></span><span class="sig-name descname"><span class="pre">get_standard_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_trafo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'test'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_fixed_seeds_starting_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/data.html#torch.utils.data.Dataset" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Dataset</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/experiment_utils.html#get_standard_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.experiment_utils.get_standard_dataset" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Return a dataset of tuples <code class="docutils literal notranslate"><span class="pre">noisy_observation,</span> <span class="pre">x,</span> <span class="pre">filtbackproj</span></code>, where</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">noisy_observation</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(1,)</span> <span class="pre">+</span> <span class="pre">obs_shape</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> is the ground truth (label) and has shape <code class="docutils literal notranslate"><span class="pre">(1,)</span> <span class="pre">+</span> <span class="pre">im_shape</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filtbackproj</span> <span class="pre">=</span> <span class="pre">FBP(noisy_observation)</span></code> has shape <code class="docutils literal notranslate"><span class="pre">(1,)</span> <span class="pre">+</span> <span class="pre">im_shape</span></code></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>fold</strong><span class="classifier">str, optional</span></dt><dd><p>Dataset fold, either <code class="docutils literal notranslate"><span class="pre">'test'</span></code> or <code class="docutils literal notranslate"><span class="pre">'validation'</span></code>.
+Only the (K)MNIST datasets support <code class="docutils literal notranslate"><span class="pre">'validation'</span></code>, using the respective training set.
+The default is <code class="docutils literal notranslate"><span class="pre">'test'</span></code>.</p>
+</dd>
+<dt><strong>use_fixed_seeds_starting_from</strong><span class="classifier">int, optional</span></dt><dd><p>Fixed seed for noise generation, only used in simulated datasets.
+If <code class="docutils literal notranslate"><span class="pre">fold</span> <span class="pre">==</span> <span class="pre">'validation'</span></code>, <code class="docutils literal notranslate"><span class="pre">1000000</span></code> is added to the seed (if not <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device, optional</span></dt><dd><p>If specified, data will be moved to the device. <code class="docutils literal notranslate"><span class="pre">ray_trafo</span></code>
+(including <code class="docutils literal notranslate"><span class="pre">ray_trafo.fbp</span></code>) must support tensors on the device.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>dataset</strong><span class="classifier">torch.utils.data.Dataset</span></dt><dd><p>Dataset.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.experiment_utils.get_standard_ray_trafo">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.experiment_utils.</span></span><span class="sig-name descname"><span class="pre">get_standard_ray_trafo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DictConfig</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/experiment_utils.html#get_standard_ray_trafo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.experiment_utils.get_standard_ray_trafo" title="Permalink to this definition"></a></dt>
+<dd><p>Return the ray transform by hydra config.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.experiment_utils.load_samples">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.experiment_utils.</span></span><span class="sig-name descname"><span class="pre">load_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrict_to_num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_location</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/experiment_utils.html#load_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.experiment_utils.load_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Load samples from file(s) in <code class="docutils literal notranslate"><span class="pre">path</span></code> that were saved by <a class="reference internal" href="#bayes_dip.utils.experiment_utils.save_samples" title="bayes_dip.utils.experiment_utils.save_samples"><code class="xref py py-func docutils literal notranslate"><span class="pre">save_samples()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>path</strong><span class="classifier">str</span></dt><dd><p>Path containing the samples file(s).</p>
+</dd>
+<dt><strong>i</strong><span class="classifier">int</span></dt><dd><p>Data sample index.</p>
+</dd>
+<dt><strong>num_samples</strong><span class="classifier">int</span></dt><dd><p>Minimum number of samples to load.
+If <code class="docutils literal notranslate"><span class="pre">restrict_to_num_samples</span></code> or the number of saved samples is divisible by the chunk
+size, this is the number of returned samples.</p>
+</dd>
+<dt><strong>restrict_to_num_samples</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to restrict the loaded samples to the first <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> samples; otherwise more
+samples may be returned (due to the chunk size of the saved files).
+The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>prefix</strong><span class="classifier">str, optional</span></dt><dd><p>Prefix of the filename(s).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">Tensor</span></dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(eff_num_samples,</span> <span class="pre">...)</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">eff_num_samples</span></code> is <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> if <code class="docutils literal notranslate"><span class="pre">restrict_to_num_samples</span></code> or
+<code class="docutils literal notranslate"><span class="pre">ceil(num_samples</span> <span class="pre">/</span> <span class="pre">chunk_size)</span> <span class="pre">*</span> <span class="pre">chunk_size</span></code> otherwise.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.utils.experiment_utils.save_samples">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.utils.experiment_utils.</span></span><span class="sig-name descname"><span class="pre">save_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunk_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/utils/experiment_utils.html#save_samples"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.utils.experiment_utils.save_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Save samples to file(s) in the current working directory.</p>
+<p>The files are named <code class="docutils literal notranslate"><span class="pre">f'{prefix}samples_{i}_chunk_{j}.pt'</span></code> (where <code class="docutils literal notranslate"><span class="pre">j</span></code> is the chunk index).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>i</strong><span class="classifier">int</span></dt><dd><p>Data sample index.</p>
+</dd>
+<dt><strong>samples</strong><span class="classifier">Tensor</span></dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(num_samples,</span> <span class="pre">...)</span></code>.</p>
+</dd>
+<dt><strong>chunk_size</strong><span class="classifier">int</span></dt><dd><p>Number of samples per file.</p>
+</dd>
+<dt><strong>prefix</strong><span class="classifier">str, optional</span></dt><dd><p>If specified, prefix each filename with this string.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.utils.evaluation_utils.html" class="btn btn-neutral float-left" title="bayes_dip.utils.evaluation_utils module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.utils.linear_cg_gpytorch.html" class="btn btn-neutral float-right" title="bayes_dip.utils.linear_cg_gpytorch module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

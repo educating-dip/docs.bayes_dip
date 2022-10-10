@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.data.simulation module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.data.utils module" href="bayes_dip.data.utils.html" />
+    <link rel="prev" title="bayes_dip.data.trafo.walnut_2d_ray_trafo module" href="bayes_dip.data.trafo.walnut_2d_ray_trafo.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.data.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.data.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.data.html#module-bayes_dip.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.data.html">bayes_dip.data package</a> &raquo;</li>
+      <li>bayes_dip.data.simulation module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.data.simulation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.data.simulation">
+<span id="bayes-dip-data-simulation-module"></span><h1>bayes_dip.data.simulation module<a class="headerlink" href="#module-bayes_dip.data.simulation" title="Permalink to this heading"></a></h1>
+<p>Provides simulation by applying a ray transform and white noise.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.data.simulation.SimulatedDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.data.simulation.</span></span><span class="sig-name descname"><span class="pre">SimulatedDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_trafo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">white_noise_rel_stddev</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_fixed_seeds_starting_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Generator</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/data/simulation.html#SimulatedDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.simulation.SimulatedDataset" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/data.html#torch.utils.data.Dataset" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></a></p>
+<p>CT dataset simulated from provided ground truth images.</p>
+<p>Each item of this dataset is a tuple <code class="docutils literal notranslate"><span class="pre">noisy_observation,</span> <span class="pre">x,</span> <span class="pre">filtbackproj</span></code>, where</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">noisy_observation</span> <span class="pre">=</span> <span class="pre">ray_trafo(x)</span> <span class="pre">+</span> <span class="pre">noise</span></code>
+(shape: <code class="docutils literal notranslate"><span class="pre">(1,)</span> <span class="pre">+</span> <span class="pre">obs_shape</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x</span></code> is the ground truth (label)
+(shape: <code class="docutils literal notranslate"><span class="pre">(1,)</span> <span class="pre">+</span> <span class="pre">im_shape</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filtbackproj</span> <span class="pre">=</span> <span class="pre">FBP(noisy_observation)</span></code>
+(shape: <code class="docutils literal notranslate"><span class="pre">(1,)</span> <span class="pre">+</span> <span class="pre">im_shape</span></code>)</p></li>
+</ul>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.data.simulation.SimulatedDataset.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><span class="pre">Iterable</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_trafo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">white_noise_rel_stddev</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_fixed_seeds_starting_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Generator</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/data/simulation.html#SimulatedDataset.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.simulation.SimulatedDataset.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>image_dataset</strong><span class="classifier">sequence or iterable</span></dt><dd><p>Image data. The methods <code class="xref py py-meth docutils literal notranslate"><span class="pre">__len__()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">__getitem__()</span></code>
+directly use the respective functions of <code class="docutils literal notranslate"><span class="pre">image_dataset</span></code> and will
+fail if they are not supported. The method <code class="xref py py-meth docutils literal notranslate"><span class="pre">__iter__()</span></code> simply
+iterates over <code class="docutils literal notranslate"><span class="pre">image_dataset</span></code> and thus will only stop when
+<code class="docutils literal notranslate"><span class="pre">image_dataset</span></code> is exhausted.</p>
+</dd>
+<dt><strong>ray_trafo</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bayes_dip.data.BaseRayTrafo</span></code></span></dt><dd><p>Ray trafo.</p>
+</dd>
+<dt><strong>white_noise_rel_stddev</strong><span class="classifier">float</span></dt><dd><p>Relative standard deviation of the noise that is added.</p>
+</dd>
+<dt><strong>use_fixed_seeds_starting_from</strong><span class="classifier">int, optional</span></dt><dd><p>If an int, the fixed random seed
+<code class="docutils literal notranslate"><span class="pre">use_fixed_seeds_starting_from</span> <span class="pre">+</span> <span class="pre">idx</span></code> is used for sample <code class="docutils literal notranslate"><span class="pre">idx</span></code>.
+Must be <code class="docutils literal notranslate"><span class="pre">None</span></code> if a custom <code class="docutils literal notranslate"><span class="pre">rng</span></code> is used.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+<dt><strong>rng</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">np.random.Generator</span></code>, optional</span></dt><dd><p>Custom random number generator used to simulate noise; it will be
+advanced every time an item is accessed.
+Cannot be combined with <code class="docutils literal notranslate"><span class="pre">use_fixed_seeds_starting_from</span></code>.
+If both <code class="docutils literal notranslate"><span class="pre">rng</span></code> and <code class="docutils literal notranslate"><span class="pre">use_fixed_seeds_starting_from</span></code> are <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+a new generator <code class="docutils literal notranslate"><span class="pre">np.random.default_rng()</span></code> is used.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device, optional</span></dt><dd><p>If specified, data will be moved to the device. <code class="docutils literal notranslate"><span class="pre">ray_trafo</span></code>
+(including <code class="docutils literal notranslate"><span class="pre">ray_trafo.fbp</span></code>) must support tensors on the device.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.data.simulation.simulate">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.data.simulation.</span></span><span class="sig-name descname"><span class="pre">simulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ray_trafo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">white_noise_rel_stddev</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">Generator</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/data/simulation.html#simulate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.simulation.simulate" title="Permalink to this definition"></a></dt>
+<dd><p>Compute <code class="docutils literal notranslate"><span class="pre">observation</span> <span class="pre">=</span> <span class="pre">ray_trafo(x)</span></code> and add white noise with standard
+deviation <code class="docutils literal notranslate"><span class="pre">white_noise_rel_stddev</span> <span class="pre">*</span> <span class="pre">mean(abs(observation))</span></code>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>x</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Image, passed to <code class="docutils literal notranslate"><span class="pre">ray_trafo</span></code>.</p>
+</dd>
+<dt><strong>ray_trafo</strong><span class="classifier">callable</span></dt><dd><p>Function computing the noise-free observation.</p>
+</dd>
+<dt><strong>white_noise_rel_stddev</strong><span class="classifier">float</span></dt><dd><p>Relative standard deviation of the noise that is added.</p>
+</dd>
+<dt><strong>rng</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">np.random.Generator</span></code>, optional</span></dt><dd><p>Random number generator. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default),
+a new generator <code class="docutils literal notranslate"><span class="pre">np.random.default_rng()</span></code> is used.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.data.trafo.walnut_2d_ray_trafo.html" class="btn btn-neutral float-left" title="bayes_dip.data.trafo.walnut_2d_ray_trafo module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.data.utils.html" class="btn btn-neutral float-right" title="bayes_dip.data.utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

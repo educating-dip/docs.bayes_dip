@@ -1,0 +1,7 @@
+bayes\_dip.marginal\_likelihood\_optim.preconditioner\_utils module
+===================================================================
+
+.. automodule:: bayes_dip.marginal_likelihood_optim.preconditioner_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

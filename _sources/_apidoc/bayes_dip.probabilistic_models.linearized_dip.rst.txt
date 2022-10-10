@@ -1,0 +1,31 @@
+bayes\_dip.probabilistic\_models.linearized\_dip package
+========================================================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion
+   bayes_dip.probabilistic_models.linearized_dip.parameter_priors
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.probabilistic_models.linearized_dip.default_unet_priors
+   bayes_dip.probabilistic_models.linearized_dip.image_cov
+   bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov
+   bayes_dip.probabilistic_models.linearized_dip.parameter_cov
+   bayes_dip.probabilistic_models.linearized_dip.utils
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip
+   :members:
+   :undoc-members:
+   :show-inheritance:

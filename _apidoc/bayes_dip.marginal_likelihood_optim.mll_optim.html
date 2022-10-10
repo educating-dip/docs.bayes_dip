@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.marginal_likelihood_optim.mll_optim module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad module" href="bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad.html" />
+    <link rel="prev" title="bayes_dip.marginal_likelihood_optim package" href="bayes_dip.marginal_likelihood_optim.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html#module-bayes_dip.marginal_likelihood_optim">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a> &raquo;</li>
+      <li>bayes_dip.marginal_likelihood_optim.mll_optim module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.marginal_likelihood_optim.mll_optim.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.marginal_likelihood_optim.mll_optim">
+<span id="bayes-dip-marginal-likelihood-optim-mll-optim-module"></span><h1>bayes_dip.marginal_likelihood_optim.mll_optim module<a class="headerlink" href="#module-bayes_dip.marginal_likelihood_optim.mll_optim" title="Permalink to this heading"></a></h1>
+<p>Provides the marginal log-likelihood (MLL or Type-II-MAP) optimization routine for the prior
+hyperparameters, <a class="reference internal" href="#bayes_dip.marginal_likelihood_optim.mll_optim.marginal_likelihood_hyperparams_optim" title="bayes_dip.marginal_likelihood_optim.mll_optim.marginal_likelihood_hyperparams_optim"><code class="xref py py-func docutils literal notranslate"><span class="pre">marginal_likelihood_hyperparams_optim()</span></code></a>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.marginal_likelihood_optim.mll_optim.marginal_likelihood_hyperparams_optim">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.marginal_likelihood_optim.mll_optim.</span></span><span class="sig-name descname"><span class="pre">marginal_likelihood_hyperparams_optim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.probabilistic_models.observation_cov.html#bayes_dip.probabilistic_models.observation_cov.ObservationCov" title="bayes_dip.probabilistic_models.observation_cov.ObservationCov"><span class="pre">ObservationCov</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">observation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">recon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">linearized_weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optim_kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'mll'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/marginal_likelihood_optim/mll_optim.html#marginal_likelihood_hyperparams_optim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.marginal_likelihood_optim.mll_optim.marginal_likelihood_hyperparams_optim" title="Permalink to this definition"></a></dt>
+<dd><p>Optimize the prior hyperparameters by marginal log-likelihood (MLL or Type-II-MAP) optimization.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>observation_cov</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObservationCov</span></code></span></dt><dd><p>Observation covariance.</p>
+</dd>
+<dt><strong>observation</strong><span class="classifier">Tensor</span></dt><dd><p>Observation. Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">*observation_cov.trafo.obs_shape)</span></code>.</p>
+</dd>
+<dt><strong>recon</strong><span class="classifier">Tensor</span></dt><dd><p>Reconstruction. Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">*observation_cov.trafo.im_shape)</span></code>.</p>
+</dd>
+<dt><strong>linearized_weights</strong><span class="classifier">Tensor, optional</span></dt><dd><p>If specified, use these weights instead of the MAP weights (DIP network model weights).
+Useful to pass linearized weights like returned by
+<a class="reference internal" href="bayes_dip.marginal_likelihood_optim.weights_linearization.html#module-bayes_dip.marginal_likelihood_optim.weights_linearization" title="bayes_dip.marginal_likelihood_optim.weights_linearization"><code class="xref py py-func docutils literal notranslate"><span class="pre">bayes_dip.marginal_likelihood_optim.weights_linearization()</span></code></a>.
+Shape: <code class="docutils literal notranslate"><span class="pre">(observation_cov.image_cov.inner_cov.shape[0],)</span></code>.</p>
+</dd>
+<dt><strong>optim_kwargs</strong><span class="classifier">dict</span></dt><dd><p>Optimization keyword arguments (most are required). The arguments are:</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">'iterations'</span></code><span class="classifier">int</span></dt><dd><p>Number of iterations.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'lr'</span></code><span class="classifier">float</span></dt><dd><p>Learning rate.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'scheduler'</span></code><span class="classifier">dict</span></dt><dd><p>Scheduler keyword arguments.</p>
+<p><em>Arguments in</em> <code class="docutils literal notranslate"><span class="pre">optim_kwargs['scheduler']</span></code> <em>are:</em></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'use_scheduler'</span></code><span class="classifier">bool</span></dt><dd><p>Whether to use a <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.optim.lr_scheduler.StepLR.html#torch.optim.lr_scheduler.StepLR" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.optim.lr_scheduler.StepLR</span></code></a> scheduler.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'step_size'</span></code><span class="classifier">int</span></dt><dd><p>Step size of the scheduler.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'gamma'</span></code><span class="classifier">float</span></dt><dd><p>Gamma of the scheduler.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'min_log_variance'</span></code><span class="classifier">float</span></dt><dd><p>Minimum value for the logarithm of variance hyperparameters. The log variance
+hyperparameters are clamped by this value after each optimization step.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'num_probes'</span></code><span class="classifier">int</span></dt><dd><p>Number of probes for estimating the observation covariance log determinant gradients
+if <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">isinstance(observation_cov,</span> <span class="pre">MatmulObservationCov)</span></code>; otherwise the gradients
+are calculated exactly from the assembled matrix via <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.linalg.slogdet.html#torch.linalg.slogdet" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.linalg.slogdet()</span></code></a>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'linear_cg'</span></code><span class="classifier">dict</span></dt><dd><p>Conjugate gradients keyword arguments for estimating the observation covariance log
+determinant gradients if <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">isinstance(observation_cov,</span> <span class="pre">MatmulObservationCov)</span></code>;
+otherwise the gradients are calculated exactly from the assembled matrix via
+<a class="reference external" href="https://pytorch.org/docs/master/generated/torch.linalg.slogdet.html#torch.linalg.slogdet" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.linalg.slogdet()</span></code></a>.</p>
+<p><em>Arguments in</em> <code class="docutils literal notranslate"><span class="pre">optim_kwargs['linear_cg']</span></code> <em>are:</em></p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">'preconditioner'</span></code><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePreconditioner</span></code> or None</span></dt><dd><p>Left-preconditioner.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'use_preconditioned_probes'</span></code><span class="classifier">bool</span></dt><dd><p>Whether to use preconditioned probes, as described in Section 4.1 in <a class="reference internal" href="#r9649daca64db-1" id="id1">[1]</a>.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <code class="docutils literal notranslate"><span class="pre">preconditioner</span></code> must not be <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r9649daca64db-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>J.R. Gardner, G. Pleiss, D. Bindel, K.Q. Weinberger, A.G. Wilson, 2018,
+“GPyTorch: Blackbox Matrix-Matrix Gaussian Process Inference with GPU
+Acceleration”. <a class="reference external" href="https://arxiv.org/pdf/1809.11165v6.pdf">https://arxiv.org/pdf/1809.11165v6.pdf</a></p>
+</div>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'update_freq'</span></code><span class="classifier">int</span></dt><dd><p>Number of iterations between preconditioner updates.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'max_iter'</span></code><span class="classifier">int</span></dt><dd><p>Maximum number of CG iterations.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'rtol'</span></code><span class="classifier">float</span></dt><dd><p>Tolerance at which to stop early (before <code class="docutils literal notranslate"><span class="pre">max_iter</span></code>).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'use_log_re_variant'</span></code><span class="classifier">bool</span></dt><dd><p>Whether to use the low precision arithmetic variant by Maddox et al.,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">linear_log_cg_re()</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'include_predcp'</span></code><span class="classifier">bool</span></dt><dd><p>Whether to include the predictive complexity prior term.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'predcp'</span></code><span class="classifier">dict, optional</span></dt><dd><p>PredCP keyword arguments, required if <code class="docutils literal notranslate"><span class="pre">optim_kwargs['include_predcp']</span></code>.</p>
+<p><em>Arguments in</em> <code class="docutils literal notranslate"><span class="pre">optim_kwargs['predcp']</span></code> <em>are:</em></p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">'use_map_weights_mean'</span></code><span class="classifier">bool</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, use <code class="docutils literal notranslate"><span class="pre">recon</span></code> as the mean of the image samples;
+if <code class="docutils literal notranslate"><span class="pre">False</span></code>, use <code class="docutils literal notranslate"><span class="pre">recon</span> <span class="pre">-</span> <span class="pre">J</span> <span class="pre">&#64;</span> <span class="pre">map_weights</span></code> instead, where
+<code class="docutils literal notranslate"><span class="pre">J</span></code> is the Jacobian of the network and <code class="docutils literal notranslate"><span class="pre">map_weights</span></code> are the network weights.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'num_samples'</span></code><span class="classifier">int</span></dt><dd><p>Number of image samples for estimating the PredCP term gradients.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'gamma'</span></code><span class="classifier">float</span></dt><dd><p>TV scaling factor, which is part of the scaling of the PredCP term.
+Should be the same as for the DIP optimization (the gamma values are comparable, as
+this function internally multiplies with <code class="docutils literal notranslate"><span class="pre">observation.numel()</span></code> because the
+likelihood objective uses the SSE instead of the MSE used for DIP optimization).
+See also <code class="docutils literal notranslate"><span class="pre">optim_kwargs['predcp']['scale']</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">'scale'</span></code><span class="classifier">float</span></dt><dd><p>Additional scaling factor for the PredCP term.
+See also <code class="docutils literal notranslate"><span class="pre">optim_kwargs['predcp']['gamma']</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+<dt><strong>log_path</strong><span class="classifier">str, optional</span></dt><dd><p>Path for saving tensorboard logs. This function creates a sub-folder in <code class="docutils literal notranslate"><span class="pre">log_path</span></code>,
+starting with the current time. The default is <code class="docutils literal notranslate"><span class="pre">'./'</span></code>.</p>
+</dd>
+<dt><strong>comment</strong><span class="classifier">str, optional</span></dt><dd><p>Suffix for the tensorboard log sub-folder. The default is <code class="docutils literal notranslate"><span class="pre">'mll'</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.marginal_likelihood_optim.html" class="btn btn-neutral float-left" title="bayes_dip.marginal_likelihood_optim package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad.html" class="btn btn-neutral float-right" title="bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

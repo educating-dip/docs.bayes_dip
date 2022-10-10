@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.data.trafo.parallel_beam_2d_ray_trafo module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.data.trafo.walnut_2d_ray_trafo module" href="bayes_dip.data.trafo.walnut_2d_ray_trafo.html" />
+    <link rel="prev" title="bayes_dip.data.trafo.matmul_ray_trafo module" href="bayes_dip.data.trafo.matmul_ray_trafo.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.data.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.data.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.data.html#module-bayes_dip.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.data.html">bayes_dip.data package</a> &raquo;</li>
+          <li><a href="bayes_dip.data.trafo.html">bayes_dip.data.trafo package</a> &raquo;</li>
+      <li>bayes_dip.data.trafo.parallel_beam_2d_ray_trafo module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.data.trafo.parallel_beam_2d_ray_trafo">
+<span id="bayes-dip-data-trafo-parallel-beam-2d-ray-trafo-module"></span><h1>bayes_dip.data.trafo.parallel_beam_2d_ray_trafo module<a class="headerlink" href="#module-bayes_dip.data.trafo.parallel_beam_2d_ray_trafo" title="Permalink to this heading"></a></h1>
+<p>Provides <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelBeam2DRayTrafo</span></code></a>, as well as getters
+for its matrix representation and a <code class="xref py py-class docutils literal notranslate"><span class="pre">MatmulRayTrafo</span></code> implementation.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.</span></span><span class="sig-name descname"><span class="pre">ParallelBeam2DRayTrafo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_angle_zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_sub_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'astra_cuda'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/data/trafo/parallel_beam_2d_ray_trafo.html#ParallelBeam2DRayTrafo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseRayTrafo</span></code></a></p>
+<p>Ray transform implemented via ODL.</p>
+<p>Adjoint computations use the back-projection (might be slightly inaccurate).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.angles" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">angles</span></code></a></dt><dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> : The angles (in radian).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.fbp" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.fbp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fbp</span></code></a>(observation)</p></td>
+<td><p>Apply a filtered back-projection.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trafo</span></code></a>(x)</p></td>
+<td><p>Apply the forward projection.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trafo_adjoint</span></code></a>(observation)</p></td>
+<td><p>Apply the adjoint operation (sometimes implemented as a back-projection; for an accurately matching adjoint of the discrete forward projection operation <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trafo()</span></code></a>, one might consider assembling the matrix describing <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trafo()</span></code></a> and multiply with the transposed matrix in this function).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint_flat" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint_flat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trafo_adjoint_flat</span></code></a>(observation)</p></td>
+<td><p>Apply the adjoint operation; flat version of <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trafo_adjoint()</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_flat" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_flat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trafo_flat</span></code></a>(x)</p></td>
+<td><p>Apply the forward projection; flat version of <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trafo()</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_angle_zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_sub_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'astra_cuda'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/data/trafo/parallel_beam_2d_ray_trafo.html#ParallelBeam2DRayTrafo.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>im_shape</strong><span class="classifier">2-tuple of int</span></dt><dd><p>Image shape, <code class="docutils literal notranslate"><span class="pre">(im_0,</span> <span class="pre">im_1)</span></code>.</p>
+</dd>
+<dt><strong>num_angles</strong><span class="classifier">int</span></dt><dd><p>Number of angles (to distribute from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">pi</span></code>).</p>
+</dd>
+<dt><strong>first_angle_zero</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to shift all angles such that the first angle becomes <code class="docutils literal notranslate"><span class="pre">0.</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the default angles from ODL are used, where the first angle
+is at half an angle step.
+The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>angular_sub_sampling</strong><span class="classifier">int, optional</span></dt><dd><p>Sub-sampling factor for the angles.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code> (no sub-sampling).</p>
+</dd>
+<dt><strong>impl</strong><span class="classifier">str, optional</span></dt><dd><p>Backend for <code class="xref py py-class docutils literal notranslate"><span class="pre">odl.tomo.RayTransform</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'astra_cuda'</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.angles">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angles</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></em><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.angles" title="Permalink to this definition"></a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> : The angles (in radian).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.fbp">
+<span class="sig-name descname"><span class="pre">fbp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/data/trafo/parallel_beam_2d_ray_trafo.html#ParallelBeam2DRayTrafo.fbp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.fbp" title="Permalink to this definition"></a></dt>
+<dd><p>Apply a filtered back-projection.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>observation</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Projection values.
+Shape for 2D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">angles,</span> <span class="pre">det_cols)</span></code>.
+Shape for 3D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">det_rows,</span> <span class="pre">angles,</span> <span class="pre">det_cols)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>x</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Filtered back-projection.
+Shape for 2D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">im_0,</span> <span class="pre">im_1)</span></code>.
+Shape for 3D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">im_0,</span> <span class="pre">im_1,</span> <span class="pre">im_2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo">
+<span class="sig-name descname"><span class="pre">trafo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/data/trafo/parallel_beam_2d_ray_trafo.html#ParallelBeam2DRayTrafo.trafo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo" title="Permalink to this definition"></a></dt>
+<dd><p>Apply the forward projection.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>x</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Image of attenuation.
+Shape for 2D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">im_0,</span> <span class="pre">im_1)</span></code>.
+Shape for 3D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">im_0,</span> <span class="pre">im_1,</span> <span class="pre">im_2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>observation</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Forward projection.
+Shape for 2D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">angles,</span> <span class="pre">det_cols)</span></code>.
+Shape for 3D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">det_rows,</span> <span class="pre">angles,</span> <span class="pre">det_cols)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint">
+<span class="sig-name descname"><span class="pre">trafo_adjoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/data/trafo/parallel_beam_2d_ray_trafo.html#ParallelBeam2DRayTrafo.trafo_adjoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint" title="Permalink to this definition"></a></dt>
+<dd><p>Apply the adjoint operation (sometimes implemented as a back-projection;
+for an accurately matching adjoint of the discrete forward projection
+operation <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trafo()</span></code></a>, one might consider assembling the matrix
+describing <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trafo()</span></code></a> and multiply with the transposed matrix in this
+function).</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>observation</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Projection values.
+Shape for 2D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">angles,</span> <span class="pre">det_cols)</span></code>.
+Shape for 3D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">det_rows,</span> <span class="pre">angles,</span> <span class="pre">det_cols)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>x</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Result of the adjoint operation (back-projection).
+Shape for 2D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">im_0,</span> <span class="pre">im_1)</span></code>.
+Shape for 3D geometries: <code class="docutils literal notranslate"><span class="pre">(batch,</span> <span class="pre">channels,</span> <span class="pre">im_0,</span> <span class="pre">im_1,</span> <span class="pre">im_2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint_flat">
+<span class="sig-name descname"><span class="pre">trafo_adjoint_flat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint_flat" title="Permalink to this definition"></a></dt>
+<dd><p>Apply the adjoint operation; flat version of <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_adjoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trafo_adjoint()</span></code></a>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>observation</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Projection values.
+1D or 2D tensor of shape <code class="docutils literal notranslate"><span class="pre">(obs_numel,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(obs_numel,</span> <span class="pre">batch)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>x</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Result of the adjoint operation (back-projection).
+1D or 2D tensor of shape <code class="docutils literal notranslate"><span class="pre">(im_numel,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(im_numel,</span> <span class="pre">batch)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_flat">
+<span class="sig-name descname"><span class="pre">trafo_flat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo_flat" title="Permalink to this definition"></a></dt>
+<dd><p>Apply the forward projection; flat version of <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo.trafo"><code class="xref py py-meth docutils literal notranslate"><span class="pre">trafo()</span></code></a>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>x</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Image of attenuation.
+1D or 2D tensor of shape <code class="docutils literal notranslate"><span class="pre">(im_numel,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(im_numel,</span> <span class="pre">batch)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>observation</strong><span class="classifier"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a></span></dt><dd><p>Forward projection.
+1D or 2D tensor of shape <code class="docutils literal notranslate"><span class="pre">(obs_numel,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(obs_numel,</span> <span class="pre">batch)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_odl_ray_trafo_parallel_beam_2d">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.</span></span><span class="sig-name descname"><span class="pre">get_odl_ray_trafo_parallel_beam_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_angle_zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'astra_cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RayTransform</span></span></span><a class="reference internal" href="../_modules/bayes_dip/data/trafo/parallel_beam_2d_ray_trafo.html#get_odl_ray_trafo_parallel_beam_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_odl_ray_trafo_parallel_beam_2d" title="Permalink to this definition"></a></dt>
+<dd><p>Return an ODL 2D parallel beam ray transform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>im_shape</strong><span class="classifier">2-tuple of int</span></dt><dd><p>Image shape, <code class="docutils literal notranslate"><span class="pre">(im_0,</span> <span class="pre">im_1)</span></code>.</p>
+</dd>
+<dt><strong>num_angles</strong><span class="classifier">int</span></dt><dd><p>Number of angles (to distribute from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">pi</span></code>).</p>
+</dd>
+<dt><strong>first_angle_zero</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to shift all angles such that the first angle becomes <code class="docutils literal notranslate"><span class="pre">0.</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">False</span></code>, the default angles from ODL are used, where the first angle
+is at half an angle step.
+The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>impl</strong><span class="classifier">str, optional</span></dt><dd><p>Backend for <code class="xref py py-class docutils literal notranslate"><span class="pre">odl.tomo.RayTransform</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">'astra_cuda'</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_odl_ray_trafo_parallel_beam_2d_matrix">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.</span></span><span class="sig-name descname"><span class="pre">get_odl_ray_trafo_parallel_beam_2d_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_angle_zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_sub_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'astra_cuda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flatten</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/bayes_dip/data/trafo/parallel_beam_2d_ray_trafo.html#get_odl_ray_trafo_parallel_beam_2d_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_odl_ray_trafo_parallel_beam_2d_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Return the matrix representation of an ODL 2D parallel beam ray transform.</p>
+<p>See documentation of <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelBeam2DRayTrafo</span></code></a> for
+documentation of the parameters not documented here.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>flatten</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the observation dimensions and image dimensions are flattened,
+the resulting shape is <code class="docutils literal notranslate"><span class="pre">(np.prod(obs_shape),</span> <span class="pre">np.prod(im_shape))</span></code>);
+if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the shape is <code class="docutils literal notranslate"><span class="pre">obs_shape</span> <span class="pre">+</span> <span class="pre">im_shape</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_parallel_beam_2d_matmul_ray_trafo">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.</span></span><span class="sig-name descname"><span class="pre">get_parallel_beam_2d_matmul_ray_trafo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_angle_zero</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angular_sub_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'astra_cuda'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="bayes_dip.data.trafo.matmul_ray_trafo.html#bayes_dip.data.trafo.matmul_ray_trafo.MatmulRayTrafo" title="bayes_dip.data.trafo.matmul_ray_trafo.MatmulRayTrafo"><span class="pre">MatmulRayTrafo</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/data/trafo/parallel_beam_2d_ray_trafo.html#get_parallel_beam_2d_matmul_ray_trafo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.get_parallel_beam_2d_matmul_ray_trafo" title="Permalink to this definition"></a></dt>
+<dd><p>Return a <code class="xref py py-class docutils literal notranslate"><span class="pre">bayes_dip.data.MatmulRayTrafo</span></code> with the matrix
+representation of an ODL 2D parallel beam ray transform.</p>
+<p>See documentation of <a class="reference internal" href="#bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo" title="bayes_dip.data.trafo.parallel_beam_2d_ray_trafo.ParallelBeam2DRayTrafo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ParallelBeam2DRayTrafo</span></code></a> for
+documentation of the parameters.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.data.trafo.matmul_ray_trafo.html" class="btn btn-neutral float-left" title="bayes_dip.data.trafo.matmul_ray_trafo module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.data.trafo.walnut_2d_ray_trafo.html" class="btn btn-neutral float-right" title="bayes_dip.data.trafo.walnut_2d_ray_trafo module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

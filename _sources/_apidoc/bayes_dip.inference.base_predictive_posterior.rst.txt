@@ -1,0 +1,7 @@
+bayes\_dip.inference.base\_predictive\_posterior module
+=======================================================
+
+.. automodule:: bayes_dip.inference.base_predictive_posterior
+   :members:
+   :undoc-members:
+   :show-inheritance:

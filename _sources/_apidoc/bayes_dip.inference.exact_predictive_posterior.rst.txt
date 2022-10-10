@@ -1,0 +1,7 @@
+bayes\_dip.inference.exact\_predictive\_posterior module
+========================================================
+
+.. automodule:: bayes_dip.inference.exact_predictive_posterior
+   :members:
+   :undoc-members:
+   :show-inheritance:

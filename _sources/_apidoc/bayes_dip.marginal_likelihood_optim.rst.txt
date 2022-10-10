@@ -1,0 +1,25 @@
+bayes\_dip.marginal\_likelihood\_optim package
+==============================================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   bayes_dip.marginal_likelihood_optim.mll_optim
+   bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad
+   bayes_dip.marginal_likelihood_optim.preconditioner
+   bayes_dip.marginal_likelihood_optim.preconditioner_utils
+   bayes_dip.marginal_likelihood_optim.random_probes
+   bayes_dip.marginal_likelihood_optim.sample_based_predcp
+   bayes_dip.marginal_likelihood_optim.utils
+   bayes_dip.marginal_likelihood_optim.weights_linearization
+
+Module contents
+---------------
+
+.. automodule:: bayes_dip.marginal_likelihood_optim
+   :members:
+   :undoc-members:
+   :show-inheritance:

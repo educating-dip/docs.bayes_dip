@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov module" href="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.html" />
+    <link rel="prev" title="bayes_dip.probabilistic_models.linearized_dip.image_cov module" href="bayes_dip.probabilistic_models.linearized_dip.image_cov.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#module-bayes_dip.probabilistic_models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.linearized_dip.html">bayes_dip.probabilistic_models.linearized_dip package</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov">
+<span id="bayes-dip-probabilistic-models-linearized-dip-low-rank-observation-cov-module"></span><h1>bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov module<a class="headerlink" href="#module-bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov" title="Permalink to this heading"></a></h1>
+<p>Provides <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov"><code class="xref py py-class docutils literal notranslate"><span class="pre">LowRankObservationCov</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.</span></span><span class="sig-name descname"><span class="pre">LowRankObservationCov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trafo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.probabilistic_models.base_image_cov.html#bayes_dip.probabilistic_models.base_image_cov.BaseImageCov" title="bayes_dip.probabilistic_models.base_image_cov.BaseImageCov"><span class="pre">BaseImageCov</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_noise_variance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_rank_rank_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oversampling_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_state_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_approx_basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">update_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="bayes_dip.probabilistic_models.base_observation_cov.html#bayes_dip.probabilistic_models.base_observation_cov.BaseObservationCov" title="bayes_dip.probabilistic_models.base_observation_cov.BaseObservationCov"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseObservationCov</span></code></a></p>
+<p>Covariance in observation space using low-rank matrix approximation.
+The algorithm is described in <a class="reference internal" href="#r866ce55dbf06-1" id="id1">[1]</a>.</p>
+<div role="list" class="citation-list">
+<div class="citation" id="r866ce55dbf06-1" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>N. Halko, P.G. Martinsson, and J.A. Tropp, 2011, “Finding Structure with Randomness:
+probabilistic algorithms for constructing approximate matrix decompositions”.
+SIAM Review. <a class="reference external" href="https://doi.org/10.1137/090771806">https://doi.org/10.1137/090771806</a>.</p>
+</div>
+</div>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(v[, use_inverse])</p></td>
+<td><p>Multiply with the covariance &quot;matrix&quot; (or its inverse).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.get_low_rank_observation_cov_basis" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.get_low_rank_observation_cov_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_low_rank_observation_cov_basis</span></code></a>([...])</p></td>
+<td><p>Eigenvalue Decomposition in One Pass.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.load_approx_basis" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.load_approx_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_approx_basis</span></code></a>(filepath_or_dict)</p></td>
+<td><p>Load approximate basis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.matmul" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(v[, use_inverse])</p></td>
+<td><p>Multiply with the covariance &quot;matrix&quot; (or its inverse).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.sample" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(num_samples[, flat])</p></td>
+<td><p>Sample from a Gaussian with this covariance and mean zero.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.save_approx_basis" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.save_approx_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_approx_basis</span></code></a>(filepath)</p></td>
+<td><p>Save approximate basis to file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>([use_cpu, eps, full_diag_eps, batch_size])</p></td>
+<td><p>Update the low-rank approximation and other state variables to the current parameter values.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trafo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.data.trafo.base_ray_trafo.html#bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo" title="bayes_dip.data.trafo.base_ray_trafo.BaseRayTrafo"><span class="pre">BaseRayTrafo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.probabilistic_models.base_image_cov.html#bayes_dip.probabilistic_models.base_image_cov.BaseImageCov" title="bayes_dip.probabilistic_models.base_image_cov.BaseImageCov"><span class="pre">BaseImageCov</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_noise_variance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_rank_rank_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oversampling_param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_state_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">load_approx_basis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_grad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">update_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>trafo</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bayes_dip.data.BaseRayTrafo</span></code></span></dt><dd><p>Ray transform.</p>
+</dd>
+<dt><strong>image_cov</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">bayes_dip.probabilistic_models.BaseImageCov</span></code></span></dt><dd><p>Image space covariance module.</p>
+</dd>
+<dt><strong>init_noise_variance</strong><span class="classifier">float, optional</span></dt><dd><p>Initial value for noise variance parameter. The default is <code class="docutils literal notranslate"><span class="pre">1.</span></code>.</p>
+</dd>
+<dt><strong>low_rank_rank_dim</strong><span class="classifier">int, optional</span></dt><dd><p>Number of dimensions of the low-rank approximation. The default is <code class="docutils literal notranslate"><span class="pre">100</span></code>.</p>
+</dd>
+<dt><strong>oversampling_param</strong><span class="classifier">int, optional</span></dt><dd><p>Number of oversampling dimensions for the low-rank approximation. The default is <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p>
+</dd>
+<dt><strong>load_state_dict</strong><span class="classifier">str or dict, optional</span></dt><dd><p>State dict (or path to it) to load.</p>
+</dd>
+<dt><strong>load_approx_basis</strong><span class="classifier">str or dict, optional</span></dt><dd><p>Approximate basis (or path to it) to load.
+Only supported if <code class="docutils literal notranslate"><span class="pre">requires_grad=False</span></code>. If using this option, <code class="docutils literal notranslate"><span class="pre">load_state_dict</span></code> is
+required, and the user is responsible for consistency.</p>
+</dd>
+<dt><strong>requires_grad</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether gradient computation should be enabled. Note that the parameters are only used
+in <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>, so computations will use the values from the last <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>
+call, and back-propagating from the output of any method (e.g. <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>)
+repeatedly, without calling <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a> in between, requires <code class="docutils literal notranslate"><span class="pre">retain_graph=True</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device, optional</span></dt><dd><p>Device. If <code class="docutils literal notranslate"><span class="pre">None</span></code> (the default), <code class="docutils literal notranslate"><span class="pre">'cuda:0'</span></code> is chosen if available or <code class="docutils literal notranslate"><span class="pre">'cpu'</span></code>
+otherwise.</p>
+</dd>
+<dt><strong>update_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Keyword arguments passed to <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Multiply with the covariance “matrix” (or its inverse).</p>
+<p>This is a non-flat version of <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>, i.e. the same as
+<code class="docutils literal notranslate"><span class="pre">self.matmul(v.view(v.shape[0],</span> <span class="pre">-1).T,</span> <span class="pre">use_inverse=use_inverse).T.view(*v.shape)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Observations. Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">1,</span> <span class="pre">*self.trafo.obs_shape)</span></code>.</p>
+</dd>
+<dt><strong>use_inverse</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the inverse instead. The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Products. Shape: same as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.get_low_rank_observation_cov_basis">
+<span class="sig-name descname"><span class="pre">get_low_rank_observation_cov_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_cpu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov.get_low_rank_observation_cov_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.get_low_rank_observation_cov_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Eigenvalue Decomposition in One Pass.</p>
+<p>This method implements Algo. 5.6 from Halko et al. and computes an
+approximate eigenvalue decomposition of the low-rank term of
+covariance in observation space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>use_cpu</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to compute QR on CPU.
+The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><strong>eps</strong><span class="classifier">float, optional</span></dt><dd><p>Minimum value eigenvalues.
+The default is <code class="docutils literal notranslate"><span class="pre">1e-3</span></code>.</p>
+</dd>
+<dt><strong>verbose</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, print eigenvalue information. The default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+</dd>
+<dt><strong>batch_size</strong><span class="classifier">int, optional</span></dt><dd><p>Batch size for multiplying with the observation covariance.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>U</strong><span class="classifier">Tensor</span></dt><dd><p>Eigenvectors. Shape: <code class="docutils literal notranslate"><span class="pre">(np.prod(self.trafo.obs_shape),</span> <span class="pre">self.low_rank_rank_dim)</span></code></p>
+</dd>
+<dt><strong>L</strong><span class="classifier">Tensor</span></dt><dd><p>Eigenvalues. Shape: <code class="docutils literal notranslate"><span class="pre">(self.low_rank_rank_dim)</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.load_approx_basis">
+<span class="sig-name descname"><span class="pre">load_approx_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov.load_approx_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.load_approx_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Load approximate basis. Only supported if <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">self.requires_grad</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath_or_dict</strong><span class="classifier">str or dict</span></dt><dd><p>Approximate basis (or path to it) to load.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.matmul">
+<span class="sig-name descname"><span class="pre">matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov.matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.matmul" title="Permalink to this definition"></a></dt>
+<dd><p>Multiply with the covariance “matrix” (or its inverse).</p>
+<p>Evaluates <code class="docutils literal notranslate"><span class="pre">mat</span> <span class="pre">&#64;</span> <span class="pre">v</span></code> where <code class="docutils literal notranslate"><span class="pre">mat</span></code> is a matrix representation of <code class="docutils literal notranslate"><span class="pre">self</span></code> (or its inverse).</p>
+<p>See also the non-flat version: <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Observations. Shape: <code class="docutils literal notranslate"><span class="pre">(np.prod(self.trafo.obs_shape),</span> <span class="pre">batch_size)</span></code>.</p>
+</dd>
+<dt><strong>use_inverse</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the inverse instead. The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Products. Shape: same as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Sample from a Gaussian with this covariance and mean zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_samples</strong><span class="classifier">int</span></dt><dd><p>Number of samples.</p>
+</dd>
+<dt><strong>flat</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, return a flattened tensor with <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> as second dimension (see the
+return value).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>Tensor</dt><dd><p>Samples.
+Shape: Either <code class="docutils literal notranslate"><span class="pre">(num_samples,</span> <span class="pre">1,</span> <span class="pre">*self.trafo.obs_shape)</span></code> if <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">flat</span></code> (the default),
+or <code class="docutils literal notranslate"><span class="pre">(np.prod(self.trafo.obs_shape),</span> <span class="pre">num_samples)</span></code> if <code class="docutils literal notranslate"><span class="pre">flat</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.save_approx_basis">
+<span class="sig-name descname"><span class="pre">save_approx_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov.save_approx_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.save_approx_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Save approximate basis to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filepath</strong><span class="classifier">str</span></dt><dd><p>Path for saving.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_cpu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_diag_eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/low_rank_observation_cov.html#LowRankObservationCov.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.update" title="Permalink to this definition"></a></dt>
+<dd><p>Update the low-rank approximation and other state variables to the current parameter values.</p>
+<p>This is the only function directly involving parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>use_cpu</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to compute QR on CPU.
+The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><strong>eps</strong><span class="classifier">float, optional</span></dt><dd><p>Minumum value eigenvalues.
+The default is <code class="docutils literal notranslate"><span class="pre">1e-3</span></code>.</p>
+</dd>
+<dt><strong>full_diag_eps</strong><span class="classifier">float, optional</span></dt><dd><p>Value to add to the noise variance in <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.matmul" title="bayes_dip.probabilistic_models.linearized_dip.low_rank_observation_cov.LowRankObservationCov.matmul"><code class="xref py py-meth docutils literal notranslate"><span class="pre">matmul()</span></code></a> (for stabilization).
+The default is <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>.</p>
+</dd>
+<dt><strong>batch_size</strong><span class="classifier">int, optional</span></dt><dd><p>Batch size for multiplying with the observation covariance.
+The default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.probabilistic_models.linearized_dip.image_cov.html" class="btn btn-neutral float-left" title="bayes_dip.probabilistic_models.linearized_dip.image_cov module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.probabilistic_models.linearized_dip.parameter_cov.html" class="btn btn-neutral float-right" title="bayes_dip.probabilistic_models.linearized_dip.parameter_cov module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

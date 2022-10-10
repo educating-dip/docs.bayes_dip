@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.probabilistic_models.linearized_dip.default_unet_priors module" href="bayes_dip.probabilistic_models.linearized_dip.default_unet_priors.html" />
+    <link rel="prev" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors package" href="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.probabilistic_models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.probabilistic_models.html#module-bayes_dip.probabilistic_models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.linearized_dip.html">bayes_dip.probabilistic_models.linearized_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.html">bayes_dip.probabilistic_models.linearized_dip.parameter_priors package</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors">
+<span id="bayes-dip-probabilistic-models-linearized-dip-parameter-priors-priors-module"></span><h1>bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors module<a class="headerlink" href="#module-bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors" title="Permalink to this heading"></a></h1>
+<p>Provides priors that can be placed over parameters of a neural network.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.</span></span><span class="sig-name descname"><span class="pre">BaseGaussPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_hyperparams</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Conv2d.html#torch.nn.Conv2d" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Conv2d</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensor_attributes.html#torch.device" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">device</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></a></p>
+<p>Base Gaussian prior class for <code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Conv2d</span></code> modules.</p>
+<p>The prior is placed over all filters of <code class="docutils literal notranslate"><span class="pre">modules</span></code> (passed to <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.__init__" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code></a>),
+i.e. all input-channel-output-channel combinations of all modules share the prior.</p>
+<p>Implements efficient batched multiplication with the covariance matrices of multiple priors of
+the same type via the class method <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.batched_cov_mul" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.batched_cov_mul"><code class="xref py py-meth docutils literal notranslate"><span class="pre">batched_cov_mul()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_variance" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_variance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_variance</span></code></a></dt><dd><p>Log variance hyperparameter (an <code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Parameter</span></code> instance)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.batched_cov_mul" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.batched_cov_mul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">batched_cov_mul</span></code></a>(priors, v[, use_cholesky, ...])</p></td>
+<td><p>Multiply weight vectors with a stack of covariance matrices.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_log_det" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_log_det"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_log_det</span></code></a>()</p></td>
+<td><p>Return the log determinant of the covariance matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_mat" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_mat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_mat</span></code></a>()</p></td>
+<td><p>Return the covariance matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.get_params_under_prior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.get_params_under_prior"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params_under_prior</span></code></a>()</p></td>
+<td><p>Return all parameters under this prior.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.get_params_under_prior_from_modules" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.get_params_under_prior_from_modules"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_params_under_prior_from_modules</span></code></a>(modules)</p></td>
+<td><p>Return the list of all parameters under a prior of this type given the <code class="docutils literal notranslate"><span class="pre">modules</span></code> it would be placed over.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_prob" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_prob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_prob</span></code></a>(x)</p></td>
+<td><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">x</span></code> under this prior.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.sample" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(shape)</p></td>
+<td><p>Draw samples from the prior in a differentiable way (e.g.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_hyperparams</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Conv2d.html#torch.nn.Conv2d" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Conv2d</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensor_attributes.html#torch.device" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">device</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>init_hyperparams</strong><span class="classifier">dict</span></dt><dd><p>Initial values for the prior hyperparameters.
+As a convention, if the actual parameter stores a log value, the initial values are
+still passed as the non-log value, e.g. for <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_variance" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">log_variance</span></code></a>: <code class="docutils literal notranslate"><span class="pre">'variance':</span> <span class="pre">1.</span></code>.</p>
+</dd>
+<dt><strong>modules</strong><span class="classifier">sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Conv2d</span></code></span></dt><dd><p>Modules to place this prior over. The prior applies to all filters in all <code class="docutils literal notranslate"><span class="pre">weight</span></code>
+parameters of these convolutional layers.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device</span></dt><dd><p>Device.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.batched_cov_mul">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batched_cov_mul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">priors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cholesky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">cov_mat_kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior.batched_cov_mul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.batched_cov_mul" title="Permalink to this definition"></a></dt>
+<dd><p>Multiply weight vectors with a stack of covariance matrices.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>priors</strong><span class="classifier">sequence of <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussPrior</span></code></a></span></dt><dd><p>Sequence of priors of the same type.
+The covariance matrix of each prior is repeated <code class="docutils literal notranslate"><span class="pre">prior.num_total_filters</span></code> times,
+and the matrices of all priors are then concatenated.</p>
+</dd>
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Batch of flattened and concatenated <code class="docutils literal notranslate"><span class="pre">weight</span></code> parameters of <code class="xref py py-class docutils literal notranslate"><span class="pre">Conv2d</span></code> modules.
+Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the sum of the numbers of
+filters of all modules of all <code class="docutils literal notranslate"><span class="pre">priors</span></code>.</p>
+</dd>
+<dt><strong>use_cholesky</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the Cholesky factor instead. Cannot be combined with
+<code class="docutils literal notranslate"><span class="pre">use_inverse</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><strong>use_inverse</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the inverse instead. Cannot be combined with
+<code class="docutils literal notranslate"><span class="pre">use_cholesky</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><strong>cov_mat_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Keyword arguments passed to <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_mat" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_mat"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cov_mat()</span></code></a> of each prior (e.g. an <code class="docutils literal notranslate"><span class="pre">eps</span></code> value).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>v_cov_mul</strong><span class="classifier">Tensor</span></dt><dd><p>Products. Has the same shape as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_log_det">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cov_log_det</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior.cov_log_det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_log_det" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log determinant of the covariance matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_mat">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cov_mat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior.cov_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.cov_mat" title="Permalink to this definition"></a></dt>
+<dd><p>Return the covariance matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cov_mat</strong><span class="classifier">Tensor</span></dt><dd><p>Covariance matrix. Shape: <code class="docutils literal notranslate"><span class="pre">(self.kernel_size</span> <span class="pre">**</span> <span class="pre">2,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.get_params_under_prior">
+<span class="sig-name descname"><span class="pre">get_params_under_prior</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.parameter.Parameter.html#torch.nn.parameter.Parameter" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Parameter</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior.get_params_under_prior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.get_params_under_prior" title="Permalink to this definition"></a></dt>
+<dd><p>Return all parameters under this prior.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.get_params_under_prior_from_modules">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_params_under_prior_from_modules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Conv2d.html#torch.nn.Conv2d" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Conv2d</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.parameter.Parameter.html#torch.nn.parameter.Parameter" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Parameter</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior.get_params_under_prior_from_modules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.get_params_under_prior_from_modules" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of all parameters under a prior of this type given the <code class="docutils literal notranslate"><span class="pre">modules</span></code> it would
+be placed over.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>modules</strong><span class="classifier">sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Conv2d</span></code></span></dt><dd><p>Modules, like the argument to <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.__init__" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_prob">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior.log_prob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_prob" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">x</span></code> under this prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">Tensor</span></dt><dd><p>Value.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>log_prob</strong><span class="classifier">Tensor</span></dt><dd><p>Log probability.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_variance">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_variance</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.parameter.Parameter.html#torch.nn.parameter.Parameter" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Parameter</span></a></em><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.log_variance" title="Permalink to this definition"></a></dt>
+<dd><p>Log variance hyperparameter (an <code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Parameter</span></code> instance)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.sample">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#BaseGaussPrior.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Draw samples from the prior in a differentiable way (e.g. via <code class="xref py py-meth docutils literal notranslate"><span class="pre">Distribution.rsample()</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple of int</span></dt><dd><p>Sample shape (e.g. <code class="docutils literal notranslate"><span class="pre">(n,)</span></code> to draw <code class="docutils literal notranslate"><span class="pre">n</span></code> samples).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">Tensor</span></dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(*shape,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.</span></span><span class="sig-name descname"><span class="pre">GPprior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_hyperparams</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Conv2d.html#torch.nn.Conv2d" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Conv2d</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">covariance_constructor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#GPprior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussPrior</span></code></a></p>
+<p>Gaussian prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_lengthscale" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_lengthscale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_lengthscale</span></code></a></dt><dd><p>Log lengthscale hyperparameter.</p>
+</dd>
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_variance" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_variance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_variance</span></code></a></dt><dd><p>Log variance hyperparameter.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_det" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_det"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_log_det</span></code></a>()</p></td>
+<td><p>Return the log determinant of the covariance matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_lengthscale_grad" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_lengthscale_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_log_lengthscale_grad</span></code></a>()</p></td>
+<td><p>Return the derivative of the covariance matrix w.r.t.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_variance_grad" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_variance_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_log_variance_grad</span></code></a>()</p></td>
+<td><p>Return the derivative of the covariance matrix w.r.t.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_mat" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_mat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_mat</span></code></a>([return_cholesky, eps])</p></td>
+<td><p>Return the covariance matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_prob" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_prob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_prob</span></code></a>(x)</p></td>
+<td><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">x</span></code> under this prior.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.sample" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(shape)</p></td>
+<td><p>Draw samples from the prior in a differentiable way (e.g.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_hyperparams</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Conv2d.html#torch.nn.Conv2d" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Conv2d</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">covariance_constructor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#GPprior.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>init_hyperparams</strong><span class="classifier">dict</span></dt><dd><p>Initial prior hyperparameter values. Keys are <code class="docutils literal notranslate"><span class="pre">'lengthscale'</span></code> and <code class="docutils literal notranslate"><span class="pre">'variance'</span></code>.</p>
+</dd>
+<dt><strong>modules</strong><span class="classifier">sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Conv2d</span></code></span></dt><dd><p>Modules to place this prior over. The prior applies to all filters in all <code class="docutils literal notranslate"><span class="pre">weight</span></code>
+parameters of these convolutional layers.</p>
+</dd>
+<dt><strong>covariance_constructor</strong><span class="classifier">callable</span></dt><dd><p>Callable with arguments <code class="docutils literal notranslate"><span class="pre">kernel_size</span></code> and <code class="docutils literal notranslate"><span class="pre">device</span></code> returning a covariance object
+with parameters <code class="docutils literal notranslate"><span class="pre">log_variance</span></code> and <code class="docutils literal notranslate"><span class="pre">log_lengthscale</span></code> and methods
+<code class="docutils literal notranslate"><span class="pre">init_parameters()</span></code>, <code class="docutils literal notranslate"><span class="pre">cov_mat()</span></code>, <code class="docutils literal notranslate"><span class="pre">log_det()</span></code>, <code class="docutils literal notranslate"><span class="pre">log_lengthscale_cov_mat_grad()</span></code>
+and <code class="docutils literal notranslate"><span class="pre">log_variance_cov_mat_grad()</span></code> (see <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFuncCov</span></code></a> for an example
+implementation).</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device</span></dt><dd><p>Device.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_det">
+<span class="sig-name descname"><span class="pre">cov_log_det</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#GPprior.cov_log_det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_det" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log determinant of the covariance matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_lengthscale_grad">
+<span class="sig-name descname"><span class="pre">cov_log_lengthscale_grad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#GPprior.cov_log_lengthscale_grad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_lengthscale_grad" title="Permalink to this definition"></a></dt>
+<dd><p>Return the derivative of the covariance matrix w.r.t. <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_lengthscale" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_lengthscale"><code class="xref py py-attr docutils literal notranslate"><span class="pre">log_lengthscale</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_variance_grad">
+<span class="sig-name descname"><span class="pre">cov_log_variance_grad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#GPprior.cov_log_variance_grad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_log_variance_grad" title="Permalink to this definition"></a></dt>
+<dd><p>Return the derivative of the covariance matrix w.r.t. <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_variance" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_variance"><code class="xref py py-attr docutils literal notranslate"><span class="pre">log_variance</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_mat">
+<span class="sig-name descname"><span class="pre">cov_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">return_cholesky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#GPprior.cov_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.cov_mat" title="Permalink to this definition"></a></dt>
+<dd><p>Return the covariance matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cov_mat</strong><span class="classifier">Tensor</span></dt><dd><p>Covariance matrix. Shape: <code class="docutils literal notranslate"><span class="pre">(self.kernel_size</span> <span class="pre">**</span> <span class="pre">2,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_lengthscale">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_lengthscale</span></span><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_lengthscale" title="Permalink to this definition"></a></dt>
+<dd><p>Log lengthscale hyperparameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_prob">
+<span class="sig-name descname"><span class="pre">log_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#GPprior.log_prob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_prob" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">x</span></code> under this prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">Tensor</span></dt><dd><p>Value.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>log_prob</strong><span class="classifier">Tensor</span></dt><dd><p>Log probability.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_variance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_variance</span></span><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.log_variance" title="Permalink to this definition"></a></dt>
+<dd><p>Log variance hyperparameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#GPprior.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Draw samples from the prior in a differentiable way (e.g. via <code class="xref py py-meth docutils literal notranslate"><span class="pre">Distribution.rsample()</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple of int</span></dt><dd><p>Sample shape (e.g. <code class="docutils literal notranslate"><span class="pre">(n,)</span></code> to draw <code class="docutils literal notranslate"><span class="pre">n</span></code> samples).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">Tensor</span></dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(*shape,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.</span></span><span class="sig-name descname"><span class="pre">IsotropicPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_hyperparams</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Conv2d.html#torch.nn.Conv2d" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Conv2d</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensor_attributes.html#torch.device" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">device</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#IsotropicPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussPrior</span></code></a></p>
+<p>Isotropic prior (g-prior).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.log_variance" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.log_variance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_variance</span></code></a></dt><dd><p>Log variance hyperparameter.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.batched_cov_mul" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.batched_cov_mul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">batched_cov_mul</span></code></a>(priors, v[, use_cholesky, ...])</p></td>
+<td><p>Scale weight vectors with the variance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.cov_log_det" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.cov_log_det"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_log_det</span></code></a>()</p></td>
+<td><p>Return the log determinant of the covariance matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.cov_mat" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.cov_mat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_mat</span></code></a>([use_cholesky])</p></td>
+<td><p>Return the covariance matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.log_prob" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.log_prob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_prob</span></code></a>(x)</p></td>
+<td><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">x</span></code> under this prior.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.sample" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(shape)</p></td>
+<td><p>Draw samples from the prior in a differentiable way (e.g.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.batched_cov_mul">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batched_cov_mul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">priors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cholesky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#IsotropicPrior.batched_cov_mul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.batched_cov_mul" title="Permalink to this definition"></a></dt>
+<dd><p>Scale weight vectors with the variance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>priors</strong><span class="classifier">1-sequence of <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">IsotropicPrior</span></code></a></span></dt><dd><p>A single <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">IsotropicPrior</span></code></a>, wrapped in a sequence of length <code class="docutils literal notranslate"><span class="pre">1</span></code>.
+This function is not implemented for more than one prior.</p>
+</dd>
+<dt><strong>v</strong><span class="classifier">Tensor</span></dt><dd><p>Batch of flattened and concatenated <code class="docutils literal notranslate"><span class="pre">weight</span></code> parameters of <code class="xref py py-class docutils literal notranslate"><span class="pre">Conv2d</span></code> modules.
+Shape: <code class="docutils literal notranslate"><span class="pre">(batch_size,</span> <span class="pre">n</span> <span class="pre">*</span> <span class="pre">kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the sum of the numbers of
+filters of all modules of <code class="docutils literal notranslate"><span class="pre">priors[0]</span></code>.</p>
+</dd>
+<dt><strong>use_cholesky</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the Cholesky factor instead. Cannot be combined with
+<code class="docutils literal notranslate"><span class="pre">use_inverse</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><strong>use_inverse</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, multiply with the inverse instead. Cannot be combined with
+<code class="docutils literal notranslate"><span class="pre">use_cholesky</span></code>.
+The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+<dt><strong>eps</strong><span class="classifier">float, optional</span></dt><dd><p>Stabilizing value used with <code class="docutils literal notranslate"><span class="pre">use_inverse</span></code>, added to the scale before taking the
+inverse.
+The default is <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>v_cov_mul</strong><span class="classifier">Tensor</span></dt><dd><p>Products. Has the same shape as <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.cov_log_det">
+<span class="sig-name descname"><span class="pre">cov_log_det</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#IsotropicPrior.cov_log_det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.cov_log_det" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log determinant of the covariance matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.cov_mat">
+<span class="sig-name descname"><span class="pre">cov_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_cholesky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#IsotropicPrior.cov_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.cov_mat" title="Permalink to this definition"></a></dt>
+<dd><p>Return the covariance matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cov_mat</strong><span class="classifier">Tensor</span></dt><dd><p>Covariance matrix. Shape: <code class="docutils literal notranslate"><span class="pre">(self.kernel_size</span> <span class="pre">**</span> <span class="pre">2,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.log_prob">
+<span class="sig-name descname"><span class="pre">log_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#IsotropicPrior.log_prob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.log_prob" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">x</span></code> under this prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">Tensor</span></dt><dd><p>Value.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>log_prob</strong><span class="classifier">Tensor</span></dt><dd><p>Log probability.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.log_variance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_variance</span></span><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.log_variance" title="Permalink to this definition"></a></dt>
+<dd><p>Log variance hyperparameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#IsotropicPrior.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.IsotropicPrior.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Draw samples from the prior in a differentiable way (e.g. via <code class="xref py py-meth docutils literal notranslate"><span class="pre">Distribution.rsample()</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple of int</span></dt><dd><p>Sample shape (e.g. <code class="docutils literal notranslate"><span class="pre">(n,)</span></code> to draw <code class="docutils literal notranslate"><span class="pre">n</span></code> samples).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">Tensor</span></dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(*shape,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.</span></span><span class="sig-name descname"><span class="pre">NormalPrior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_hyperparams</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.10)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.10)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Conv2d.html#torch.nn.Conv2d" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Conv2d</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://pytorch.org/docs/master/tensor_attributes.html#torch.device" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">device</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#NormalPrior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.BaseGaussPrior"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseGaussPrior</span></code></a></p>
+<p>Normal prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.log_variance" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.log_variance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_variance</span></code></a></dt><dd><p>Log variance hyperparameter.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.cov_log_det" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.cov_log_det"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_log_det</span></code></a>()</p></td>
+<td><p>Return the log determinant of the covariance matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.cov_mat" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.cov_mat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_mat</span></code></a>([return_cholesky, eps])</p></td>
+<td><p>Return the covariance matrix.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.log_prob" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.log_prob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_prob</span></code></a>(x)</p></td>
+<td><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">x</span></code> under this prior.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.sample" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(shape)</p></td>
+<td><p>Draw samples from the prior in a differentiable way (e.g.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.cov_log_det">
+<span class="sig-name descname"><span class="pre">cov_log_det</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#NormalPrior.cov_log_det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.cov_log_det" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log determinant of the covariance matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.cov_mat">
+<span class="sig-name descname"><span class="pre">cov_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">return_cholesky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#NormalPrior.cov_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.cov_mat" title="Permalink to this definition"></a></dt>
+<dd><p>Return the covariance matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>cov_mat</strong><span class="classifier">Tensor</span></dt><dd><p>Covariance matrix. Shape: <code class="docutils literal notranslate"><span class="pre">(self.kernel_size</span> <span class="pre">**</span> <span class="pre">2,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.log_prob">
+<span class="sig-name descname"><span class="pre">log_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#NormalPrior.log_prob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.log_prob" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">x</span></code> under this prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>x</strong><span class="classifier">Tensor</span></dt><dd><p>Value.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>log_prob</strong><span class="classifier">Tensor</span></dt><dd><p>Log probability.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.log_variance">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">log_variance</span></span><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.log_variance" title="Permalink to this definition"></a></dt>
+<dd><p>Log variance hyperparameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.10)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#NormalPrior.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.NormalPrior.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Draw samples from the prior in a differentiable way (e.g. via <code class="xref py py-meth docutils literal notranslate"><span class="pre">Distribution.rsample()</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>shape</strong><span class="classifier">tuple of int</span></dt><dd><p>Sample shape (e.g. <code class="docutils literal notranslate"><span class="pre">(n,)</span></code> to draw <code class="docutils literal notranslate"><span class="pre">n</span></code> samples).</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">Tensor</span></dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(*shape,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.</span></span><span class="sig-name descname"><span class="pre">RadialBasisFuncCov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#RadialBasisFuncCov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://pytorch.org/docs/master/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
+<p>Covariance function based on a distance function between kernel pixel coordinates:</p>
+<p><code class="docutils literal notranslate"><span class="pre">cov(coords0,</span> <span class="pre">coords1)</span> <span class="pre">=</span> <span class="pre">variance</span> <span class="pre">*</span> <span class="pre">exp(-dist_func(coords0,</span> <span class="pre">coords1)</span> <span class="pre">/</span> <span class="pre">lengthscale)</span></code>.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.cov_mat" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.cov_mat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cov_mat</span></code></a>([return_cholesky, eps])</p></td>
+<td><p>Return the covariance matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.init_parameters" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.init_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_parameters</span></code></a>(lengthscale_init, variance_init)</p></td>
+<td><p>Initialize the parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_det" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_det"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_det</span></code></a>()</p></td>
+<td><p>Return the log determinant of the covariance matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_lengthscale_cov_mat_grad" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_lengthscale_cov_mat_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_lengthscale_cov_mat_grad</span></code></a>()</p></td>
+<td><p>Return the derivative of the covariance matrix w.r.t.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_variance_cov_mat_grad" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_variance_cov_mat_grad"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_variance_cov_mat_grad</span></code></a>()</p></td>
+<td><p>Return the derivative of the covariance matrix w.r.t.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.unscaled_cov_mat" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.unscaled_cov_mat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unscaled_cov_mat</span></code></a>([eps])</p></td>
+<td><p>Return the unscaled covariance matrix (excluding the variance scaling factor).</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><span class="pre">Callable</span></a><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#RadialBasisFuncCov.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kernel_size</strong><span class="classifier">int</span></dt><dd><p>Convolution kernel size.</p>
+</dd>
+<dt><strong>dist_func</strong><span class="classifier">callable</span></dt><dd><p>Distance function receiving coordinates
+<code class="docutils literal notranslate"><span class="pre">torch.as_tensor([i,</span> <span class="pre">j],</span> <span class="pre">dtype=torch.float32)</span></code> and returning a scalar.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device</span></dt><dd><p>Device.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.cov_mat">
+<span class="sig-name descname"><span class="pre">cov_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">return_cholesky</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#RadialBasisFuncCov.cov_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.cov_mat" title="Permalink to this definition"></a></dt>
+<dd><p>Return the covariance matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>return_cholesky</strong><span class="classifier">bool, optional</span></dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, return the cholesky factor instead of the matrix itself.</p>
+</dd>
+<dt><strong>eps</strong><span class="classifier">float, optional</span></dt><dd><p>Stabilizing value that is added to the diagonal before scaling with the variance.
+The default is <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>cov_mat_or_chol</strong><span class="classifier">Tensor</span></dt><dd><p>Covariance matrix, or its cholesky factor if <code class="docutils literal notranslate"><span class="pre">return_cholesky</span></code>.
+Shape: <code class="docutils literal notranslate"><span class="pre">(self.kernel_size</span> <span class="pre">**</span> <span class="pre">2,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.init_parameters">
+<span class="sig-name descname"><span class="pre">init_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lengthscale_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">variance_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#RadialBasisFuncCov.init_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.init_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize the parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>lengthscale_init</strong><span class="classifier">float</span></dt><dd><p>Initial lengthscale value.</p>
+</dd>
+<dt><strong>variance_init</strong><span class="classifier">float</span></dt><dd><p>Initial variance value.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_det">
+<span class="sig-name descname"><span class="pre">log_det</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#RadialBasisFuncCov.log_det"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_det" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log determinant of the covariance matrix.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_lengthscale_cov_mat_grad">
+<span class="sig-name descname"><span class="pre">log_lengthscale_cov_mat_grad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#RadialBasisFuncCov.log_lengthscale_cov_mat_grad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_lengthscale_cov_mat_grad" title="Permalink to this definition"></a></dt>
+<dd><p>Return the derivative of the covariance matrix w.r.t. <code class="xref py py-attr docutils literal notranslate"><span class="pre">log_lengthscale</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_variance_cov_mat_grad">
+<span class="sig-name descname"><span class="pre">log_variance_cov_mat_grad</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#RadialBasisFuncCov.log_variance_cov_mat_grad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.log_variance_cov_mat_grad" title="Permalink to this definition"></a></dt>
+<dd><p>Return the derivative of the covariance matrix w.r.t. <code class="xref py py-attr docutils literal notranslate"><span class="pre">log_variance</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.unscaled_cov_mat">
+<span class="sig-name descname"><span class="pre">unscaled_cov_mat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#RadialBasisFuncCov.unscaled_cov_mat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov.unscaled_cov_mat" title="Permalink to this definition"></a></dt>
+<dd><p>Return the unscaled covariance matrix (excluding the variance scaling factor).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>eps</strong><span class="classifier">float, optional</span></dt><dd><p>Stabilizing value that is added to the diagonal. The default is <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>unscaled_cov_mat</strong><span class="classifier">Tensor</span></dt><dd><p>Unscaled covariance matrix. Shape: <code class="docutils literal notranslate"><span class="pre">(self.kernel_size</span> <span class="pre">**</span> <span class="pre">2,</span> <span class="pre">self.kernel_size</span> <span class="pre">**</span> <span class="pre">2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.get_GPprior_RadialBasisFuncCov">
+<span class="sig-prename descclassname"><span class="pre">bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.</span></span><span class="sig-name descname"><span class="pre">get_GPprior_RadialBasisFuncCov</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">init_hyperparams</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/probabilistic_models/linearized_dip/parameter_priors/priors.html#get_GPprior_RadialBasisFuncCov"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.get_GPprior_RadialBasisFuncCov" title="Permalink to this definition"></a></dt>
+<dd><p>Return a <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.GPprior"><code class="xref py py-class docutils literal notranslate"><span class="pre">GPprior</span></code></a> instance with a <a class="reference internal" href="#bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors.RadialBasisFuncCov"><code class="xref py py-class docutils literal notranslate"><span class="pre">RadialBasisFuncCov</span></code></a> covariance with
+<code class="docutils literal notranslate"><span class="pre">dist_func</span></code> defaulting to the Euclidean distance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>init_hyperparams</strong><span class="classifier">dict</span></dt><dd><p>Initial prior hyperparameter values. Keys are <code class="docutils literal notranslate"><span class="pre">'lengthscale'</span></code> and <code class="docutils literal notranslate"><span class="pre">'variance'</span></code>.</p>
+</dd>
+<dt><strong>modules</strong><span class="classifier">sequence of <code class="xref py py-class docutils literal notranslate"><span class="pre">nn.Conv2d</span></code></span></dt><dd><p>Modules to place this prior over. The prior applies to all filters in all <code class="docutils literal notranslate"><span class="pre">weight</span></code>
+parameters of these convolutional layers.</p>
+</dd>
+<dt><strong>device</strong><span class="classifier">str or torch.device</span></dt><dd><p>Device.</p>
+</dd>
+<dt><strong>dist_func</strong><span class="classifier">callable, optional</span></dt><dd><p>Distance function receiving coordinates
+<code class="docutils literal notranslate"><span class="pre">torch.as_tensor([i,</span> <span class="pre">j],</span> <span class="pre">dtype=torch.float32)</span></code> and returning a scalar.
+The default is <code class="docutils literal notranslate"><span class="pre">lambda</span> <span class="pre">x:</span> <span class="pre">linalg.norm(x,</span> <span class="pre">ord=2)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.probabilistic_models.linearized_dip.parameter_priors.html" class="btn btn-neutral float-left" title="bayes_dip.probabilistic_models.linearized_dip.parameter_priors package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.probabilistic_models.linearized_dip.default_unet_priors.html" class="btn btn-neutral float-right" title="bayes_dip.probabilistic_models.linearized_dip.default_unet_priors module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

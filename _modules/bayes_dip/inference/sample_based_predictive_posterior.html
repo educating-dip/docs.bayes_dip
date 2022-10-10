@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.inference.sample_based_predictive_posterior &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.inference.sample_based_predictive_posterior</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.inference.sample_based_predictive_posterior</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides a sample based predictive posterior implementation,</span>
+<span class="sd">:class:`SampleBasedPredictivePosterior`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">bayes_dip.inference.utils</span> <span class="kn">import</span> <span class="n">is_invalid</span>
+<span class="kn">from</span> <span class="nn">.base_predictive_posterior</span> <span class="kn">import</span> <span class="n">BasePredictivePosterior</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">yield_padded_batched_images_patches</span><span class="p">,</span> <span class="n">get_image_patch_mask_inds</span><span class="p">,</span> <span class="n">is_invalid</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">cg</span>
+
+<div class="viewcode-block" id="predictive_cov_image_patch_norm"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.predictive_cov_image_patch_norm">[docs]</a><span class="k">def</span> <span class="nf">predictive_cov_image_patch_norm</span><span class="p">(</span><span class="n">v</span> <span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">predictive_cov_image_patch</span> <span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the norm ``&lt; cov^(-1) v , v &gt;``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    v : Tensor</span>
+<span class="sd">        Vector(s). Shape: ``(*, num_pixels)``.</span>
+<span class="sd">    predictive_cov_image_patch : Tensor</span>
+<span class="sd">        Covariance matrix/matrices. Shape: ``(*, num_pixels, num_pixels)``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    norm : Tensor</span>
+<span class="sd">        Norm. Shape: ``(*,)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">v_out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">predictive_cov_image_patch</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="n">v_out</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">norm</span></div>
+
+<div class="viewcode-block" id="predictive_cov_image_patch_log_prob_unscaled_batched"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.predictive_cov_image_patch_log_prob_unscaled_batched">[docs]</a><span class="k">def</span> <span class="nf">predictive_cov_image_patch_log_prob_unscaled_batched</span><span class="p">(</span>
+        <span class="n">recon_masked</span> <span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">ground_truth_masked</span> <span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">predictive_cov_image_patch</span> <span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the log probabilities for a batch of patches.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    recon_masked : Tensor</span>
+<span class="sd">        Reconstruction patches. Shape: ``(batch_size, num_pixels)``.</span>
+<span class="sd">    ground_truth_masked : Tensor</span>
+<span class="sd">        Ground truth patches. Shape: ``(batch_size, num_pixels)``.</span>
+<span class="sd">    predictive_cov_image_patch : Tensor</span>
+<span class="sd">        Predictive posterior covariance for the patches.</span>
+<span class="sd">        Shape: ``(batch_size, num_pixels, num_pixels)``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    log_prob_unscaled : Tensor</span>
+<span class="sd">        Log probabilities of the patches.</span>
+<span class="sd">        Shape: ``(batch_size,)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">slogdet</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">predictive_cov_image_patch</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">slogdet</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">)</span>
+    <span class="n">log_det</span> <span class="o">=</span> <span class="n">slogdet</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">ground_truth_masked</span> <span class="o">-</span> <span class="n">recon_masked</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">ground_truth_masked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">predictive_cov_image_patch_norm</span><span class="p">(</span><span class="n">diff</span><span class="p">,</span> <span class="n">predictive_cov_image_patch</span><span class="p">)</span>
+    <span class="n">log_prob_unscaled</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">norm</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">log_det</span> <span class="o">+</span>
+            <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">ground_truth_masked</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+    <span class="k">return</span> <span class="n">log_prob_unscaled</span></div>
+
+<div class="viewcode-block" id="approx_predictive_cov_image_patch_from_zero_mean_samples_batched"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.approx_predictive_cov_image_patch_from_zero_mean_samples_batched">[docs]</a><span class="k">def</span> <span class="nf">approx_predictive_cov_image_patch_from_zero_mean_samples_batched</span><span class="p">(</span>
+        <span class="n">samples</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">noise_x_correction_term</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Estimate the (co-)variances of image pixels from zero mean samples.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    samples : Tensor</span>
+<span class="sd">        Image (or patch) samples with mean zero.</span>
+<span class="sd">        Shape: ``(batch_size, mc_samples, num_pixels)``.</span>
+<span class="sd">    noise_x_correction_term : float, optional</span>
+<span class="sd">        If specified, this value is added to the diagonal of each covariance matrix.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cov : Tensor</span>
+<span class="sd">        Covariance estimate, shape: ``(batch_size, num_pixels, num_pixels)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">batch_size</span><span class="p">,</span> <span class="n">mc_samples</span><span class="p">,</span> <span class="n">im_numel</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span> <span class="o">*</span> <span class="n">mc_samples</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">*</span> <span class="p">(</span><span class="n">mc_samples</span> <span class="o">**</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+
+    <span class="n">prods</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bmm</span><span class="p">(</span><span class="n">samples</span><span class="p">[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">samples</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:])</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+            <span class="n">batch_size</span><span class="p">,</span> <span class="n">mc_samples</span><span class="p">,</span> <span class="n">im_numel</span><span class="p">,</span> <span class="n">im_numel</span><span class="p">)</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">prods</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># image x image</span>
+
+    <span class="k">if</span> <span class="n">noise_x_correction_term</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cov</span><span class="p">[(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">diag_indices</span><span class="p">(</span><span class="n">im_numel</span><span class="p">))]</span> <span class="o">+=</span> <span class="n">noise_x_correction_term</span>
+
+    <span class="k">return</span> <span class="n">cov</span></div>
+
+<div class="viewcode-block" id="yield_covariances_patches"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.yield_covariances_patches">[docs]</a><span class="k">def</span> <span class="nf">yield_covariances_patches</span><span class="p">(</span>
+        <span class="n">samples</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">patch_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">noise_x_correction_term</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Yield posterior covariance matrices for image patches.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    samples : Tensor</span>
+<span class="sd">        Precomputed samples, e.g. drawn by :meth:`sample_zero_mean`.</span>
+<span class="sd">    patch_kwargs : dict, optional</span>
+<span class="sd">        Keyword arguments specifying the patches, see docs of :meth:`log_prob`.</span>
+<span class="sd">    noise_x_correction_term : float or None, optional</span>
+<span class="sd">        Noise amount that is assumed to be present in ground truth. The default is ``1e-6``.</span>
+<span class="sd">    device : str or torch.device, optional</span>
+<span class="sd">        Device. If ``None`` (the default), ``samples.device`` is used.</span>
+
+<span class="sd">    Yields</span>
+<span class="sd">    ------</span>
+<span class="sd">    batch_patch_inds : list of int</span>
+<span class="sd">        Indices of the patches (for the currently yielded batch).</span>
+<span class="sd">    batch_predictive_cov_image_patch : Tensor</span>
+<span class="sd">        Covariance matrices.</span>
+<span class="sd">        Shape: ``(batch_size, max(batch_len_mask_inds), max(batch_len_mask_inds))``, where</span>
+<span class="sd">        ``batch_size`` is ``patch_kwargs[&#39;batch_size&#39;]`` for all batches except for the</span>
+<span class="sd">        potentially shorter last batch. If a patch has less than ``max(batch_len_mask_inds)``</span>
+<span class="sd">        pixels, the covariance matrix is padded with the identity, i.e. ones on the diagonal and</span>
+<span class="sd">        zeros for the other entries.</span>
+<span class="sd">    batch_len_mask_inds : list of int</span>
+<span class="sd">        Numbers of pixels in the patches.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-arguments</span>
+
+    <span class="n">device</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">device</span> <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">device</span>
+
+    <span class="k">for</span> <span class="n">batch_patch_inds</span><span class="p">,</span> <span class="n">batch_samples_patches</span><span class="p">,</span> <span class="n">batch_len_mask_inds</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">yield_padded_batched_images_patches</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span>
+                    <span class="n">patch_kwargs</span><span class="o">=</span><span class="n">patch_kwargs</span><span class="p">,</span> <span class="n">return_patch_numels</span><span class="o">=</span><span class="kc">True</span><span class="p">)):</span>
+
+        <span class="n">batch_predictive_cov_image_patch</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">approx_predictive_cov_image_patch_from_zero_mean_samples_batched</span><span class="p">(</span>
+                        <span class="n">batch_samples_patches</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                        <span class="n">noise_x_correction_term</span><span class="o">=</span><span class="n">noise_x_correction_term</span><span class="p">))</span>
+        <span class="c1"># use identity for padding dims in predictive_cov_image_patch</span>
+        <span class="c1"># (the determinant then is the same as for</span>
+        <span class="c1">#  predictive_cov_image_patch[:len_mask_inds, :len_mask_inds])</span>
+        <span class="n">max_len_mask_inds</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">batch_len_mask_inds</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">len_mask_inds</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch_len_mask_inds</span><span class="p">):</span>
+            <span class="n">batch_predictive_cov_image_patch</span><span class="p">[</span>
+                    <span class="n">k</span><span class="p">,</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">len_mask_inds</span><span class="p">,</span> <span class="n">max_len_mask_inds</span><span class="p">),</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">len_mask_inds</span><span class="p">,</span> <span class="n">max_len_mask_inds</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1.</span>
+
+        <span class="n">batch_invalid_values</span> <span class="o">=</span> <span class="n">is_invalid</span><span class="p">(</span><span class="n">batch_predictive_cov_image_patch</span><span class="p">)</span>
+        <span class="n">batch_invalid_values_patch_inds</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">batch_patch_inds</span><span class="p">)[</span><span class="n">batch_invalid_values</span><span class="p">])</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">batch_invalid_values_patch_inds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;invalid value occurred in predictive cov for patch indices &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">batch_invalid_values_patch_inds</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">yield</span> <span class="n">batch_patch_inds</span><span class="p">,</span> <span class="n">batch_predictive_cov_image_patch</span><span class="p">,</span> <span class="n">batch_len_mask_inds</span></div>
+
+<div class="viewcode-block" id="log_prob_patches"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.log_prob_patches">[docs]</a><span class="k">def</span> <span class="nf">log_prob_patches</span><span class="p">(</span>
+        <span class="n">mean</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">ground_truth</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">samples</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">patch_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">reweight_off_diagonal_entries</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">noise_x_correction_term</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">unscaled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">return_patch_diags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return log probabilities for patches.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mean : Tensor</span>
+<span class="sd">        Mean of the posterior image distribution.</span>
+<span class="sd">    ground_truth : Tensor</span>
+<span class="sd">        Ground truth.</span>
+<span class="sd">    samples : Tensor</span>
+<span class="sd">        Precomputed samples, e.g. drawn by :meth:`sample_zero_mean`.</span>
+<span class="sd">    patch_kwargs : dict, optional</span>
+<span class="sd">        Keyword arguments specifying the patches, see docs of :meth:`log_prob`.</span>
+<span class="sd">    reweight_off_diagonal_entries : bool, optional</span>
+<span class="sd">        If ``True``, replace the covariance matrix ``cov`` (for each patch) with</span>
+<span class="sd">        ``0.5 * (cov + torch.diag(torch.diag(cov)))``.</span>
+<span class="sd">        The default is ``False``.</span>
+<span class="sd">    noise_x_correction_term : float or None, optional</span>
+<span class="sd">        Noise amount that is assumed to be present in ground truth. Can help to stabilize</span>
+<span class="sd">        computations. The default is ``1e-6``.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Whether to print information. The default is ``True``.</span>
+<span class="sd">    unscaled : bool, optional</span>
+<span class="sd">        If ``False``, the unscaled patch log probabilities are divided by the number of pixels in</span>
+<span class="sd">        the respective patch. Otherwise the unscaled patch log probabilities are returned.</span>
+<span class="sd">        The default is ``False``.</span>
+<span class="sd">    return_patch_diags : bool, optional</span>
+<span class="sd">        If ``True``, return the diagonals of the covariance matrices.</span>
+<span class="sd">        The default is ``False``.</span>
+<span class="sd">    device : str or torch.device, optional</span>
+<span class="sd">        Device. If ``None`` (the default), ``&#39;cuda:0&#39;`` is chosen if available or ``&#39;cpu&#39;``</span>
+<span class="sd">        otherwise.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    log_probabilities : list of float</span>
+<span class="sd">        Log probabilities for the patches, optionally scaled; see the ``unscaled`` argument.</span>
+<span class="sd">    patch_diags : list of Tensor, optional</span>
+<span class="sd">        Diagonals of the covariance matrices for the patches.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-arguments</span>
+    <span class="c1"># pylint: disable=too-many-locals</span>
+
+    <span class="n">patch_kwargs</span> <span class="o">=</span> <span class="n">patch_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">patch_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;patch_size&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">log_probs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">patch_diags</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">all_patch_mask_inds</span> <span class="o">=</span> <span class="n">get_image_patch_mask_inds</span><span class="p">(</span>
+            <span class="n">ground_truth</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">patch_size</span><span class="o">=</span><span class="n">patch_kwargs</span><span class="p">[</span><span class="s1">&#39;patch_size&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">batch_patch_inds</span><span class="p">,</span> <span class="n">batch_predictive_cov_image_patch</span><span class="p">,</span> <span class="n">batch_len_mask_inds</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">yield_covariances_patches</span><span class="p">(</span>
+                    <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                    <span class="n">patch_kwargs</span><span class="o">=</span><span class="n">patch_kwargs</span><span class="p">,</span>
+                    <span class="n">noise_x_correction_term</span><span class="o">=</span><span class="n">noise_x_correction_term</span><span class="p">,</span>
+                    <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)):</span>
+
+        <span class="k">if</span> <span class="n">reweight_off_diagonal_entries</span> <span class="ow">and</span> <span class="n">patch_kwargs</span><span class="p">[</span><span class="s1">&#39;patch_size&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+
+            <span class="c1"># The re-weighting of the off-diagonal entries is proposed by Wesley J. Maddox</span>
+            <span class="c1"># in [1]_.</span>
+
+            <span class="c1"># .. [1] Maddox, W.J., Izmailov, P., Garipov, T., Vetrov, D.P. and Wilson, A.G.,</span>
+            <span class="c1">#         2019, &quot;A simple baseline for bayesian uncertainty in deep learning&quot;.</span>
+            <span class="c1">#         Advances in Neural Information Processing Systems, 32.</span>
+            <span class="c1">#         https://arxiv.org/pdf/1902.02476.pdf</span>
+
+            <span class="n">batch_predictive_cov_image_patch</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="n">batch_predictive_cov_image_patch</span> <span class="o">+</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag_embed</span><span class="p">(</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span><span class="n">batch_predictive_cov_image_patch</span><span class="p">,</span>
+                            <span class="n">dim1</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim2</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dim1</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim2</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">return_patch_diags</span><span class="p">:</span>
+            <span class="n">patch_diags</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">cov_image_patch</span><span class="o">.</span><span class="n">diag</span><span class="p">()[:</span><span class="n">len_mask_inds</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">cov_image_patch</span><span class="p">,</span> <span class="n">len_mask_inds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                            <span class="n">batch_predictive_cov_image_patch</span><span class="p">,</span> <span class="n">batch_len_mask_inds</span><span class="p">)])</span>
+
+        <span class="n">max_len_mask_inds</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">batch_len_mask_inds</span><span class="p">)</span>
+        <span class="n">batch_recon</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">mean</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="n">all_patch_mask_inds</span><span class="p">[</span><span class="n">patch_idx</span><span class="p">]],</span>
+                        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_len_mask_inds</span> <span class="o">-</span> <span class="n">len_mask_inds</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">patch_idx</span><span class="p">,</span> <span class="n">len_mask_inds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">batch_patch_inds</span><span class="p">,</span> <span class="n">batch_len_mask_inds</span><span class="p">)])</span>
+        <span class="n">batch_ground_truth</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">ground_truth</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="n">all_patch_mask_inds</span><span class="p">[</span><span class="n">patch_idx</span><span class="p">]],</span>
+                        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_len_mask_inds</span> <span class="o">-</span> <span class="n">len_mask_inds</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">patch_idx</span><span class="p">,</span> <span class="n">len_mask_inds</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">batch_patch_inds</span><span class="p">,</span> <span class="n">batch_len_mask_inds</span><span class="p">)])</span>
+
+        <span class="n">batch_patch_log_prob_unscaled</span> <span class="o">=</span> <span class="n">predictive_cov_image_patch_log_prob_unscaled_batched</span><span class="p">(</span>
+                <span class="n">recon_masked</span><span class="o">=</span><span class="n">batch_recon</span><span class="p">,</span>
+                <span class="n">ground_truth_masked</span><span class="o">=</span><span class="n">batch_ground_truth</span><span class="p">,</span>
+                <span class="n">predictive_cov_image_patch</span><span class="o">=</span><span class="n">batch_predictive_cov_image_patch</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">patch_idx</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">batch_patch_inds</span><span class="p">):</span>
+                <span class="n">mask_inds</span> <span class="o">=</span> <span class="n">all_patch_mask_inds</span><span class="p">[</span><span class="n">patch_idx</span><span class="p">]</span>
+                <span class="n">patch_log_prob_unscaled</span> <span class="o">=</span> <span class="n">batch_patch_log_prob_unscaled</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s1">&#39;sample based log prob (scaled) for patch </span><span class="si">{</span><span class="n">patch_idx</span><span class="si">}</span><span class="s1">: &#39;</span>
+                        <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">patch_log_prob_unscaled</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_inds</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">unscaled</span><span class="p">:</span>
+            <span class="n">log_probs</span> <span class="o">+=</span> <span class="n">batch_patch_log_prob_unscaled</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">batch_len_mask_inds</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">all_patch_mask_inds</span><span class="p">[</span><span class="n">patch_idx</span><span class="p">])</span> <span class="k">for</span> <span class="n">patch_idx</span> <span class="ow">in</span> <span class="n">batch_patch_inds</span><span class="p">]</span>
+            <span class="n">batch_patch_log_prob</span> <span class="o">=</span> <span class="n">batch_patch_log_prob_unscaled</span> <span class="o">/</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+                    <span class="n">batch_len_mask_inds</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">batch_patch_log_prob_unscaled</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">log_probs</span> <span class="o">+=</span> <span class="n">batch_patch_log_prob</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">log_probs</span><span class="p">,</span> <span class="n">patch_diags</span><span class="p">)</span> <span class="k">if</span> <span class="n">return_patch_diags</span> <span class="k">else</span> <span class="n">log_probs</span></div>
+
+<div class="viewcode-block" id="SampleBasedPredictivePosterior"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.SampleBasedPredictivePosterior">[docs]</a><span class="k">class</span> <span class="nc">SampleBasedPredictivePosterior</span><span class="p">(</span><span class="n">BasePredictivePosterior</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Approximate sample-based predictive posterior.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># sample_via_matheron</span>
+<div class="viewcode-block" id="SampleBasedPredictivePosterior.sample_zero_mean"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.SampleBasedPredictivePosterior.sample_zero_mean">[docs]</a>    <span class="k">def</span> <span class="nf">sample_zero_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+        <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">cov_obs_mat_chol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">use_conj_grad_inv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">cg_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">return_residual_norm_list</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">return_on_device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return samples from the Gaussian given by the predictive posterior covariance and mean zero.</span>
+
+<span class="sd">        Note that, in contrast to the (abstract) :meth:`sample` method designated by</span>
+<span class="sd">        :class:`BasePredictivePosterior`, this function does not include an image noise correction</span>
+<span class="sd">        term (and always has mean zero as indicated by the name).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_samples : int</span>
+<span class="sd">            Number of samples.</span>
+<span class="sd">        cov_obs_mat_chol : Tensor, optional</span>
+<span class="sd">            Cholesky factor of the observation covariance matrix.</span>
+<span class="sd">            Required if ``not use_conj_grad_inv``.</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            Batch size (number of images per batch). The default is ``1``.</span>
+<span class="sd">        use_conj_grad_inv : bool, optional</span>
+<span class="sd">            Whether to use CG instead of ``cov_obs_mat_chol`` for solving the linear system with the</span>
+<span class="sd">            observation covariance matrix. The default is ``False``.</span>
+<span class="sd">        cg_kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to :func:`bayes_dip.utils.cg`.</span>
+<span class="sd">        return_residual_norm_list : bool, optional</span>
+<span class="sd">            Whether to return the list of residual norms in case of ``use_conj_grad_inv``.</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        return_on_device : str or torch.device, optional</span>
+<span class="sd">            Device on which samples are collected. This option only affects the storage of the</span>
+<span class="sd">            samples to be returned, not their computation.</span>
+<span class="sd">            If ``None`` (the default), ``self.observation_cov.device`` is used.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        samples : Tensor</span>
+<span class="sd">            Samples from the Gaussian given by the predictive posterior covariance and mean zero.</span>
+<span class="sd">            Shape: ``(n, 1, *im_shape)``, where ``n`` is</span>
+<span class="sd">            ``ceil(num_samples / batch_size) * batch_size``.</span>
+<span class="sd">        residual_norm_list : list of scalar, optional</span>
+<span class="sd">            Residual norms of CG solutions, only returned if</span>
+<span class="sd">            ``use_conj_grad_inv and return_residual_norm_list``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=arguments-differ</span>
+        <span class="c1"># pylint: disable=too-many-locals</span>
+
+        <span class="n">num_batches</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">num_samples</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">image_samples</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">residual_norm_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">assert</span> <span class="n">use_conj_grad_inv</span> <span class="ow">or</span> <span class="n">cov_obs_mat_chol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">cg_kwargs</span> <span class="o">=</span> <span class="n">cg_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">return_on_device</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">device</span> <span class="k">if</span> <span class="n">return_on_device</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">return_on_device</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_batches</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;sample_via_matheron&#39;</span><span class="p">,</span>
+                    <span class="n">miniters</span><span class="o">=</span><span class="n">num_batches</span><span class="o">//</span><span class="mi">100</span><span class="p">):</span>
+
+                <span class="n">x_samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">image_cov</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+                    <span class="n">num_samples</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+                    <span class="n">return_weight_samples</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="p">)</span>
+                <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">trafo</span><span class="p">(</span><span class="n">x_samples</span><span class="p">)</span>
+
+                <span class="n">noise_term</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">log_noise_variance</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="o">**</span><span class="mf">.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span>
+                        <span class="n">samples</span><span class="p">)</span>
+
+                <span class="n">samples</span> <span class="o">=</span> <span class="p">(</span><span class="n">noise_term</span> <span class="o">-</span> <span class="n">samples</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">use_conj_grad_inv</span><span class="p">:</span>
+                    <span class="n">samples</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve_triangular</span><span class="p">(</span>
+                        <span class="n">cov_obs_mat_chol</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve_triangular</span><span class="p">(</span>
+                            <span class="n">cov_obs_mat_chol</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">upper</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">def</span> <span class="nf">observation_cov_closure</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                                <span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">obs_shape</span><span class="p">))</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+                                        <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+                    <span class="n">samples_T</span><span class="p">,</span> <span class="n">residual_norm</span> <span class="o">=</span> <span class="n">cg</span><span class="p">(</span>
+                            <span class="n">observation_cov_closure</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="o">**</span><span class="n">cg_kwargs</span><span class="p">)</span>
+                    <span class="n">residual_norm_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">residual_norm</span><span class="p">)</span>
+                    <span class="n">samples</span> <span class="o">=</span> <span class="n">samples_T</span><span class="o">.</span><span class="n">T</span>
+
+                <span class="n">delta_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">trafo_adjoint</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+                        <span class="n">batch_size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">obs_shape</span><span class="p">))</span>
+                <span class="n">delta_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">image_cov</span><span class="p">(</span><span class="n">delta_x</span><span class="p">)</span>
+                <span class="n">image_samples</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x_samples</span> <span class="o">+</span> <span class="n">delta_x</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">return_on_device</span><span class="p">))</span>
+            <span class="n">image_samples</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">image_samples</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+                <span class="n">image_samples</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">use_conj_grad_inv</span> <span class="ow">and</span> <span class="n">return_residual_norm_list</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">(</span><span class="n">image_samples</span><span class="p">,</span> <span class="n">residual_norm_list</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SampleBasedPredictivePosterior.yield_covariances_patches"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.SampleBasedPredictivePosterior.yield_covariances_patches">[docs]</a>    <span class="k">def</span> <span class="nf">yield_covariances_patches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">samples</span><span class="p">:</span> <span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">patch_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">noise_x_correction_term</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+            <span class="n">sample_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Yield posterior covariance matrices for image patches.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        samples : Tensor, optional</span>
+<span class="sd">            Precomputed samples with mean zero, e.g. drawn by :meth:`sample_zero_mean`.</span>
+<span class="sd">            If not specified, ``samples_kwargs[&#39;num_samples&#39;]`` samples are drawn in this function.</span>
+<span class="sd">        patch_kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments specifying the patches, see docs of :meth:`log_prob`.</span>
+<span class="sd">        noise_x_correction_term : float or None, optional</span>
+<span class="sd">            Noise amount that is assumed to be present in ground truth. The default is ``1e-6``.</span>
+<span class="sd">        sample_kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to :meth:`sample_zero_mean`. Required if ``samples is None``.</span>
+<span class="sd">        device : str or torch.device, optional</span>
+<span class="sd">            Device. If ``None`` (the default), ``self.observation_cov.device`` is used.</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        batch_patch_inds : list of int</span>
+<span class="sd">            Indices of the patches (for the currently yielded batch).</span>
+<span class="sd">        batch_predictive_cov_image_patch : Tensor</span>
+<span class="sd">            Covariance matrices.</span>
+<span class="sd">            Shape: ``(batch_size, max(batch_len_mask_inds), max(batch_len_mask_inds))``, where</span>
+<span class="sd">            ``batch_size`` is ``patch_kwargs[&#39;batch_size&#39;]`` for all batches except for the</span>
+<span class="sd">            potentially shorter last batch. If a patch has less than ``max(batch_len_mask_inds)``</span>
+<span class="sd">            pixels, the covariance matrix is padded with the identity, i.e. ones on the diagonal and</span>
+<span class="sd">            zeros for the other entries.</span>
+<span class="sd">        batch_len_mask_inds : list of int</span>
+<span class="sd">            Numbers of pixels in the patches.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=too-many-arguments</span>
+
+        <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">device</span> <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">device</span>
+        <span class="k">if</span> <span class="n">samples</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sample_kwargs</span> <span class="o">=</span> <span class="n">sample_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">sample_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;return_on_device&#39;</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_zero_mean</span><span class="p">(</span><span class="o">**</span><span class="n">sample_kwargs</span><span class="p">)</span>
+
+        <span class="k">yield from</span> <span class="n">yield_covariances_patches</span><span class="p">(</span><span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">patch_kwargs</span><span class="o">=</span><span class="n">patch_kwargs</span><span class="p">,</span>
+            <span class="n">noise_x_correction_term</span><span class="o">=</span><span class="n">noise_x_correction_term</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SampleBasedPredictivePosterior.log_prob"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.SampleBasedPredictivePosterior.log_prob">[docs]</a>    <span class="k">def</span> <span class="nf">log_prob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">mean</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">ground_truth</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">noise_x_correction_term</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+            <span class="n">patch_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">unscaled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the patch-based approximate log probability.</span>
+
+<span class="sd">        By default, a patch size of ``1`` pixel, i.e. just the pixel-wise variance is used,</span>
+<span class="sd">        neglecting correlations between different pixels.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mean : Tensor</span>
+<span class="sd">            Mean of the posterior image distribution.</span>
+<span class="sd">        ground_truth : Tensor</span>
+<span class="sd">            Ground truth.</span>
+<span class="sd">        noise_x_correction_term : float or None, optional</span>
+<span class="sd">            Noise amount that is assumed to be present in ground truth. Can help to stabilize</span>
+<span class="sd">            computations. The default is ``1e-6``.</span>
+<span class="sd">        patch_kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments specifying how to split the image into patches.</span>
+
+<span class="sd">            The arguments are:</span>
+<span class="sd">                ``&#39;patch_size&#39;`` : int, optional</span>
+<span class="sd">                    The default is ``1``.</span>
+<span class="sd">                ``&#39;patch_idx_list&#39;`` : list of int, optional</span>
+<span class="sd">                    Patch indices. If ``None``, all patches are used.</span>
+<span class="sd">                ``&#39;batch_size&#39;`` : int, optional</span>
+<span class="sd">                    The default is ``1``.</span>
+<span class="sd">        unscaled : bool, optional</span>
+<span class="sd">            If ``False``, the sum of the (unscaled) patch log probabilities is divided by the total</span>
+<span class="sd">            number of pixels in the patches.</span>
+<span class="sd">            Otherwise, the sum of the unscaled patch log probabilities is returned.</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments forwarded to :meth:`log_prob_patches`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        log_probability : np.float64</span>
+<span class="sd">            Log probability, optionally scaled; see the ``unscaled`` argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=arguments-differ</span>
+
+        <span class="n">patch_kwargs</span> <span class="o">=</span> <span class="n">patch_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">patch_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;patch_size&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">patch_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;patch_idx_list&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="n">sum_log_prob_unscaled</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_prob_patches</span><span class="p">(</span>
+                <span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span> <span class="n">ground_truth</span><span class="o">=</span><span class="n">ground_truth</span><span class="p">,</span>
+                <span class="n">noise_x_correction_term</span><span class="o">=</span><span class="n">noise_x_correction_term</span><span class="p">,</span>
+                <span class="n">patch_kwargs</span><span class="o">=</span><span class="n">patch_kwargs</span><span class="p">,</span> <span class="n">unscaled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">unscaled</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">sum_log_prob_unscaled</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">all_patch_mask_inds</span> <span class="o">=</span> <span class="n">get_image_patch_mask_inds</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">trafo</span><span class="o">.</span><span class="n">im_shape</span><span class="p">,</span> <span class="n">patch_size</span><span class="o">=</span><span class="n">patch_kwargs</span><span class="p">[</span><span class="s1">&#39;patch_size&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">patch_kwargs</span><span class="p">[</span><span class="s1">&#39;patch_idx_list&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">patch_kwargs</span><span class="p">[</span><span class="s1">&#39;patch_idx_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_patch_mask_inds</span><span class="p">)))</span>
+            <span class="n">total_num_pixels_in_patches</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_patch_mask_inds</span><span class="p">[</span><span class="n">patch_idx</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">patch_idx</span> <span class="ow">in</span> <span class="n">patch_kwargs</span><span class="p">[</span><span class="s1">&#39;patch_idx_list&#39;</span><span class="p">])</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">sum_log_prob_unscaled</span> <span class="o">/</span> <span class="n">total_num_pixels_in_patches</span>
+        <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="SampleBasedPredictivePosterior.log_prob_patches"><a class="viewcode-back" href="../../../_apidoc/bayes_dip.inference.sample_based_predictive_posterior.html#bayes_dip.inference.sample_based_predictive_posterior.SampleBasedPredictivePosterior.log_prob_patches">[docs]</a>    <span class="k">def</span> <span class="nf">log_prob_patches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">mean</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">ground_truth</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+            <span class="n">samples</span><span class="p">:</span> <span class="n">Tensor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">patch_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">reweight_off_diagonal_entries</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">noise_x_correction_term</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">unscaled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">return_patch_diags</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">sample_kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return log probabilities for patches.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mean : Tensor</span>
+<span class="sd">            Mean of the posterior image distribution.</span>
+<span class="sd">        ground_truth : Tensor</span>
+<span class="sd">            Ground truth.</span>
+<span class="sd">        samples : Tensor, optional</span>
+<span class="sd">            Precomputed samples with mean zero, e.g. drawn by :meth:`sample_zero_mean`.</span>
+<span class="sd">            If not specified, ``samples_kwargs[&#39;num_samples&#39;]`` samples are drawn in this function.</span>
+<span class="sd">        patch_kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments specifying the patches, see docs of :meth:`log_prob`.</span>
+<span class="sd">        reweight_off_diagonal_entries : bool, optional</span>
+<span class="sd">            If ``True``, replace the covariance matrix ``cov`` (for each patch) with</span>
+<span class="sd">            ``0.5 * (cov + torch.diag(torch.diag(cov)))``.</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        noise_x_correction_term : float or None, optional</span>
+<span class="sd">            Noise amount that is assumed to be present in ground truth. Can help to stabilize</span>
+<span class="sd">            computations. The default is ``1e-6``.</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            Whether to print information. The default is ``True``.</span>
+<span class="sd">        unscaled : bool, optional</span>
+<span class="sd">            If ``False``, the unscaled patch log probabilities are divided by the number of pixels</span>
+<span class="sd">            in the respective patch. Otherwise the unscaled patch log probabilities are returned.</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        return_patch_diags : bool, optional</span>
+<span class="sd">            If ``True``, return the diagonals of the covariance matrices.</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        sample_kwargs : dict, optional</span>
+<span class="sd">            Keyword arguments passed to :meth:`sample_zero_mean`. Required if ``samples is None``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        log_probabilities : list of float</span>
+<span class="sd">            Log probabilities for the patches, optionally scaled; see the ``unscaled`` argument.</span>
+<span class="sd">        patch_diags : list of Tensor, optional</span>
+<span class="sd">            Diagonals of the covariance matrices for the patches.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=too-many-arguments</span>
+        <span class="c1"># pylint: disable=too-many-locals</span>
+
+        <span class="n">patch_kwargs</span> <span class="o">=</span> <span class="n">patch_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="n">patch_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;patch_size&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">samples</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sample_kwargs</span> <span class="o">=</span> <span class="n">sample_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+            <span class="n">sample_kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;return_on_device&#39;</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+            <span class="n">samples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_zero_mean</span><span class="p">(</span><span class="o">**</span><span class="n">sample_kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">log_prob_patches</span><span class="p">(</span>
+                <span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span>
+                <span class="n">ground_truth</span><span class="o">=</span><span class="n">ground_truth</span><span class="p">,</span>
+                <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                <span class="n">patch_kwargs</span><span class="o">=</span><span class="n">patch_kwargs</span><span class="p">,</span>
+                <span class="n">reweight_off_diagonal_entries</span><span class="o">=</span><span class="n">reweight_off_diagonal_entries</span><span class="p">,</span>
+                <span class="n">noise_x_correction_term</span><span class="o">=</span><span class="n">noise_x_correction_term</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                <span class="n">unscaled</span><span class="o">=</span><span class="n">unscaled</span><span class="p">,</span>
+                <span class="n">return_patch_diags</span><span class="o">=</span><span class="n">return_patch_diags</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">observation_cov</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

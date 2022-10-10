@@ -1,0 +1,7 @@
+bayes\_dip.utils.experiment\_utils module
+=========================================
+
+.. automodule:: bayes_dip.utils.experiment_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

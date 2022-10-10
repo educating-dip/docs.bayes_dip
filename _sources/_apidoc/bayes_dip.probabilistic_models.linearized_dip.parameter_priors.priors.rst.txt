@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.linearized\_dip.parameter\_priors.priors module
+================================================================================
+
+.. automodule:: bayes_dip.probabilistic_models.linearized_dip.parameter_priors.priors
+   :members:
+   :undoc-members:
+   :show-inheritance:

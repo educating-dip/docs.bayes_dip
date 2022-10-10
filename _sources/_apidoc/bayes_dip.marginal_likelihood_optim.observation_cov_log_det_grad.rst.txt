@@ -1,0 +1,7 @@
+bayes\_dip.marginal\_likelihood\_optim.observation\_cov\_log\_det\_grad module
+==============================================================================
+
+.. automodule:: bayes_dip.marginal_likelihood_optim.observation_cov_log_det_grad
+   :members:
+   :undoc-members:
+   :show-inheritance:

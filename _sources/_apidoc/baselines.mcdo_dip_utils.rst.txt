@@ -1,0 +1,7 @@
+baselines.mcdo\_dip\_utils module
+=================================
+
+.. automodule:: baselines.mcdo_dip_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

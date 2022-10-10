@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.inference.exact_predictive_posterior module &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="bayes_dip.inference.sample_based_predictive_posterior module" href="bayes_dip.inference.sample_based_predictive_posterior.html" />
+    <link rel="prev" title="bayes_dip.inference.base_predictive_posterior module" href="bayes_dip.inference.base_predictive_posterior.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+              <div class="version">
+                0.0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="bayes_dip.html">bayes_dip package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bayes_dip.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.data.html">bayes_dip.data package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.dip.html">bayes_dip.dip package</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="bayes_dip.inference.html">bayes_dip.inference package</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="bayes_dip.inference.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bayes_dip.inference.html#module-bayes_dip.inference">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.marginal_likelihood_optim.html">bayes_dip.marginal_likelihood_optim package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.probabilistic_models.html">bayes_dip.probabilistic_models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bayes_dip.utils.html">bayes_dip.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="bayes_dip.html#module-bayes_dip">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="bayes_dip.html">bayes_dip package</a> &raquo;</li>
+          <li><a href="bayes_dip.inference.html">bayes_dip.inference package</a> &raquo;</li>
+      <li>bayes_dip.inference.exact_predictive_posterior module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/_apidoc/bayes_dip.inference.exact_predictive_posterior.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-bayes_dip.inference.exact_predictive_posterior">
+<span id="bayes-dip-inference-exact-predictive-posterior-module"></span><h1>bayes_dip.inference.exact_predictive_posterior module<a class="headerlink" href="#module-bayes_dip.inference.exact_predictive_posterior" title="Permalink to this heading"></a></h1>
+<p>Provides an exact predictive posterior implementation, <a class="reference internal" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior" title="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExactPredictivePosterior</span></code></a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bayes_dip.inference.exact_predictive_posterior.</span></span><span class="sig-name descname"><span class="pre">ExactPredictivePosterior</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.probabilistic_models.observation_cov.html#bayes_dip.probabilistic_models.observation_cov.MatmulObservationCov" title="bayes_dip.probabilistic_models.observation_cov.MatmulObservationCov"><span class="pre">MatmulObservationCov</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/inference/exact_predictive_posterior.html#ExactPredictivePosterior"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="bayes_dip.inference.base_predictive_posterior.html#bayes_dip.inference.base_predictive_posterior.BasePredictivePosterior" title="bayes_dip.inference.base_predictive_posterior.BasePredictivePosterior"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePredictivePosterior</span></code></a></p>
+<p>Exact matmul-based predictive posterior.</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance" title="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">covariance</span></code></a>([noise_x_correction_term, eps])</p></td>
+<td><p>Return the predictive posterior covariance matrix.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.log_prob" title="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.log_prob"><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_prob</span></code></a>(mean, ground_truth, **kwargs)</p></td>
+<td><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">ground_truth</span></code> under the predictive posterior with the given <code class="docutils literal notranslate"><span class="pre">mean</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.multivariate_normal_distribution" title="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.multivariate_normal_distribution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">multivariate_normal_distribution</span></code></a>(mean, **kwargs)</p></td>
+<td><p>Return the predictive posterior distribution with the given <code class="docutils literal notranslate"><span class="pre">mean</span></code> in form of a <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.distributions.MultivariateNormal</span></code> instance.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.sample" title="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(num_samples, mean, **kwargs)</p></td>
+<td><p>Sample from the predictive posterior with the given <code class="docutils literal notranslate"><span class="pre">mean</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observation_cov</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="bayes_dip.probabilistic_models.observation_cov.html#bayes_dip.probabilistic_models.observation_cov.MatmulObservationCov" title="bayes_dip.probabilistic_models.observation_cov.MatmulObservationCov"><span class="pre">MatmulObservationCov</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bayes_dip/inference/exact_predictive_posterior.html#ExactPredictivePosterior.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.__init__" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>observation_cov</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseObservationCov</span></code></span></dt><dd><p>Observation covariance. Usually, the its parameters (i.e., the prior hyperparameters)
+should be optimized before.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance">
+<span class="sig-name descname"><span class="pre">covariance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noise_x_correction_term</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/inference/exact_predictive_posterior.html#ExactPredictivePosterior.covariance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance" title="Permalink to this definition"></a></dt>
+<dd><p>Return the predictive posterior covariance matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>noise_x_correction_term</strong><span class="classifier">float or None, optional</span></dt><dd><p>Noise amount that is assumed to be present in ground truth. Can help to stabilize
+computations. The default is <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>.</p>
+</dd>
+<dt><strong>eps</strong><span class="classifier">float, optional</span></dt><dd><p>Stabilizing value added to the diagonal of the image covariance matrix
+<code class="docutils literal notranslate"><span class="pre">J</span> <span class="pre">&#64;</span> <span class="pre">parameter_cov</span> <span class="pre">&#64;</span> <span class="pre">J.T</span></code> (where <code class="docutils literal notranslate"><span class="pre">J</span></code> is the network Jacobian and <code class="docutils literal notranslate"><span class="pre">parameter_cov</span></code>
+represents <code class="docutils literal notranslate"><span class="pre">self.observation_cov.image_cov.inner_cov</span></code>). The default is <code class="docutils literal notranslate"><span class="pre">1e-6</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>cov</strong><span class="classifier">Tensor</span></dt><dd><p>Covariance matrix. Shape: <code class="docutils literal notranslate"><span class="pre">(np.prod(self.observation_cov.trafo.im_shape),)</span> <span class="pre">*</span> <span class="pre">2</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.log_prob">
+<span class="sig-name descname"><span class="pre">log_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_truth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float64</span></span></span><a class="reference internal" href="../_modules/bayes_dip/inference/exact_predictive_posterior.html#ExactPredictivePosterior.log_prob"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.log_prob" title="Permalink to this definition"></a></dt>
+<dd><p>Return the log probability of <code class="docutils literal notranslate"><span class="pre">ground_truth</span></code> under the predictive posterior with the given
+<code class="docutils literal notranslate"><span class="pre">mean</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mean</strong><span class="classifier">Tensor</span></dt><dd><p>Predictive posterior mean.</p>
+</dd>
+<dt><strong>ground_truth</strong><span class="classifier">Tensor</span></dt><dd><p>Ground truth.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments passed to <a class="reference internal" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance" title="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">covariance()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>log_probability</strong><span class="classifier">np.float64</span></dt><dd><p>Log probability.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.multivariate_normal_distribution">
+<span class="sig-name descname"><span class="pre">multivariate_normal_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/distributions.html#torch.distributions.multivariate_normal.MultivariateNormal" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">MultivariateNormal</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/inference/exact_predictive_posterior.html#ExactPredictivePosterior.multivariate_normal_distribution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.multivariate_normal_distribution" title="Permalink to this definition"></a></dt>
+<dd><p>Return the predictive posterior distribution with the given <code class="docutils literal notranslate"><span class="pre">mean</span></code> in form of a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.distributions.MultivariateNormal</span></code> instance.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>mean</strong><span class="classifier">Tensor</span></dt><dd><p>Predictive posterior mean.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments passed to <a class="reference internal" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance" title="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">covariance()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>dist</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.distributions.MultivariateNormal</span></code></span></dt><dd><p>Predictive posterior distribution.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://pytorch.org/docs/master/tensors.html#torch.Tensor" title="(in PyTorch vmaster (1.14.0a0+git9a170b2 ))"><span class="pre">Tensor</span></a></span></span><a class="reference internal" href="../_modules/bayes_dip/inference/exact_predictive_posterior.html#ExactPredictivePosterior.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Sample from the predictive posterior with the given <code class="docutils literal notranslate"><span class="pre">mean</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>num_samples</strong><span class="classifier">int</span></dt><dd><p>Number of samples.</p>
+</dd>
+<dt><strong>mean</strong><span class="classifier">Tensor</span></dt><dd><p>Predictive posterior mean. Shape: <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">*self.observation_cov.trafo.im_shape)</span></code>.</p>
+</dd>
+<dt><strong>**kwargs</strong><span class="classifier">dict</span></dt><dd><p>Keyword arguments passed to <a class="reference internal" href="#bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance" title="bayes_dip.inference.exact_predictive_posterior.ExactPredictivePosterior.covariance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">covariance()</span></code></a>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>samples</strong><span class="classifier">Tensor</span></dt><dd><p>Samples. Shape: <code class="docutils literal notranslate"><span class="pre">(num_samples,</span> <span class="pre">1,</span> <span class="pre">*self.observation_cov.trafo.im_shape)</span></code>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="bayes_dip.inference.base_predictive_posterior.html" class="btn btn-neutral float-left" title="bayes_dip.inference.base_predictive_posterior module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="bayes_dip.inference.sample_based_predictive_posterior.html" class="btn btn-neutral float-right" title="bayes_dip.inference.sample_based_predictive_posterior module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

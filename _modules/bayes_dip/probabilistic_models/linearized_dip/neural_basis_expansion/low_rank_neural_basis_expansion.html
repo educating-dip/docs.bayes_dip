@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides :class:`LowRankNeuralBasisExpansion`.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">.base_neural_basis_expansion</span> <span class="kn">import</span> <span class="n">BaseNeuralBasisExpansion</span>
+<span class="kn">from</span> <span class="nn">.neural_basis_expansion</span> <span class="kn">import</span> <span class="n">NeuralBasisExpansion</span>
+
+<div class="viewcode-block" id="LowRankNeuralBasisExpansion"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.LowRankNeuralBasisExpansion">[docs]</a><span class="k">class</span> <span class="nc">LowRankNeuralBasisExpansion</span><span class="p">(</span><span class="n">BaseNeuralBasisExpansion</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper class for Jacobian vector products and vector Jacobian products using low-rank Jacobian</span>
+<span class="sd">    matrix approximation.</span>
+<span class="sd">    The algorithm is described in [1]_.</span>
+
+<span class="sd">    .. [1] N. Halko, P.G. Martinsson, and J.A. Tropp, 2011, &quot;Finding Structure with Randomness:</span>
+<span class="sd">           probabilistic algorithms for constructing approximate matrix decompositions&quot;.</span>
+<span class="sd">           SIAM Review. https://doi.org/10.1137/090771806.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LowRankNeuralBasisExpansion.__init__"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.LowRankNeuralBasisExpansion.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">neural_basis_expansion</span><span class="p">:</span> <span class="n">NeuralBasisExpansion</span><span class="p">,</span>
+            <span class="n">low_rank_rank_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">oversampling_param</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+            <span class="n">load_from_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">use_cpu</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        neural_basis_expansion : :class:`bayes_dip.probabilistic_models.NeuralBasisExpansion`</span>
+<span class="sd">            Neural basis expansion instance to be approximated.</span>
+<span class="sd">        low_rank_rank_dim : int</span>
+<span class="sd">            Number of dimensions of the low-rank approximation.</span>
+<span class="sd">        oversampling_param : int, optional</span>
+<span class="sd">            Number of oversampling dimensions for the low-rank approximation. The default is ``10``.</span>
+<span class="sd">        load_from_file : str, optional</span>
+<span class="sd">            File path to load the approximation from (skipping computation).</span>
+<span class="sd">        device : str or torch.device, optional</span>
+<span class="sd">            Device. If ``None`` (the default), ``&#39;cuda:0&#39;`` is chosen if available or ``&#39;cpu&#39;``</span>
+<span class="sd">            otherwise.</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            Batch size. The default is ``1``.</span>
+<span class="sd">        use_cpu : bool, optional</span>
+<span class="sd">            Whether to perform SVD on CPU. The default is ``False``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">nn_model</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_model</span><span class="p">,</span>
+                <span class="n">nn_input</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_input</span><span class="p">,</span>
+                <span class="n">ordered_nn_params</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">ordered_nn_params</span><span class="p">,</span>
+                <span class="n">nn_out_shape</span><span class="o">=</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">nn_out_shape</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span> <span class="o">=</span> <span class="n">neural_basis_expansion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oversampling_param</span> <span class="o">=</span> <span class="n">oversampling_param</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span> <span class="o">=</span> <span class="n">low_rank_rank_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">device</span> <span class="ow">or</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">((</span><span class="s1">&#39;cuda:0&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">load_from_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">jac_U</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_S</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_Vh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_low_rank_jac_basis</span><span class="p">(</span>
+                    <span class="n">use_cpu</span><span class="o">=</span><span class="n">use_cpu</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">load_from_file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LowRankNeuralBasisExpansion.load"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.LowRankNeuralBasisExpansion.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the approximation from file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : str, optional</span>
+<span class="sd">            File path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">jac_dict</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">jac_U</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_S</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_Vh</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">jac_dict</span><span class="p">[</span><span class="s1">&#39;jac_U&#39;</span><span class="p">],</span> <span class="n">jac_dict</span><span class="p">[</span><span class="s1">&#39;jac_S&#39;</span><span class="p">],</span> <span class="n">jac_dict</span><span class="p">[</span><span class="s1">&#39;jac_Vh&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="LowRankNeuralBasisExpansion.save"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.LowRankNeuralBasisExpansion.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the approximation to file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filepath : str, optional</span>
+<span class="sd">            File path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+                <span class="p">{</span><span class="s1">&#39;jac_U&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_U</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="s1">&#39;jac_S&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_S</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="s1">&#39;jac_Vh&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_Vh</span><span class="o">.</span><span class="n">cpu</span><span class="p">()},</span>
+                <span class="n">filepath</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_assemble_random_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="n">total_low_rank_rank_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">oversampling_param</span>
+        <span class="n">random_matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_params</span><span class="p">,</span> <span class="n">total_low_rank_rank_dim</span><span class="p">),</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+            <span class="p">)</span> <span class="c1"># constructing Gaussian random matrix Omega</span>
+        <span class="k">return</span> <span class="n">random_matrix</span>
+
+<div class="viewcode-block" id="LowRankNeuralBasisExpansion.get_low_rank_jac_basis"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.LowRankNeuralBasisExpansion.get_low_rank_jac_basis">[docs]</a>    <span class="k">def</span> <span class="nf">get_low_rank_jac_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">use_cpu</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">]:</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Direct SVD.</span>
+
+<span class="sd">        This method implements Algo. 5.1 from Halko et al. and computes an</span>
+<span class="sd">        approximate singular value decomposition of the Jacobian.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        use_cpu : bool, optional</span>
+<span class="sd">            Whether to compute QR on CPU.</span>
+<span class="sd">            The default is ``False``.</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            Batch size for multiplying with the Jacobian.</span>
+<span class="sd">            The default is ``1``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        U : Tensor</span>
+<span class="sd">            Orthonormal matrix. Shape: ``(np.prod(self.nn_out_shape), self.low_rank_rank_dim)``</span>
+<span class="sd">        S : Tensor</span>
+<span class="sd">            Approximate singular values. Shape: ``(self.low_rank_rank_dim)``</span>
+<span class="sd">        Vh : Tensor</span>
+<span class="sd">            Orthonormal matrix. Shape: ``(self.low_rank_rank_dim, self.num_params)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">random_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assemble_random_matrix</span><span class="p">()</span> <span class="c1"># draw a Gaussian random matrix Omega</span>
+
+        <span class="n">total_low_rank_rank_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">oversampling_param</span>
+
+        <span class="k">assert</span> <span class="n">total_low_rank_rank_dim</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span>
+                <span class="s1">&#39;low rank dim must not be larger than network output dimension&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Stage 1: Randomized Range Finder</span>
+        <span class="c1"># (see Algo. 4.1; https://epubs.siam.org/doi/epdf/10.1137/090771806)</span>
+
+        <span class="c1"># Identifying a subspace that captures most of the action of the Jacobian. Constructing a</span>
+        <span class="c1"># matrix Q whose columns form an orthonormal basis for the range of Y = Jac @ Omega.</span>
+        <span class="n">num_batches_forward</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">total_low_rank_rank_dim</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">low_rank_jac_v_mat</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_batches_forward</span><span class="p">),</span> <span class="n">miniters</span><span class="o">=</span><span class="n">num_batches_forward</span><span class="o">//</span><span class="mi">100</span><span class="p">,</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;get_low_rank_jac_basis forward&#39;</span><span class="p">):</span>
+            <span class="n">rnd_vect</span> <span class="o">=</span> <span class="n">random_matrix</span><span class="p">[</span>
+                    <span class="p">:,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">:(</span><span class="n">i</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">)</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span>
+            <span class="n">low_rank_jac_v_mat_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">jvp</span><span class="p">(</span><span class="n">rnd_vect</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+            <span class="n">low_rank_jac_v_mat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">low_rank_jac_v_mat_row</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span> <span class="k">if</span> <span class="n">use_cpu</span> <span class="k">else</span> <span class="n">low_rank_jac_v_mat_row</span><span class="p">)</span>
+        <span class="n">low_rank_jac_v_mat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">low_rank_jac_v_mat</span><span class="p">)</span>
+        <span class="c1"># Y = Jac @ Omega, (np.prod(self.nn_out_shape[2:]), total_low_rank_rank_dim)</span>
+        <span class="n">low_rank_jac_v_mat</span> <span class="o">=</span> <span class="n">low_rank_jac_v_mat</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">low_rank_jac_v_mat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">Q</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">low_rank_jac_v_mat</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span><span class="p">]</span>
+
+        <span class="c1"># Stage 2: Direct SVD</span>
+        <span class="c1"># (see Algo. 5.1.; https://epubs.siam.org/doi/epdf/10.1137/090771806)</span>
+
+        <span class="c1"># Construction of a standard factorization using the information contained in the basis Q.</span>
+        <span class="n">num_batches_backward</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low_rank_rank_dim</span> <span class="o">/</span> <span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">qT_low_rank_jac_mat</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_batches_backward</span><span class="p">),</span> <span class="n">miniters</span><span class="o">=</span><span class="n">num_batches_backward</span><span class="o">//</span><span class="mi">100</span><span class="p">,</span>
+                <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;get_low_rank_jac_basis backward&#39;</span><span class="p">):</span>
+            <span class="n">qT_i</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">:(</span><span class="n">i</span> <span class="o">*</span> <span class="n">batch_size</span><span class="p">)</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">qT_low_rank_jac_mat_row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">neural_basis_expansion</span><span class="o">.</span><span class="n">vjp</span><span class="p">(</span>
+                    <span class="n">qT_i</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">qT_i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nn_out_shape</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">))</span>
+            <span class="n">qT_low_rank_jac_mat_row</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+            <span class="n">qT_low_rank_jac_mat</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">qT_low_rank_jac_mat_row</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span> <span class="k">if</span> <span class="n">use_cpu</span> <span class="k">else</span> <span class="n">qT_low_rank_jac_mat_row</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">qT_low_rank_jac_mat</span><span class="p">)</span>  <span class="c1"># (self.low_rank_rank_dim, self.num_params)</span>
+
+        <span class="n">U</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">Vh</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">Q</span> <span class="o">@</span> <span class="n">U</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span> <span class="n">S</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">),</span> <span class="n">Vh</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LowRankNeuralBasisExpansion.jvp"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.LowRankNeuralBasisExpansion.jvp">[docs]</a>    <span class="k">def</span> <span class="nf">jvp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jac_U</span> <span class="o">@</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jac_S</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">jac_Vh</span> <span class="o">@</span> <span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="p">)))</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+                        <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nn_out_shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LowRankNeuralBasisExpansion.vjp"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.low_rank_neural_basis_expansion.LowRankNeuralBasisExpansion.vjp">[docs]</a>    <span class="k">def</span> <span class="nf">vjp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+
+        <span class="k">return</span> <span class="p">((</span><span class="n">v</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_U</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_S</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:])</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">jac_Vh</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+bayes\_dip.data.datasets.mnist module
+=====================================
+
+.. automodule:: bayes_dip.data.datasets.mnist
+   :members:
+   :undoc-members:
+   :show-inheritance:

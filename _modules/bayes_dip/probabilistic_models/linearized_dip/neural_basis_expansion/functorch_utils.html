@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils &mdash; Bayes-DIP  documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> Bayes-DIP
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../_apidoc/bayes_dip.html">bayes_dip package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">Bayes-DIP</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities for using the flattened parameter representation from :class:`BaseNeuralBasisExpansion`</span>
+<span class="sd">with functorch.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">Tensor</span>
+
+<div class="viewcode-block" id="flatten_grad_functorch"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.flatten_grad_functorch">[docs]</a><span class="k">def</span> <span class="nf">flatten_grad_functorch</span><span class="p">(</span>
+        <span class="n">inds_from_ordered_params</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">grads</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flatten and concatenate selected tensors from a tuple as returned from functorch.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    inds_from_ordered_params : sequence of int</span>
+<span class="sd">        Indices of the selected parameters in ``grads`` (which is usually ordered like the full list</span>
+<span class="sd">        of parameters of a model, ``list(nn_model.parameters())``).</span>
+<span class="sd">    grads : sequence of Tensor</span>
+<span class="sd">        Gradient tensors.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    flat_grads : Tensor</span>
+<span class="sd">        Flat and concatenated gradients. Shape: ``(total_selected_num_params,)``, i.e.</span>
+<span class="sd">        ``sum(grads[ind].numel() for ind in inds_from_ordered_params)``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flat_grads</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">grads</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">inds_from_ordered_params</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">flat_grads</span></div>
+
+<div class="viewcode-block" id="unflatten_nn_functorch"><a class="viewcode-back" href="../../../../../_apidoc/bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.html#bayes_dip.probabilistic_models.linearized_dip.neural_basis_expansion.functorch_utils.unflatten_nn_functorch">[docs]</a><span class="k">def</span> <span class="nf">unflatten_nn_functorch</span><span class="p">(</span>
+        <span class="n">nn_model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">inds_from_ordered_params</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+        <span class="n">slices_from_ordered_params</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">slice</span><span class="p">],</span>
+        <span class="n">weights</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpack flat and concatenated selected parameters into a tuple that can be passed to functorch.</span>
+
+<span class="sd">    For the parameters that are not selected by ``inds_from_ordered_params``, zero tensors are</span>
+<span class="sd">    placed in the returned tuple.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    nn_model : :class:`nn.Module`</span>
+<span class="sd">        Network.</span>
+<span class="sd">    inds_from_ordered_params : sequence of int</span>
+<span class="sd">        Indices of the selected parameters in ``list(nn_model.parameters())``.</span>
+<span class="sd">    slices_from_ordered_params : sequence of slice</span>
+<span class="sd">        Slice objects to sub-slice ``weights``, in the same order as ``inds_from_ordered_params``.</span>
+<span class="sd">    weights : Tensor</span>
+<span class="sd">        Flat and concatenated selected parameters. Shape: ``(total_selected_num_params,)``, i.e.</span>
+<span class="sd">        ``sum(list(nn_model.parameters())[ind].numel() for ind in inds_from_ordered_params)``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    weights_tuple : tuple of Tensor</span>
+<span class="sd">        Weights tuple, in the order of ``nn_model.parameters()``.</span>
+<span class="sd">        Values for the parameters selected by ``inds_from_ordered_params`` are unpacked from</span>
+<span class="sd">        ``weights``; for the other parameters, zeros are inserted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">nn_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+    <span class="n">weight_list</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">slice_param</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inds_from_ordered_params</span><span class="p">,</span> <span class="n">slices_from_ordered_params</span><span class="p">):</span>
+        <span class="n">weight_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">slice_param</span><span class="p">]</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">params</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">weight_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">weight</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weight_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                    <span class="n">params</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">weights</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">weight_list</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Riccardo Barbano, Johannes Leuschner, Javier Antorán.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

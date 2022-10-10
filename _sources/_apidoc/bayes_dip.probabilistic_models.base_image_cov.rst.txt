@@ -1,0 +1,7 @@
+bayes\_dip.probabilistic\_models.base\_image\_cov module
+========================================================
+
+.. automodule:: bayes_dip.probabilistic_models.base_image_cov
+   :members:
+   :undoc-members:
+   :show-inheritance:
