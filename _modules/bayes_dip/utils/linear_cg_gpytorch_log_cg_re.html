@@ -109,8 +109,6 @@
     <span class="n">state</span> <span class="o">=</span> <span class="n">initialize_log_re</span><span class="p">(</span><span class="n">matmul_closure</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">preconditioner</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
         <span class="n">state</span> <span class="o">=</span> <span class="n">take_cg_step_log_re</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">matmul_closure</span><span class="p">,</span> <span class="n">preconditioner</span><span class="p">)</span>
-        <span class="c1"># print(&#39;residual from state:&#39;, state[1].norm(2, dim=-2, keepdim=True))</span>
-        <span class="c1"># print(&#39;actual residual:&#39;, (matmul_closure(state[0]) - rhs).norm(2, dim=-2, keepdim=True))</span>
         <span class="k">if</span> <span class="n">cond_fun</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">max_iter</span><span class="p">):</span>
             <span class="k">break</span>
 

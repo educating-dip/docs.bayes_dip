@@ -272,8 +272,6 @@
         <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">residual</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">2</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">residual_norm</span><span class="p">)</span>
         <span class="n">residual_norm</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">rhs_is_zero</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">torch</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span><span class="n">residual_norm</span><span class="p">,</span> <span class="n">stop_updating_after</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">has_converged</span><span class="p">)</span>
-        <span class="c1"># print(&#39;residual from state:&#39;, residual_norm)</span>
-        <span class="c1"># print(&#39;actual residual:&#39;, (matmul_closure(result) - rhs).norm(2, dim=-2, keepdim=True))</span>
 
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">k</span> <span class="o">&gt;=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
